@@ -7,6 +7,8 @@ const logger = require('morgan');
 const helmet = require('helmet');
 const createError = require('http-errors');
 
+const { connect } = require('mongoose');
+const { mongoUri } = require('./config/const');
 const indexRoute = require('./routes/index.route');
 const userRoute = require('./routes/user.route');
 const authRoute = require('./routes/auth.route');
@@ -32,8 +34,9 @@ app.use(express.json({ limit: '60mb' }));
 app.use(express.urlencoded({ extended: false, limit: '60mb' }));
 app.use(cookieParser());
 
-// eslint-disable-next-line global-require
-require('./db/conn');
+connect(mongoUri)
+  .then(() => console.log('connected to database 🚀'))
+  .catch((err) => console.log(`MongoDB connection failed: ${err.message}`));
 
 app.get('/', (req, res) => {
   res.redirect(301, '/api/v1');

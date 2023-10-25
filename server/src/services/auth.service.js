@@ -6,41 +6,39 @@ const { UserModel } = require('../model');
 const { passwordHash, comparePassword } = require('../utils/helper');
 const { jwtSecretKey } = require('../config/const');
 
-function createToken(_id) {
-  const jwtKey = jwtSecretKey;
-  return jwt.sign({ _id }, jwtKey, { expiresIn: '3d' });
-}
+// function createToken(data) {
+//   const jwtKey = jwtSecretKey;
+//   return jwt.sign({ data }, jwtKey, { expiresIn: '3d' });
+// }
 
 async function registerUser(userData, res) {
-  const { name, email, password } = userData;
+  const {
+    fullname, username, email, password,
+  } = userData;
 
   const userExists = await UserModel.findOne({ email });
 
   if (userExists) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      'User with email exists!',
+      'user with email exists!',
     ).sendResponse(res);
   }
 
   const hashedPassword = passwordHash(password);
 
   const user = await UserModel.create({
-    name,
+    fullname,
+    username,
     email,
     password: hashedPassword,
   });
-
-  const token = createToken(user._id);
 
   return {
     success: true,
     message: 'Account successfully created',
     data: {
-      id: user._id,
-      name,
-      email,
-      token,
+      user: user._id,
     },
   };
 }
