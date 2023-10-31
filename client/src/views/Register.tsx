@@ -34,6 +34,7 @@ export default function Register() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!isValidEmail(email)) {
       setIsLoading(false);
@@ -51,14 +52,14 @@ export default function Register() {
 
       setTimeout(() => {
         setPasswordError(false);
-      }, 3700);
+      }, 8000);
     }
 
     const registerData = {
-      username,
+      username: username.toLowerCase().trim(),
       fullname,
-      email,
-      password,
+      email: email.trim(),
+      password: password.trim(),
     }
 
     register(registerData).then((res) => {
@@ -82,11 +83,24 @@ export default function Register() {
         };
         if ('data' in resError) {
           if (resError.data.message === 'user with email exists!') {
-            setRegisterError({ message: 'User already exists', isError: true });
+            setRegisterError({ message: 'User already exists with email', isError: true });
 
             setTimeout(() => {
               setRegisterError({ message: '', isError: false })
             }, 3700);
+          }
+          else if (resError.data.message === 'user with username exists!') {
+            setRegisterError({ message: 'User already exists with username', isError: true });
+
+            setTimeout(() => {
+              setRegisterError({ message: '', isError: false })
+            }, 3700);
+          } else if (resError.data.message === 'invalid password!') {
+            setPasswordError(true);
+
+            setTimeout(() => {
+              setPasswordError(false)
+            }, 8000);
           } else {
             setRegisterError({ message: 'Register user failed. Please try again.', isError: true });
 
@@ -129,7 +143,7 @@ export default function Register() {
                   autoComplete="username"
                   disabled={isLoading}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6 lowercase"
                 />
               </div>
             </div>
@@ -271,7 +285,7 @@ export default function Register() {
                 ])}
                 disabled={isLoading}
               >
-                {isLoading ? 'Loading...' : 'Sign up'}
+                {isLoading ? 'Loading...' : 'Create an account'}
               </button>
               {registerResponse.status !== undefined ? (
                 <div className="pt-3 font-medium font-inter text-xs text-center">

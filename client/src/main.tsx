@@ -7,6 +7,7 @@ import 'aos/dist/aos.css';
 import AppRoutes from './AppRoutes';
 import { Provider } from 'react-redux';
 import store from './app/store/store';
+import AuthRouteController from './components/tools/AuthRouteController';
 
 AOS.init({
   duration: 800,
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
+        <AuthRouteController />
         <Routes>
           <Route path="/*" element={<AppRoutes />} />
         </Routes>

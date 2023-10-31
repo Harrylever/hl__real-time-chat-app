@@ -18,10 +18,18 @@ const userSchema = new mongoose.Schema({
     maxlength: 200,
     unique: true,
   },
+  imgUri: {
+    type: String,
+    required: false,
+  },
   password: {
     type: String,
     required: true,
     minlength: 7,
+  },
+  jwt_enc_password: {
+    type: String,
+    required: true,
   },
 }, {
   timestamps: true,

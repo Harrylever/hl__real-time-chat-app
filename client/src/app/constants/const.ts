@@ -57,7 +57,7 @@ const getLocalStorageValueForAuth = (): IAuthState | null => {
       access: '',
       refresh: '',
       email: '',
-      userId: '',
+      _id: '',
     };
   }
   const authData: IAuthState = JSON.parse(authDataFromStorage);

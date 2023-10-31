@@ -12,6 +12,7 @@ export interface IUser {
   username?: string;
   fullname?: string;
   email?: string;
+  imgUri?: string;
   password?: string;
 }
 
@@ -20,7 +21,7 @@ export interface LoginResValues {
   iat: number;
   jti: string;
   token_type: string;
-  _id: number;
+  _id: string;
   email: string;
   username: string;
 }

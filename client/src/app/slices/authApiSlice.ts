@@ -6,15 +6,21 @@ type TLoginProps = {
   password: string;
 };
 
+const jwtSecretKey = import.meta.env.VITE_JWT_SECRET_KEY;
+
 export const authApiSlice = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
+    prepareHeaders: (headers) => {
+      headers.set('authorization', `Bearer ${jwtSecretKey}PassedByTheMaster`);
+      return headers;
+    },
   }),
   tagTypes: ['Post', 'Get'],
   endpoints: (build) => ({
     postLogin: build.mutation<
-      { data: { access: string; refresh: string } },
+      { message: string; success: boolean; data: { access: string; refresh: string } },
       TLoginProps
     >({
       query: ({ email, password }) => ({

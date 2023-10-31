@@ -27,7 +27,7 @@ const useLogOutUser = () => {
   const main = () => {
     clearLocalToken();
     clearAuthReduceToken();
-    navigate('/');
+    navigate('/login');
   };
   return main;
 };

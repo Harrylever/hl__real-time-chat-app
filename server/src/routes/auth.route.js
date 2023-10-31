@@ -4,16 +4,31 @@ const authValidation = require('../validator/auth.validator');
 const {
   registerUserController,
   loginUserController,
+  changePasswordController,
+  sendMailToUserController,
 } = require('../controllers/auth.controller');
+const { protect } = require('../middlewares/auth');
 
 const router = express.Router();
 
 router
   .route('/register')
-  .post(validate(authValidation.register), registerUserController);
+  .post(protect, validate(authValidation.register), registerUserController);
 
 router
   .route('/login')
-  .post(validate(authValidation.login), loginUserController);
+  .post(protect, validate(authValidation.login), loginUserController);
+
+router
+  .route('/changepassword')
+  .post(
+    protect,
+    validate(authValidation.changepassword),
+    changePasswordController,
+  );
+
+router
+  .route('/sendmail')
+  .get(sendMailToUserController);
 
 module.exports = router;

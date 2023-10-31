@@ -1,5 +1,4 @@
 import { AxiosInstance } from 'axios';
-import { IUser } from '../../../typings';
 
 export class PrivateRequestConstruct {
   axiosInstance: AxiosInstance;
@@ -14,17 +13,13 @@ export class PrivateRequestConstruct {
   // Users
   async useGetUserByIdQuery(userid: string) {
     const fetch = await this.axiosInstance.get(
-      `/api/v1/users/getuserbyid/${userid}`
+      `/users/${userid}`
     );
     return fetch.data;
   }
 
-  async useGetAllUsersQuery(type?: 'standard' | 'admin') {
-    const fetch = await this.axiosInstance.get(
-      type
-        ? `/api/v1/users/getallusers?role=${type}`
-        : '/api/v1/users/getallusers'
-    );
+  async useGetAllUsersQuery() {
+    const fetch = await this.axiosInstance.get('/api/v1/users/');
     return fetch.data;
   }
 }

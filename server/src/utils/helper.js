@@ -24,6 +24,11 @@ function comparePassword(password, hashedPassword) {
   return bcryptjs.compareSync(password, hashedPassword);
 }
 
+function getRandomNumberFromOneToFour() {
+  const number = Math.floor(Math.random() * 4);
+  return number;
+}
+
 module.exports = {
-  passwordHash, comparePassword,
+  passwordHash, comparePassword, getRandomNumberFromOneToFour,
 };
