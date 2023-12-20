@@ -8,7 +8,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { IUser, PageProps } from '../../typings';
 
-const Register: React.FC<{props: PageProps}> = () => {
+const Register: React.FC<{props?: PageProps}> = () => {
   const [register] = usePostRegisterMutation();
 
   const [isLoading, setIsLoading] = useState(false);

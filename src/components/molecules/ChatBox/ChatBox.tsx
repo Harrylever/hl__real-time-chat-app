@@ -11,7 +11,7 @@ interface IChatBoxProps {
 }
 
 const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
-  props: { messsagesIsLoading, messages, currentChat, user },
+  props: { currentChat, user },
 }) => {
   const axiosInstance = useAxiosPrivate();
   const privateRequestInstance = useMemo(
