@@ -6,7 +6,7 @@ import { buildJWTDecode } from '../util/utils';
 import { LoginResValues, PageProps } from '../../typings';
 import { setToken, useAppDispatch } from '../app';
 
-const Login: React.FC<{ props: PageProps }> = () => {
+const Login: React.FC<{ props?: PageProps }> = () => {
   const dispatch = useAppDispatch();
   const [login] = usePostLoginMutation();
 
