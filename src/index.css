@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-color: #1e293b;
+}
+
+.custom-right-angle-triangle {
+    width: 0;
+    height: 0;
+    border-top: 5px solid rgb(100, 116, 139);
+    border-right: 7px solid transparent;
+}
+.custom-left-angle-triangle {
+    width: 0;
+    height: 0;
+    border-top: 5px solid rgb(100, 116, 139);
+    border-left: 7px solid transparent;
+}
