@@ -15,10 +15,11 @@ const SocketClient = () => {
   const [, setSocketId] = useState<string | undefined>(undefined);
   const [socket, setSocket] = useState<Socket | undefined>(undefined); 
 
+  const socketUri = import.meta.env.VITE_SOCKET_URL;
   
   useEffect(() => {
     if (user && user._id !== '') {
-      const newSocket = io('http://localhost:3000');
+      const newSocket = io(socketUri);
 
       if (newSocket) {
         newSocket.on('connect', () => {
