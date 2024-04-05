@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_APP_MODE === 'test' ? 'http://localhost:4001/api/v1/' : 'https://mxchat-server.onrender.com/api/v1/';
+export const BASE_URL = import.meta.env.VITE_BE_URL;
 
 export interface IAuthState {
   _id: string;

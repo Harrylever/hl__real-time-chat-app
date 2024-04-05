@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BiSolidMessageAdd } from 'react-icons/bi';
-import { useAppDispatch, useAppSelector, useAxiosPrivate } from '../app';
-import { setSideBarChatDisplay } from '../app/slices/appUIStateSlice';
 import { ChatSection } from '../components/sections';
-import { PrivateRequestConstruct } from '../app/features/requests';
-import { addUserChat } from '../app/slices/userChatsSlice';
-import { addPotentialChat } from '../app/slices/potentialChatsSlice';
 import { IChat, IUser, PageProps } from '../../typings';
+import { addUserChat } from '../app/slices/userChatsSlice';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { PrivateRequestConstruct } from '../app/features/requests';
+import { addPotentialChat } from '../app/slices/potentialChatsSlice';
+import { setSideBarChatDisplay } from '../app/slices/appUIStateSlice';
+import { useAppDispatch, useAppSelector, useAxiosPrivate } from '../app';
 
 const Chat: React.FC<{ props?: PageProps }> = () => {
   const dispatch = useAppDispatch();
@@ -16,16 +16,17 @@ const Chat: React.FC<{ props?: PageProps }> = () => {
     [axiosInstance]
   );
 
-  const sideBarChatListIsOpen = useAppSelector((state) => state.appUIStateReduce.sideBarChatOpen);
+  const sideBarChatListIsOpen = useAppSelector(
+    (state) => state.appUIStateReduce.sideBarChatOpen
+  );
 
   const handleSetSideBarChatListDisplay = () => {
-    console.log('Clicked')
     dispatch(
       setSideBarChatDisplay({
         sideBarChatOpen: true,
       })
     );
-  }
+  };
 
   // Memoize Important Values - user
   const user = useAppSelector((state) => state.userReduce);
@@ -42,7 +43,7 @@ const Chat: React.FC<{ props?: PageProps }> = () => {
   // Memoize Important Values - userChats
   const userChats = useAppSelector((state) => state.userChatsReduce.chats);
   const memoizedUserChats = useMemo(() => userChats, [userChats]);
-  
+
   // Memoize Important Values - currentChat
   const currentChat = useAppSelector((state) => state.chatReduce.chat);
   const memoizedCurrentChat = useMemo(() => currentChat, [currentChat]);
@@ -54,82 +55,78 @@ const Chat: React.FC<{ props?: PageProps }> = () => {
   // const [messagesError, setMessagesError] = useState(undefined);
 
   const getUserChatsHandler = useCallback(
-    (id: string) => {
-      let willEnterStepTwo = false;
-      setChatsIsLoading(true);
-      let allChats: Array<IChat> = [];
-      const fetch = privateRequestInstance.useGetUserChatsQuery(id);
+    async (id: string) => {
+      try {
+        let willEnterStepTwo = false;
+        setChatsIsLoading(true);
+        let allChats: Array<IChat> = [];
+        const response = (await privateRequestInstance.useGetUserChatsQuery(
+          id
+        )) as { success: boolean; data: IChat[] };
 
-      return fetch
-        .then((res) => {
-          if (res.success) {
-            allChats = res.data;
+        if (response.success) {
+          allChats = response.data;
 
-            dispatch(
-              addUserChat({
-                chats: allChats,
-              })
-            );
-            willEnterStepTwo = true;
-          } else {
-            console.log('Unexpected error occurred!');
-          }
-          return {
-            willEnterStepTwo,
-            allChats,
-          };
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setChatsIsLoading(false);
-        });
+          dispatch(
+            addUserChat({
+              chats: allChats,
+            })
+          );
+          willEnterStepTwo = true;
+        } else {
+          console.log('unexpected error occured');
+        }
+        return {
+          willEnterStepTwo,
+          allChats,
+        };
+      } catch (err) {
+        console.log('unexpected error occured', err);
+      } finally {
+        setChatsIsLoading(false);
+      }
     },
     [dispatch, privateRequestInstance]
   );
 
   const getPotentialChatsHandler = useCallback(
-    (chats: Array<IChat>) => {
-      setPChatsIsLoading(true);
-      const fetch = privateRequestInstance.useGetAllUsersQuery();
+    async (chats: Array<IChat>) => {
+      try {
+        setPChatsIsLoading(true);
+        const response =
+          (await privateRequestInstance.useGetAllUsersQuery()) as {
+            success: boolean;
+            data: IUser[];
+          };
 
-      fetch
-        .then((res) => {
-          if (res.success) {
-            const pChats = res.data as Array<IUser>;
-            const filteredUsers = pChats.filter((u) => {
-              let isChatCreated = false;
+        if (response.success) {
+          const pChats = response.data;
+          const filteredUsers = pChats.filter((u) => {
+            let isChatCreated = false;
 
-              if (user._id === u._id) return false;
+            if (user._id === u._id) return false;
 
-              if (chats) {
-                isChatCreated = chats.some((chat) => {
-                  return (
-                    chat.members &&
-                    (chat.members[0] === u._id || chat.members[1] === u._id)
-                  );
-                });
+            if (chats) {
+              isChatCreated = chats.some((chat) => {
+                return (
+                  chat.members &&
+                  (chat.members[0] === u._id || chat.members[1] === u._id)
+                );
+              });
 
-                return !isChatCreated;
-              }
-            });
+              return !isChatCreated;
+            }
+          });
 
-            dispatch(
-              addPotentialChat({
-                users: filteredUsers,
-              })
-            );
-          } else {
-            console.log('Unexpected error occured!');
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setPChatsIsLoading(false);
-        });
+          dispatch(addPotentialChat({ users: filteredUsers }));
+        } else {
+          console.log('unexpected error occured!');
+        }
+      } catch (err) {
+        console.log('unexpected error occured', err);
+      } finally {
+        setPChatsIsLoading(false);
+      }
     },
     [dispatch, privateRequestInstance, user._id]
   );
@@ -166,7 +163,7 @@ const Chat: React.FC<{ props?: PageProps }> = () => {
           userChats: memoizedUserChats,
           currentChat: memoizedCurrentChat,
           potentialChats: memoizedPotentialChats,
-          callBackFromPotentialChatsWrap: callBackFromPotentialChatsWrap
+          callBackFromPotentialChatsWrap: callBackFromPotentialChatsWrap,
         }}
       />
 
@@ -182,6 +179,6 @@ const Chat: React.FC<{ props?: PageProps }> = () => {
       )}
     </div>
   );
-}
+};
 
 export default Chat;
