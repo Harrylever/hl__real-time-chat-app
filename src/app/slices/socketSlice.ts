@@ -1,13 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IOnlineUser } from '../../../typings';
+import { IMessage, IOnlineUser } from '../../../typings';
 
 interface ISocketState {
-    onlineUsers: Array<IOnlineUser>;
+    onlineUsers?: Array<IOnlineUser>;
+    newMessage?: IMessage;
 }
 
 const socketInitState: ISocketState = {
-  onlineUsers: []
-}
+  onlineUsers: [],
+  newMessage: undefined,
+};
 
 const socketSlice = createSlice({
   name: 'socket',
@@ -15,9 +17,12 @@ const socketSlice = createSlice({
   reducers: {
     updateOnlineUsers: (state: ISocketState, action: PayloadAction<ISocketState>) => {
       state.onlineUsers = action.payload.onlineUsers;
+    },
+    updateNewMessage: (state: ISocketState, action: PayloadAction<ISocketState>) => {
+      state.newMessage = action.payload.newMessage;
     }
   }
 })
 
-export const { updateOnlineUsers } = socketSlice.actions;
+export const { updateOnlineUsers, updateNewMessage } = socketSlice.actions;
 export default socketSlice.reducer;

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IUser, IUserChatProps } from '../../../../typings';
-import { useAxiosPrivate } from '../../../app';
+import { useAppSelector, useAxiosPrivate } from '../../../app';
 import { PrivateRequestConstruct } from '../../../app/features/requests';
+import clsx from 'clsx';
 
 const UserChat: React.FC<{ props: IUserChatProps }> = ({
   props: { user, chat },
@@ -44,6 +45,11 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
     getRecipientUserProcess();
   }, [getRecipientUserProcess]);
 
+  const onlineUsers = useAppSelector((state) => state.socketReduce.onlineUsers);
+  const isOnline =
+    onlineUsers &&
+    onlineUsers.some((user) => user.userId === recipientUser?._id);
+
   return (
     <button
       type="button"
@@ -75,7 +81,16 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
         <div>
           <p className="text-[0.7rem] text-slate-300">12/12/2023</p>
         </div>
-        <div className="rounded-full h-[10px] w-[10px] bg-green-500"></div>
+
+        <div
+          className={clsx([
+            'rounded-full h-[10px] w-[10px] ',
+            {
+              'bg-green-500': isOnline,
+              ' bg-transparent': !isOnline,
+            },
+          ])}
+        ></div>
       </div>
     </button>
   );

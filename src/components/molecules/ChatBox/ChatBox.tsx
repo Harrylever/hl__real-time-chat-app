@@ -19,6 +19,7 @@ import {
   IUser,
 } from '../../../../typings';
 import { addMessages } from '../../../app/slices/messagesSlice';
+import { updateNewMessage } from '../../../app/slices/socketSlice';
 
 const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
   props,
@@ -45,7 +46,6 @@ const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
       setMessagesIsLoading(true);
       if (currentChat?._id === undefined || currentChat._id === '') {
         setMessagesIsLoading(false);
-        console.log('Current Chat Id is empty');
         return;
       }
 
@@ -59,7 +59,6 @@ const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
         )
       } else {
         console.log('Unexpected error');
-        console.log(fetch);
       }
     } catch (err) {
       console.log(err);
@@ -88,8 +87,6 @@ const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
     if (currentChat && currentChat.members && currentChat.members.length > 0) {
       getRecipientUser();
       getChatMessagesHandler();
-    } else {
-      console.log('Not good');
     }
   }, [currentChat, user, getRecipientUser, getChatMessagesHandler]);
 
@@ -212,10 +209,7 @@ const ChatView: React.FC<{ props: IChatViewProps }> = ({
   const handleMessageFormPost = async (e: FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-      if (newMessage === '') {
-        console.log('Enter a valid message');
-        return;
-      }
+      if (newMessage === '') return;
       const newMessageData: { chatId: string; senderId: string; text: string } =
         {
           chatId,
@@ -226,8 +220,8 @@ const ChatView: React.FC<{ props: IChatViewProps }> = ({
       const fetch = await privateRequestInstance.usePostChatMessages(newMessageData);
       const newMessageToAdd = fetch.data as IMessage;
       dispatch(addMessages({ messages: [...allMessages, newMessageToAdd] }));
+      dispatch(updateNewMessage({ newMessage: newMessageToAdd }));
       setNewMessage('');
-      console.log(newMessageToAdd);
     } catch (err) {
       console.log(err);
     }

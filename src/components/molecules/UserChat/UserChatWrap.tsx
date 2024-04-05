@@ -1,7 +1,7 @@
 import React from 'react';
-import { IChat, IUserChatWrapProps } from '../../../../typings';
 import UserChat from './UserChat';
 import { useAppDispatch, useAppSelector } from '../../../app';
+import { IChat, IUserChatWrapProps } from '../../../../typings';
 import { updateCurrentChat } from '../../../app/slices/chatSlice';
 import { setSideBarChatDisplay } from '../../../app/slices/appUIStateSlice';
 
