@@ -2,15 +2,15 @@ import React, { useMemo } from 'react';
 import { IPotentialChatWrapProps } from '../../../../typings';
 import PotentialChat from './PotentialChat';
 import { useAppSelector, useAxiosPrivate } from '../../../app';
-import { PrivateRequestConstruct } from '../../../app/features/requests';
+import { ChatRequests } from '../../../app/features/requests';
 
 const PotentialChatWrap: React.FC<{ props: IPotentialChatWrapProps, updatePotentialChatsCb?: () => void }> = ({
   props,
   updatePotentialChatsCb
 }): JSX.Element => {
   const axiosInstance = useAxiosPrivate();
-  const privateRequestInstance = useMemo(
-    () => new PrivateRequestConstruct(axiosInstance),
+  const chatRequests = useMemo(
+    () => new ChatRequests(axiosInstance),
     [axiosInstance]
   );
 
@@ -18,7 +18,7 @@ const PotentialChatWrap: React.FC<{ props: IPotentialChatWrapProps, updatePotent
 
   const createChatProcess = (id: string) => {
     const createChatObj = { userOneId: user._id as string, userTwoId: id };
-    const fetch = privateRequestInstance.useCreateChatMutation(createChatObj);
+    const fetch = chatRequests.useCreateChatMutation(createChatObj);
 
     fetch
       .then(() => {

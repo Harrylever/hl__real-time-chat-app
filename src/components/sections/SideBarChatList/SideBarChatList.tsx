@@ -1,13 +1,13 @@
-import React, { useCallback, useMemo, useState } from 'react';
 import { MdClose } from 'react-icons/md';
-import { useAppDispatch, useAppSelector, useAxiosPrivate } from '../../../app';
-import { setSideBarChatDisplay } from '../../../app/slices/appUIStateSlice';
-import { PotentialChatWrap, UserChatWrap } from '../../molecules';
 import { IChat, IUser } from '../../../../typings';
-import { addPotentialChat } from '../../../app/slices/potentialChatsSlice';
-import { PrivateRequestConstruct } from '../../../app/features/requests';
-import { addUserChat } from '../../../app/slices/userChatsSlice';
 import LoadingPlayer from '../../atoms/LoadingPlayer';
+import React, { useCallback, useMemo, useState } from 'react';
+import { addUserChat } from '../../../app/slices/userChatsSlice';
+import { PotentialChatWrap, UserChatWrap } from '../../molecules';
+import { addPotentialChat } from '../../../app/slices/potentialChatsSlice';
+import { setSideBarChatDisplay } from '../../../app/slices/appUIStateSlice';
+import { ChatRequests, UserRequests } from '../../../app/features/requests';
+import { useAppDispatch, useAppSelector, useAxiosPrivate } from '../../../app';
 
 interface ISideBarChatListProps {}
 
@@ -15,9 +15,14 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.userReduce);
   const axiosInstance = useAxiosPrivate();
-  const privateRequestInstance = useMemo(
-    () => new PrivateRequestConstruct(axiosInstance), 
-    [axiosInstance])
+  const userRequests = useMemo(
+    () => new UserRequests(axiosInstance),
+    [axiosInstance]
+  );
+  const chatRequests = useMemo(
+    () => new ChatRequests(axiosInstance),
+    [axiosInstance]
+  );
   const [chatsIsLoading, setChatsIsLoading] = useState(false);
   const [pChatsIsLoading, setPChatsIsLoading] = useState(false);
 
@@ -37,10 +42,10 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
       let willEnterStepTwo = false;
       setChatsIsLoading(true);
       let allChats: Array<IChat> = [];
-      const fetch = privateRequestInstance.useGetUserChatsQuery(id);
+      const fetch = chatRequests.useGetUserChatsQuery(id);
 
       return fetch
-        .then((res) => {
+        .then((res: { success: unknown; data: IChat[]; }) => {
           if (res.success) {
             allChats = res.data;
 
@@ -65,13 +70,13 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
           setChatsIsLoading(false);
         });
     },
-    [dispatch, privateRequestInstance]
+    [chatRequests, dispatch]
   );
 
   const getPotentialChatsHandler = useCallback(
     (chats: Array<IChat>) => {
       setPChatsIsLoading(true);
-      const fetch = privateRequestInstance.useGetAllUsersQuery();
+      const fetch = userRequests.useGetAllUsersQuery();
 
       fetch
         .then((res) => {
@@ -110,7 +115,7 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
           setPChatsIsLoading(false);
         });
     },
-    [dispatch, privateRequestInstance, user._id]
+    [dispatch, user._id, userRequests]
   );
 
   const callBackFromPotentialChatsWrap = async () => {

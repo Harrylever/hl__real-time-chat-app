@@ -1,16 +1,12 @@
 import { AxiosInstance } from 'axios';
+import { INotification } from '../../../typings';
 
-export class PrivateRequestConstruct {
-  axiosInstance: AxiosInstance;
-
+// Users
+export class UserRequests {
   // Constructor
-  constructor(axiosInstance: AxiosInstance) {
-    this.axiosInstance = axiosInstance;
-  }
+  constructor(private readonly axiosInstance: AxiosInstance) {}
 
   // Methods
-
-  // Users
   async useGetUserByIdQuery(userid: string) {
     const fetch = await this.axiosInstance.get(`/users/${userid}`);
     return fetch.data;
@@ -26,8 +22,12 @@ export class PrivateRequestConstruct {
     const fetch = await this.axiosInstance.get('/users/');
     return fetch.data;
   }
+}
 
-  // Chats
+// Chats
+export class ChatRequests {
+  constructor (private readonly axiosInstance: AxiosInstance) {}
+
   /**
    * Fetches all the chats for the currently login user
    * @param userid
@@ -58,8 +58,12 @@ export class PrivateRequestConstruct {
     });
     return fetch.data;
   }
+}
 
-  // Messages
+// Messages
+export class MessageRequests {
+  constructor (private readonly axiosInstance: AxiosInstance) {}
+
   /**
    * Gets chat messages by chat id
    * @param chatid
@@ -81,6 +85,20 @@ export class PrivateRequestConstruct {
       senderId,
       text,
     });
+    return fetch.data;
+  }
+}
+
+export class NotificationRequests {
+  constructor(private readonly axiosInstance: AxiosInstance) {}
+
+  async usePostModifyNotificationsMutation(notifications: INotification[]) {
+    const fetch = await this.axiosInstance.post(
+      '/notifications/mutate-with-sender',
+      {
+        notifications,
+      }
+    );
     return fetch.data;
   }
 }

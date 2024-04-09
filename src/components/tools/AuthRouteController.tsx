@@ -1,16 +1,16 @@
 /* eslint-disable no-console */
-import { useEffect, useMemo } from 'react';
-import { setToken, useAppDispatch, useAppSelector, useAxiosPrivate } from '../../app';
-import { PrivateRequestConstruct } from '../../app/features/requests';
-import { setUser } from '../../app/slices/userSlice';
 import { IUser } from '../../../typings';
+import { useEffect, useMemo } from 'react';
+import { setUser } from '../../app/slices/userSlice';
+import {  UserRequests} from '../../app/features/requests';
+import { setToken, useAppDispatch, useAppSelector, useAxiosPrivate } from '../../app';
 
 export default function AuthRouteController() {
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.authReduce);
 
   const axiosInstance = useAxiosPrivate();
-  const privateRequestInstance = useMemo(() => new PrivateRequestConstruct(axiosInstance), [axiosInstance]);
+  const userRequests = useMemo(() => new UserRequests(axiosInstance), [axiosInstance]);
 
   const sendlocation = (location: string) => {
     window.location.assign(location);
@@ -40,7 +40,7 @@ export default function AuthRouteController() {
         refresh: string;
       };
 
-      const fetch = privateRequestInstance.useGetUserByIdQuery(jsonifyAuthContainer._id);
+      const fetch = userRequests.useGetUserByIdQuery(jsonifyAuthContainer._id);
 
       fetch
         .then((res) => {
@@ -77,7 +77,7 @@ export default function AuthRouteController() {
         }
       }
     }
-  }, [authState, dispatch, privateRequestInstance]);
+  }, [authState, dispatch, userRequests]);
 
   return null;
 }

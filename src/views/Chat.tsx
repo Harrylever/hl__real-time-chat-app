@@ -3,7 +3,7 @@ import { ChatSection } from '../components/sections';
 import { IChat, IUser, PageProps } from '../../typings';
 import { addUserChat } from '../app/slices/userChatsSlice';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { PrivateRequestConstruct } from '../app/features/requests';
+import { ChatRequests, UserRequests } from '../app/features/requests';
 import { addPotentialChat } from '../app/slices/potentialChatsSlice';
 import { setSideBarChatDisplay } from '../app/slices/appUIStateSlice';
 import { useAppDispatch, useAppSelector, useAxiosPrivate } from '../app';
@@ -11,8 +11,12 @@ import { useAppDispatch, useAppSelector, useAxiosPrivate } from '../app';
 const Chat: React.FC<{ props?: PageProps }> = () => {
   const dispatch = useAppDispatch();
   const axiosInstance = useAxiosPrivate();
-  const privateRequestInstance = useMemo(
-    () => new PrivateRequestConstruct(axiosInstance),
+  const chatRequests = useMemo(
+    () => new ChatRequests(axiosInstance),
+    [axiosInstance]
+  );
+  const userRequests = useMemo(
+    () => new UserRequests(axiosInstance),
     [axiosInstance]
   );
 
@@ -60,7 +64,7 @@ const Chat: React.FC<{ props?: PageProps }> = () => {
         let willEnterStepTwo = false;
         setChatsIsLoading(true);
         let allChats: Array<IChat> = [];
-        const response = (await privateRequestInstance.useGetUserChatsQuery(
+        const response = (await chatRequests.useGetUserChatsQuery(
           id
         )) as { success: boolean; data: IChat[] };
 
@@ -86,18 +90,17 @@ const Chat: React.FC<{ props?: PageProps }> = () => {
         setChatsIsLoading(false);
       }
     },
-    [dispatch, privateRequestInstance]
+    [chatRequests, dispatch]
   );
 
   const getPotentialChatsHandler = useCallback(
     async (chats: Array<IChat>) => {
       try {
         setPChatsIsLoading(true);
-        const response =
-          (await privateRequestInstance.useGetAllUsersQuery()) as {
-            success: boolean;
-            data: IUser[];
-          };
+        const response = (await userRequests.useGetAllUsersQuery()) as {
+          success: boolean;
+          data: IUser[];
+        };
 
         if (response.success) {
           const pChats = response.data;
@@ -128,7 +131,7 @@ const Chat: React.FC<{ props?: PageProps }> = () => {
         setPChatsIsLoading(false);
       }
     },
-    [dispatch, privateRequestInstance, user._id]
+    [dispatch, user._id, userRequests]
   );
 
   const callBackFromPotentialChatsWrap = async () => {

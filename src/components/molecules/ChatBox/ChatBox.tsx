@@ -1,34 +1,39 @@
 import React, {
-  FormEvent,
-  useCallback,
-  useEffect,
+  useRef,
   useMemo,
   useState,
+  useEffect,
+  FormEvent,
+  useCallback,
 } from 'react';
+import {
+  IUser,
+  IMessage,
+  IMessageProps,
+  IChatBoxProps,
+  IChatViewProps,
+} from '../../../../typings';
 import clsx from 'clsx';
 import moment from 'moment';
 import { LuSend } from 'react-icons/lu';
 import InputEmoji from 'react-input-emoji'
-import { useAppDispatch, useAppSelector, useAxiosPrivate } from '../../../app';
-import { PrivateRequestConstruct } from '../../../app/features/requests';
-import {
-  IChatBoxProps,
-  IChatViewProps,
-  IMessage,
-  IMessageProps,
-  IUser,
-} from '../../../../typings';
 import { addMessages } from '../../../app/slices/messagesSlice';
 import { updateNewMessage } from '../../../app/slices/socketSlice';
+import { useAppDispatch, useAppSelector, useAxiosPrivate } from '../../../app';
+import { MessageRequests, UserRequests } from '../../../app/features/requests';
 
 const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
   props,
 }) => {
-  const { currentChat, user } = props;
   const dispatch = useAppDispatch()
+  const { currentChat, user } = props;
   const axiosInstance = useAxiosPrivate();
-  const privateRequestInstance = useMemo(
-    () => new PrivateRequestConstruct(axiosInstance),
+  const messageRequests = useMemo(
+    () => new MessageRequests(axiosInstance),
+    [axiosInstance]
+  );
+  const userRequests = useMemo(
+    () => new UserRequests(axiosInstance),
     [axiosInstance]
   );
   const reduxMessages = useAppSelector((state) => state.messageReduce.messages);
@@ -49,7 +54,7 @@ const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
         return;
       }
 
-      const fetch = await privateRequestInstance.useGetChatMessages(currentChat._id);
+      const fetch = await messageRequests.useGetChatMessages(currentChat._id);
 
       if (fetch.success) {
         dispatch(
@@ -63,11 +68,11 @@ const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
     } catch (err) {
       console.log(err);
     }
-  }, [currentChat._id, dispatch, privateRequestInstance]);
+  }, [currentChat._id, dispatch, messageRequests]);
 
   const getRecipientUser = useCallback(async () => {
     try {
-      const fetch = await privateRequestInstance.useGetRecipientUserQuery(
+      const fetch = await userRequests.useGetRecipientUserQuery(
         currentChat?.members as string[],
         user?._id as string
       );
@@ -81,7 +86,7 @@ const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
     } catch (err) {
       console.log(err);
     }
-  }, [currentChat, privateRequestInstance, user]);
+  }, [currentChat?.members, user?._id, userRequests]);
 
   useEffect(() => {
     if (currentChat && currentChat.members && currentChat.members.length > 0) {
@@ -118,8 +123,8 @@ const ChatBox: React.FC<{ props: IChatBoxProps }> = ({
   );
 };
 
-const Message: React.FC<{ props: IMessageProps }> = ({ props }) => {
-  const { message, prevMessage, isMainUserMessage } = props;
+const Message: React.FC<{ props: IMessageProps<HTMLDivElement> }> = ({ props }) => {
+  const { message, prevMessage, isMainUserMessage, ref } = props;
   const [previousMessage, setPreviousMessage] = useState<IMessage | undefined>(
     undefined
   );
@@ -132,6 +137,7 @@ const Message: React.FC<{ props: IMessageProps }> = ({ props }) => {
 
   return (
     <div
+      ref={ref}
       className={clsx([
         'relative w-fit min-w-[90px] max-w-[200px] sm:max-w-[300px] bg-slate-500 px-3 py-2 rounded-b-lg flex flex-col gap-y-2',
         {
@@ -197,35 +203,46 @@ const ChatView: React.FC<{ props: IChatViewProps }> = ({
 }): JSX.Element => {
   const { messages, userId, chatId, recipientUser } = props;
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   const dispatch = useAppDispatch();
   const axiosInstance = useAxiosPrivate();
-  const privateRequestInstance = useMemo(
-    () => new PrivateRequestConstruct(axiosInstance),
+  const messageRequests = useMemo(
+    () => new MessageRequests(axiosInstance),
     [axiosInstance]
   );
   const allMessages = useAppSelector((state) => state.messageReduce.messages);
   const [newMessage, setNewMessage] = useState('');
+  const [messageIsSending, setMessageIsSending] = useState(false);
 
   const handleMessageFormPost = async (e: FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
       if (newMessage === '') return;
+      setMessageIsSending(true);
+      const msg = newMessage;
+      setNewMessage('');
       const newMessageData: { chatId: string; senderId: string; text: string } =
         {
           chatId,
           senderId: userId,
-          text: newMessage,
+          text: msg,
         };
 
-      const fetch = await privateRequestInstance.usePostChatMessages(newMessageData);
+      const fetch = await messageRequests.usePostChatMessages(newMessageData);
       const newMessageToAdd = fetch.data as IMessage;
       dispatch(addMessages({ messages: [...allMessages, newMessageToAdd] }));
       dispatch(updateNewMessage({ newMessage: newMessageToAdd }));
-      setNewMessage('');
     } catch (err) {
       console.log(err);
+    } finally {
+      setMessageIsSending(false);
     }
   };
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   return (
     <section className="relative w-full h-full bg-[#000000a5] rounded-t-xl rounded-b-md flex flex-col items-start justify-between overflow-hidden">
@@ -237,7 +254,7 @@ const ChatView: React.FC<{ props: IChatViewProps }> = ({
       </div>
 
       {/* Chat Display */}
-      <div className="relative w-full h-[80%] min-h-[50vh] overflow-y-scroll flex flex-col-reverse items-end">
+      <div className="relative w-full h-[80%] min-h-[50vh] pb-[15px] overflow-y-scroll flex flex-col-reverse items-end">
         <div className="h-fit w-full flex flex-col px-5 gap-y-2">
           {messages.map((message, index) => {
             const previousMessage = messages[index - 1] ?? undefined;
@@ -255,6 +272,7 @@ const ChatView: React.FC<{ props: IChatViewProps }> = ({
               >
                 <Message
                   props={{
+                    ref: scrollRef,
                     message,
                     prevMessage: previousMessage,
                     isMainUserMessage: message.senderId._id === userId,
@@ -263,7 +281,6 @@ const ChatView: React.FC<{ props: IChatViewProps }> = ({
               </div>
             );
           })}
-          {/* <div className="[overflow-anchor:auto]"></div> */}
         </div>
       </div>
 
@@ -273,19 +290,29 @@ const ChatView: React.FC<{ props: IChatViewProps }> = ({
           <div className="relative h-full flex flex-row items-center justify-start md:pl-10 w-full lg:max-w-[60vw] xl:max-w-[63vw]">
             <div className="w-[85%]">
               <InputEmoji
+                height={5}
+                keepOpened
+                maxLength={messageIsSending ? 0 : 100}
                 value={newMessage}
                 onChange={setNewMessage}
-                maxLength={100}
-                keepOpened
-                placeholder="Enter message here.."
-                height={5}
+                placeholder={
+                  messageIsSending
+                    ? 'sending message...'
+                    : 'Enter message here..'
+                }
                 inputClass="w-[100%] h-[40px] py-0.5 px-2 overflow-y-scroll"
               />
             </div>
             <div className="w-[10%] h-fit">
               <button
                 type="submit"
-                className="bg-black h-[36px] md:h-[45px] w-[36px] md:w-[45px] rounded-full flex items-center justify-center"
+                disabled={newMessage.length < 1 || messageIsSending}
+                className={clsx([
+                  'bg-black h-[36px] md:h-[45px] w-[36px] md:w-[45px] rounded-full flex items-center justify-center',
+                  {
+                    'opacity-45': newMessage.length < 1 || messageIsSending,
+                  },
+                ])}
               >
                 <LuSend className="mt-0.5 mr-1 text-base md:text-xl text-white" />
               </button>

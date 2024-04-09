@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IUser, IUserChatProps } from '../../../../typings';
 import { useAppSelector, useAxiosPrivate } from '../../../app';
-import { PrivateRequestConstruct } from '../../../app/features/requests';
+import { UserRequests } from '../../../app/features/requests';
 import clsx from 'clsx';
 
 const UserChat: React.FC<{ props: IUserChatProps }> = ({
   props: { user, chat },
 }) => {
   const axiosInstance = useAxiosPrivate();
-  const privateRequestInstance = useMemo(
-    () => new PrivateRequestConstruct(axiosInstance),
+  const userRequests = useMemo(
+    () => new UserRequests(axiosInstance),
     [axiosInstance]
   );
 
@@ -24,7 +24,7 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
     const recipientId = chat?.members?.find((id) => id !== user?._id);
 
     if (!recipientId) return null;
-    const fetch = privateRequestInstance.useGetUserByIdQuery(recipientId);
+    const fetch = userRequests.useGetUserByIdQuery(recipientId);
     fetch
       .then((res) => {
         if (res.success) {
@@ -39,7 +39,7 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
       .finally(() => {
         setIsLoading(false);
       });
-  }, [chat?.members, privateRequestInstance, user?._id]);
+  }, [chat?.members, user?._id, userRequests]);
 
   useEffect(() => {
     getRecipientUserProcess();
