@@ -200,7 +200,7 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
           'flex flex-col items-end justify-between mt-2',
           {
             'gap-0.5': thisUserNotifications.length > 0,
-            'gap-2': thisUserNotifications.length === 0,
+            'gap-4': thisUserNotifications.length === 0,
           },
         ])}
       >
