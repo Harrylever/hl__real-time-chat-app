@@ -87,6 +87,13 @@ export class MessageRequests {
     });
     return fetch.data;
   }
+
+  async useGetLastChatMessage(chatId: string) {
+    const fetch = await this.axiosInstance.get(
+      `/messages/chat/${chatId}/last-message`
+    );
+    return fetch.data;
+  }
 }
 
 export class NotificationRequests {
