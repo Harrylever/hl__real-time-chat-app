@@ -9,6 +9,9 @@ export default {
     extend: {
       fontFamily: {
         'nunito': ['Nunito']
+      },
+      colors: {
+        'primary-purple': '#1E293B',
       }
     },
   },

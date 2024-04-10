@@ -87,13 +87,21 @@ export interface IChatViewProps {
   recipientUser: IUser;
 }
 
-export interface IMessageProps {
+export interface IMessageProps<T> {
   prevMessage?: IMessage;
   message: IMessage;
   isMainUserMessage: boolean;
+  ref?: React.LegacyRef<T>
 }
 
 export interface IOnlineUser { 
   userId: string; 
   socketId: string 
+}
+
+export interface INotification {
+  date: unknown;
+  senderId: IUser;
+  message: string;
+  isRead: boolean;
 }

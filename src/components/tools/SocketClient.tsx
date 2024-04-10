@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
-import { IMessage, IOnlineUser } from '../../../typings';
 import { useAppDispatch, useAppSelector } from '../../app';
-import { updateOnlineUsers } from '../../app/slices/socketSlice';
 import { addMessages } from '../../app/slices/messagesSlice';
+import { updateOnlineUsers } from '../../app/slices/socketSlice';
+import { IMessage, INotification, IOnlineUser } from '../../../typings';
+import { setReduxNotifications } from '../../app/slices/notificationSlice';
 
 const SocketClient = () => {
   const dispatch = useAppDispatch();
@@ -16,6 +17,8 @@ const SocketClient = () => {
   const [socket, setSocket] = useState<Socket | undefined>(undefined); 
 
   const socketUri = import.meta.env.VITE_SOCKET_URL;
+
+  const reduxNotifications = useAppSelector((state) => state.notificationReduce.notifications);
   
   useEffect(() => {
     if (user && user._id !== '') {
@@ -33,11 +36,11 @@ const SocketClient = () => {
         newSocket.on('disconnect', () => {
           setSocket(undefined);
           setSocketId(undefined);
-          console.log('Disconnected');
+          console.warn('Disconnected');
         });
       }
     }
-  }, [user]);
+  }, [socketUri, user]);
 
   // Get active users
   useEffect(() => {
@@ -86,6 +89,45 @@ const SocketClient = () => {
       }
     }
   }, [activeChat, allMessages, dispatch, socket]);
+
+  // Receive and Handle Notifications
+  useEffect(() => {
+    if (socket) {
+      const handleGetNotification = (res: INotification) => {
+        const isChatOpen = activeChat.members?.some(
+          (id) => id === res.senderId._id
+        );
+
+        if (isChatOpen) {
+          let newNotifications: INotification[] = [];
+          const getNewNotifications = (prev: INotification[]) => {
+            newNotifications = [{ ...res, isRead: true }, ...prev];
+            dispatch(
+              setReduxNotifications({ notifications: newNotifications })
+            )
+            return newNotifications;
+          }
+          getNewNotifications(reduxNotifications);
+        } else {
+          let newNotifications: INotification[] = [];
+          const getNewNotifications = (prev: INotification[]) => {
+            newNotifications = [res, ...prev];
+            dispatch(
+              setReduxNotifications({ notifications: newNotifications })
+            );
+            return newNotifications;
+          }
+          getNewNotifications(reduxNotifications);
+        }
+      }
+
+      socket.on('get-notification', handleGetNotification);
+
+      return () => {
+        socket.off('get-notification', handleGetNotification);
+      }
+    }
+  }, [activeChat, dispatch, reduxNotifications, socket]);
 
   return null;
 };

@@ -1,13 +1,14 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { authApiSlice } from '../slices/authApiSlice';
 import authReducer from '../slices/authSlice';
 import userReducer from '../slices/userSlice';
-import userChatsReducer from '../slices/userChatsSlice';
-import potentialChatsReducer from '../slices/potentialChatsSlice';
 import chatReducer from '../slices/chatSlice';
-import messageReducer from '../slices/messagesSlice';
-import appUIStateReducer from '../slices/appUIStateSlice';
+import { configureStore } from '@reduxjs/toolkit';
 import socketReducer from '../slices/socketSlice';
+import messageReducer from '../slices/messagesSlice';
+import { authApiSlice } from '../slices/authApiSlice';
+import userChatsReducer from '../slices/userChatsSlice';
+import appUIStateReducer from '../slices/appUIStateSlice';
+import notificationReducer from '../slices/notificationSlice';
+import potentialChatsReducer from '../slices/potentialChatsSlice';
 
 const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ const store = configureStore({
     messageReduce: messageReducer,
     appUIStateReduce: appUIStateReducer,
     socketReduce: socketReducer,
+    notificationReduce: notificationReducer,
     [authApiSlice.reducerPath]: authApiSlice.reducer,
   },
 

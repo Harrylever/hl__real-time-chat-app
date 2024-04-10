@@ -1,21 +1,43 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { IUser, IUserChatProps } from '../../../../typings';
-import { useAppSelector, useAxiosPrivate } from '../../../app';
-import { PrivateRequestConstruct } from '../../../app/features/requests';
 import clsx from 'clsx';
+import moment from 'moment';
+import { FetchLatestMessage } from '../../tools';
+import { UserRequests } from '../../../app/features/requests';
+import { updateCurrentChat } from '../../../app/slices/chatSlice';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { setSideBarChatDisplay } from '../../../app/slices/appUIStateSlice';
+import { setReduxNotifications } from '../../../app/slices/notificationSlice';
+import { useAppDispatch, useAppSelector, useAxiosPrivate } from '../../../app';
+import { UnreadNotificationsFunc } from '../../../util/manipulate-notification';
+import {
+  IChat,
+  INotification,
+  IUser,
+  IUserChatProps,
+} from '../../../../typings';
 
 const UserChat: React.FC<{ props: IUserChatProps }> = ({
   props: { user, chat },
 }) => {
+  const dispatch = useAppDispatch();
   const axiosInstance = useAxiosPrivate();
-  const privateRequestInstance = useMemo(
-    () => new PrivateRequestConstruct(axiosInstance),
+  const userRequests = useMemo(
+    () => new UserRequests(axiosInstance),
     [axiosInstance]
+  );
+
+  const sideBarChatListIsOpen = useAppSelector(
+    (state) => state.appUIStateReduce.sideBarChatOpen
   );
 
   const [recipientUser, setRecipientUser] = useState<IUser | undefined>(
     undefined
   );
+  const [unReadNotifications, setUnReadNotifications] = useState<
+    INotification[]
+  >([]);
+  const [thisUserNotifications, setThisUserNotifications] = useState<
+    INotification[]
+  >([]);
 
   const [, setIsLoading] = useState(false);
 
@@ -24,7 +46,7 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
     const recipientId = chat?.members?.find((id) => id !== user?._id);
 
     if (!recipientId) return null;
-    const fetch = privateRequestInstance.useGetUserByIdQuery(recipientId);
+    const fetch = userRequests.useGetUserByIdQuery(recipientId);
     fetch
       .then((res) => {
         if (res.success) {
@@ -39,7 +61,7 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
       .finally(() => {
         setIsLoading(false);
       });
-  }, [chat?.members, privateRequestInstance, user?._id]);
+  }, [chat?.members, user?._id, userRequests]);
 
   useEffect(() => {
     getRecipientUserProcess();
@@ -50,18 +72,112 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
     onlineUsers &&
     onlineUsers.some((user) => user.userId === recipientUser?._id);
 
+  const notifications = useAppSelector(
+    (state) => state.notificationReduce.notifications
+  );
+
+  // Update all unread messages
+  useEffect(() => {
+    const newUnReadNotifications = UnreadNotificationsFunc(notifications);
+    setUnReadNotifications(newUnReadNotifications);
+  }, [notifications]);
+
+  // Update User Notification for Specific Sender
+  useEffect(() => {
+    const newThisUserNotifications = unReadNotifications.filter(
+      (notif) => notif.senderId._id === recipientUser?._id
+    );
+    setThisUserNotifications(newThisUserNotifications);
+  }, [recipientUser?._id, unReadNotifications]);
+
+  // Mark All Notifications for Specific sender
+  const markThisUserNotfications = useCallback(
+    (
+      notificationsParam: INotification[],
+      thisUserNotificationsParam: INotification[]
+    ) => {
+      const mNotifications = notificationsParam.map((el) => {
+        let notification: INotification | undefined = undefined;
+
+        thisUserNotificationsParam.forEach((notif) => {
+          if (notif.senderId._id === el.senderId._id) {
+            notification = {
+              ...notif,
+              isRead: true,
+            };
+          } else {
+            notification = el;
+          }
+        });
+
+        return notification as unknown as INotification;
+      });
+
+      dispatch(
+        setReduxNotifications({
+          notifications: mNotifications,
+        })
+      );
+    },
+    [dispatch]
+  );
+
+  // Update the current chat reducer
+  const updateCurrentChatHandler = (chat: IChat) => {
+    dispatch(
+      updateCurrentChat({
+        chat,
+      })
+    );
+
+    if (thisUserNotifications.length > 0) {
+      markThisUserNotfications(notifications, thisUserNotifications);
+    }
+
+    if (sideBarChatListIsOpen) {
+      setTimeout(() => {
+        dispatch(
+          setSideBarChatDisplay({
+            sideBarChatOpen: false,
+          })
+        );
+      }, 500);
+    }
+  };
+
+  const latestMessage = FetchLatestMessage(chat as IChat);
+
+  const truncateText = (text: string) => {
+    let shortText = text.substring(0, 20);
+
+    if (text.length > 20) {
+      shortText = shortText + '...';
+    }
+    return shortText;
+  };
+
   return (
     <button
       type="button"
+      onClick={() => updateCurrentChatHandler(chat as IChat)}
       className="flex flex-row items-center justify-between w-full lg:w-[300px] border-b border-[#ffffff2d] py-2 px-2 rounded-sm"
     >
       <div className="flex flex-row items-center justify-center gap-x-2.5">
-        <div className="">
+        <div className="relative">
           <img
             src={recipientUser?.imgUri}
             alt={recipientUser?.username}
             className="rounded-full h-[45px] w-[45px] shadow-lg border border-[#cccccc36]"
           />
+          <div
+            className={clsx([
+              'rounded-full h-[10px] w-[10px] absolute bottom-[8%] left-[75%]',
+              {
+                'bg-green-500': isOnline,
+                ' bg-transparent': !isOnline,
+              },
+            ])}
+          ></div>
         </div>
         <div className="flex flex-col gap-2.5 items-start justify-center mt-1">
           <div className="">
@@ -71,26 +187,40 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
           </div>
           <div className="font-normal text-gray-400">
             <p className="text-[0.7rem]/[0.5rem] sm:text-xs/[0.7rem]">
-              Text message
+              {latestMessage
+                ? truncateText(latestMessage.text)
+                : 'Send a message'}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-end justify-between gap-2 mt-2">
+      <div
+        className={clsx([
+          'flex flex-col items-end justify-between mt-2',
+          {
+            'gap-0.5': thisUserNotifications.length > 0,
+            'gap-2': thisUserNotifications.length === 0,
+          },
+        ])}
+      >
         <div>
-          <p className="text-[0.7rem] text-slate-300">12/12/2023</p>
+          <p className="text-[0.7rem] text-slate-300">
+            {latestMessage
+              ? moment(latestMessage.createdAt as string).calendar()
+              : ''}
+          </p>
         </div>
 
-        <div
-          className={clsx([
-            'rounded-full h-[10px] w-[10px] ',
-            {
-              'bg-green-500': isOnline,
-              ' bg-transparent': !isOnline,
-            },
-          ])}
-        ></div>
+        <div className="">
+          {thisUserNotifications.length > 0 && (
+            <div className="bg-white h-[16px] w-[16px] rounded-full flex items-center justify-center">
+              <span className="text-primary-purple text-xs font-bold">
+                {thisUserNotifications.length}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </button>
   );
