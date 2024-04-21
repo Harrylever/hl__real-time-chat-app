@@ -1,12 +1,13 @@
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { IUser, PageProps } from '../../typings';
 import { isValidEmail, isValidPassword } from '../util/utils';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { usePostRegisterMutation } from '../app/slices/authApiSlice';
+import { classNames } from '../styles';
+import { DefaultWidth } from '../components/atoms';
 
-const Register: React.FC<{props?: PageProps}> = () => {
+const Register: React.FC<{ props?: PageProps }> = () => {
   const [register] = usePostRegisterMutation();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -28,9 +29,12 @@ const Register: React.FC<{props?: PageProps}> = () => {
     message: string;
     status: 'success' | 'failed' | undefined;
   }>({ message: '', status: undefined });
-  const [registerError, setRegisterError] = useState<{ message: string, isError: boolean }>({
+  const [registerError, setRegisterError] = useState<{
+    message: string;
+    isError: boolean;
+  }>({
     message: '',
-    isError: false
+    isError: false,
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,8 +65,8 @@ const Register: React.FC<{props?: PageProps}> = () => {
       fullname,
       email: email.trim(),
       password: password.trim(),
-      imgUri: 'placeholder'
-    }
+      imgUri: 'placeholder',
+    };
 
     register(registerData)
       .then((res) => {
@@ -77,38 +81,46 @@ const Register: React.FC<{props?: PageProps}> = () => {
 
             setTimeout(() => {
               localStorage.setItem('email', email);
-              window.location.assign('/login')
+              window.location.assign('/login');
             }, 600);
           }, 3700);
         } else {
           const resError = res.error as {
-          data: { message: string, statusCode: number, success: boolean }
-        };
+            data: { message: string; statusCode: number; success: boolean };
+          };
           if ('data' in resError) {
             if (resError.data.message === 'user with email exists!') {
-              setRegisterError({ message: 'User already exists with email', isError: true });
+              setRegisterError({
+                message: 'User already exists with email',
+                isError: true,
+              });
 
               setTimeout(() => {
-                setRegisterError({ message: '', isError: false })
+                setRegisterError({ message: '', isError: false });
               }, 3700);
-            }
-            else if (resError.data.message === 'user with username exists!') {
-              setRegisterError({ message: 'User already exists with username', isError: true });
+            } else if (resError.data.message === 'user with username exists!') {
+              setRegisterError({
+                message: 'User already exists with username',
+                isError: true,
+              });
 
               setTimeout(() => {
-                setRegisterError({ message: '', isError: false })
+                setRegisterError({ message: '', isError: false });
               }, 3700);
             } else if (resError.data.message === 'invalid password!') {
               setPasswordError(true);
 
               setTimeout(() => {
-                setPasswordError(false)
+                setPasswordError(false);
               }, 8000);
             } else {
-              setRegisterError({ message: 'Register user failed. Please try again.', isError: true });
+              setRegisterError({
+                message: 'Register user failed. Please try again.',
+                isError: true,
+              });
 
               setTimeout(() => {
-                setRegisterError({ message: '', isError: false })
+                setRegisterError({ message: '', isError: false });
               }, 3700);
             }
           }
@@ -118,25 +130,46 @@ const Register: React.FC<{props?: PageProps}> = () => {
         console.log(err);
       })
       .finally(() => {
-        setIsLoading(false)
-      })
+        setIsLoading(false);
+      });
   };
 
   return (
-    <>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-10 text-center text-3xl font-bold leading-9 tracking-wide text-slate-200">
-            Create an account
-          </h2>
+    <DefaultWidth>
+      <div className="pt-12 flex min-h-full flex-1 flex-col justify-center px-6 pb-12 lg:px-8">
+        <div className="sm:mx-auto sm:w-full">
+          <h2 className={classNames.heroText}>Welcome</h2>
+          <p className={classNames.subHeroText}>Create an account</p>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+        <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm w-full flex flex-col items-start justify-start">
+          <div className="w-full flex items-center justify-center">
+            <button type="button">
+              <img
+                src="/svg/google-auth-icon.svg"
+                alt="Google Sign up"
+                className="w-[65px] h-auto"
+              />
+            </button>
+          </div>
+
+          <div className="w-full flex items-center justify-center py-6 gap-5">
+            {/*  */}
+            <div className="w-1/3 h-[0.7px] bg-[#E5E5E5]"></div>
+
+            <p className="w-1/3 font-normal text-xs text-[#808080] text-center">
+              or sign up with
+            </p>
+
+            {/*  */}
+            <div className="w-1/3 h-[0.7px] bg-[#E5E5E5]"></div>
+          </div>
+
+          <form className="space-y-6 w-full" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-mx-black"
               >
                 Username
               </label>
@@ -150,7 +183,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
                   autoComplete="username"
                   disabled={isLoading}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6 lowercase"
+                  className="block w-full rounded-md border border-[#0708083f] focus:border-[#0708083f] focus:outline-none py-1.5 text-gray-900 shadow-sm focus:shadow-md placeholder:text-gray-400 ring-0 focus:ring-0 sm:text-sm sm:leading-6 duration-300"
                 />
               </div>
             </div>
@@ -158,7 +191,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-mx-black"
               >
                 Full name
               </label>
@@ -172,7 +205,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
                   autoComplete="fullname"
                   disabled={isLoading}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border border-[#0708083f] focus:border-[#0708083f] focus:outline-none py-1.5 text-gray-900 shadow-sm focus:shadow-md placeholder:text-gray-400 ring-0 focus:ring-0 sm:text-sm sm:leading-6 duration-300"
                 />
               </div>
             </div>
@@ -180,7 +213,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-mx-black"
               >
                 Email address
               </label>
@@ -194,7 +227,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
                   autoComplete="email"
                   disabled={isLoading}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border border-[#0708083f] focus:border-[#0708083f] focus:outline-none py-1.5 text-gray-900 shadow-sm focus:shadow-md placeholder:text-gray-400 ring-0 focus:ring-0 sm:text-sm sm:leading-6 duration-300"
                 />
                 {emailError ? (
                   <p className="text-xs text-red-500 opacity-60 pt-2">
@@ -208,7 +241,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-white"
+                  className="block text-sm font-medium leading-6 text-mx-black"
                 >
                   Password
                 </label>
@@ -223,7 +256,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
                   autoComplete="current-password"
                   disabled={isLoading}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-white sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border border-[#0708083f] focus:border-[#0708083f] focus:outline-none py-1.5 text-gray-900 shadow-sm focus:shadow-md placeholder:text-gray-400 ring-0 focus:ring-0 sm:text-sm sm:leading-6 duration-300"
                 />
                 {password.length > 1 ? (
                   <button
@@ -254,19 +287,19 @@ const Register: React.FC<{props?: PageProps}> = () => {
               ) : null}
             </div>
 
-            <div className="flex flex-row-reverse items-center text-start justify-end gap-x-2">
+            <div className="pt-6 sm:pt-4 flex flex-row-reverse items-center text-start justify-end gap-x-2">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="accept-terms"
-                  className="block text-sm font-medium leading-6 text-white"
+                  className="block text-sm font-medium leading-6 text-mx-black"
                 >
                   I agree to the{' '}
-                  <a href="#" className="text-indigo-600">
+                  <a href="#" className="text-mx-primary">
                     Terms and Condition
                   </a>
                 </label>
               </div>
-              <div className="">
+              <div>
                 <input
                   id="accept-terms"
                   name="accept-terms"
@@ -275,7 +308,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
                   required
-                  className="block rounded-md border-0 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                  className="block rounded-md border border-gray-900 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-lg sm:leading-6 w-[17px] h-[17px]"
                 />
               </div>
             </div>
@@ -284,7 +317,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
               <button
                 type="submit"
                 className={clsx([
-                  'flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
+                  classNames.authFormBtn,
                   {
                     'bg-indigo-600': !isLoading,
                     'bg-indigo-400': isLoading,
@@ -292,7 +325,7 @@ const Register: React.FC<{props?: PageProps}> = () => {
                 ])}
                 disabled={isLoading}
               >
-                {isLoading ? 'Loading...' : 'Create an account'}
+                {isLoading ? 'Loading...' : 'Sign up'}
               </button>
               {registerResponse.status !== undefined ? (
                 <div className="pt-3 font-medium font-inter text-xs text-center">
@@ -310,48 +343,12 @@ const Register: React.FC<{props?: PageProps}> = () => {
                   <p className="text-red-600">{registerError.message}</p>
                 </div>
               ) : null}
-
-              {/*  */}
-              <div className="sm:hidden text-sm mt-4 text-center">
-                <p className="font-semibold text-white">
-                  Already have an account?
-                  <Link
-                    to="/login"
-                    className="ml-1 text-indigo-600 hover:text-indigo-500"
-                  >
-                    Sign in
-                  </Link>
-                </p>
-              </div>
             </div>
           </form>
-
-          <div className="mt-4 sm:mt-7 mb-7 flex flex-row items-center justify-between gap-x-3.5 text-xs font-medium">
-            <div className="h-[1px] w-full bg-[#ffffff4a]"></div>
-            <p>Or</p>
-            <div className="h-[1px] w-full bg-[#ffffff4a]"></div>
-          </div>
-
-          <button
-            type="button"
-            disabled={isLoading}
-            className={clsx([
-              'flex flex-row items-center justify-center gap-x-3.5 w-full py-1.5 bg-white rounded-md shadow-md',
-              {
-                'opacity-70': isLoading,
-              },
-            ])}
-            onClick={() => {}}
-          >
-            <img src="/svg/google.svg" alt="" className="w-[1.3rem]" />
-            <p className="text-slate-800 font-bold text-sm md:text-lg mt-0.5">
-              Google
-            </p>
-          </button>
         </div>
       </div>
-    </>
+    </DefaultWidth>
   );
-}
+};
 
 export default Register;

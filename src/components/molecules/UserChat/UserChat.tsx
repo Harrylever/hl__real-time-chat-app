@@ -215,7 +215,7 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
         <div className="">
           {thisUserNotifications.length > 0 && (
             <div className="bg-white h-[16px] w-[16px] rounded-full flex items-center justify-center">
-              <span className="text-primary-purple text-xs font-bold">
+              <span className="text-mx-primary text-xs font-bold">
                 {thisUserNotifications.length}
               </span>
             </div>

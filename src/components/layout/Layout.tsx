@@ -41,20 +41,18 @@ export default function Layout() {
       {isLoading ? (
         <LoadingPlayer />
       ) : (
-        <div className="w-full text-white font-nunito">
+        <div className="w-full">
           <div className="w-full relative">
             {/*  */}
             {sideBarChatListIsOpen && <SideBarChatList />}
 
-            <div className="relative z-[20] w-full bg-slate-900 shadow-xl">
-              <div className="mx-auto px-6 sm:px-8">
+            <div className="relative z-[20] w-full bg-mx-white shadow-md">
+              <div className="mx-auto px-6 sm:px-8 flex justify-center">
                 <NavBarComponent props={{ user: localuser }} />
               </div>
             </div>
-            <div className="relative z-[10] w-full pt-5">
-              <div className=" max-w-6xl mx-auto px-6 sm:px-8 xl:px-0">
-                <Outlet />
-              </div>
+            <div className="relative z-[10] w-full">
+              <Outlet />
             </div>
           </div>
         </div>

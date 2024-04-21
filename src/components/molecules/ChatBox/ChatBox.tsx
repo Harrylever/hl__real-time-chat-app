@@ -248,7 +248,7 @@ const ChatView: React.FC<{ props: IChatViewProps }> = ({
     <section className="relative w-full h-full bg-[#000000a5] rounded-t-xl rounded-b-md flex flex-col items-start justify-between overflow-hidden">
       {/* Display recipient user name */}
       <div className="w-full py-6 flex flex-row items-center justify-center bg-[#202020]">
-        <p className="text-base font-normal text-white">
+        <p className="text-base font-normal text-mx-white">
           {recipientUser.username}
         </p>
       </div>
@@ -314,7 +314,7 @@ const ChatView: React.FC<{ props: IChatViewProps }> = ({
                   },
                 ])}
               >
-                <LuSend className="mt-0.5 mr-1 text-base md:text-xl text-white" />
+                <LuSend className="mt-0.5 mr-1 text-base md:text-xl text-mx-white" />
               </button>
             </div>
           </div>
