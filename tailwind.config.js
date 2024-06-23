@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
@@ -17,6 +18,10 @@ module.exports = {
       },
     },
     extend: {
+      backgroundImage: {
+        // eslint-disable-next-line quotes
+        'landing-vectors': "url('/png/bg-vectors.png')",
+      },
       colors: {
         'mx-primary': '#1E293B',
         'mx-primary-2': '#273E62',
@@ -44,6 +49,10 @@ module.exports = {
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
+        },
+        success: {
+          DEFAULT: 'hsl(var(--success))',
+          foreground: 'hsl(var(--success-foreground))',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
@@ -88,5 +97,4 @@ module.exports = {
     },
   },
   plugins: [require('tailwindcss-animate')],
-
-};
+}

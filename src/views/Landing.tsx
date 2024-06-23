@@ -1,13 +1,19 @@
-import { RiTwitterXFill } from 'react-icons/ri';
-import { DefaultWidth } from '../components/atoms';
-import { FAQSection } from '../components/molecules';
-import { MdOutlineArrowRightAlt } from 'react-icons/md';
-import { Footer, OurFeaturesList } from '../components/sections';
+import { useAppSelector } from 'src/app'
+import { goToLocation } from '../util/utils'
+import { RiTwitterXFill } from 'react-icons/ri'
+import { FAQSection } from '../components/molecules'
+import { MdOutlineArrowRightAlt } from 'react-icons/md'
+import DefaultWidth from 'src/components/layout/DefaultWidth'
+import { Footer, OurFeaturesList } from '../components/features'
+import { useNavigate } from 'react-router-dom'
 
 const Landing = () => {
+  const navigate = useNavigate()
+  const user = useAppSelector((state) => state.userReduce)
+
   return (
     <section>
-      <main className="h-[88vh] bg-[#F0F6FF] w-full flex flex-col items-start justify-start">
+      <main className="h-[88vh] bg-mx-primary-9 w-full flex flex-col items-start justify-start">
         <div className="mt-10 h-[50%] bg-landing-vectors bg-no-repeat bg-contain w-full flex flex-col items-center justify-center gap-4">
           <p className="text-mx-primary font-bold text-5xl sm:text-6xl tracking-wide">
             Chatting
@@ -19,8 +25,11 @@ const Landing = () => {
 
         <div className="h-[50%] w-full relative">
           <div className="relative">
-            <button className="absolute -translate-x-1/2 left-1/2 -top-3 sm:-top-10 bg-mx-primary text-mx-white rounded-sm py-3 px-7">
-              Get Started
+            <button
+              onClick={() => goToLocation(user ? '/app' : '/register')}
+              className="absolute z-[1000] -translate-x-1/2 left-1/2 -top-3 sm:-top-10 bg-mx-primary text-mx-white rounded-sm py-3 px-7 cursor-pointer"
+            >
+              <span>Get Started</span>
             </button>
           </div>
 
@@ -120,12 +129,13 @@ const Landing = () => {
               Start chatting now! MX Chat today and experience private, secure
               messaging!
             </p>
-            <div>
+            <div className="w-full flex items-center justify-center">
               <button
                 type="button"
-                className="rounded-lg bg-mx-primary text-mx-white py-3 px-24"
+                onClick={() => navigate('/register')}
+                className="w-full sm:w-fit rounded-lg bg-mx-primary text-mx-white py-3 sm:px-24"
               >
-                <p className="flex items-center justify-between gap-4 font-semibold">
+                <p className="flex items-center justify-center gap-4 font-semibold text-xs sm:text-base">
                   Get Started Now <MdOutlineArrowRightAlt className="text-xl" />
                 </p>
               </button>
@@ -234,7 +244,7 @@ const Landing = () => {
             </div>
 
             {/*  */}
-            <div className="w-full mt-14 lg:mt-0 lg:w-1/2 px-14">
+            <div className="w-full mt-14 lg:mt-0 lg:w-1/2 px-7 sm:px-14">
               <form className="w-full flex flex-col items-center justify-start gap-10">
                 <p className="text-center text-xs text-mx-grey">
                   Feel free to find us virtually around the globe, we’re always
@@ -269,9 +279,13 @@ const Landing = () => {
                   ></textarea>
 
                   {/*  */}
-                  <button type="button" className="absolute bottom-0 right-0">
-                    <img src="/svg/send-message-icon.svg" alt="" className="w-[40px]" />
-                  </button>
+                  {/* <button type="button" className="absolute bottom-0 right-0">
+                    <img
+                      src="/svg/send-message-icon.svg"
+                      alt=""
+                      className="w-[40px]"
+                    />
+                  </button> */}
                 </div>
               </form>
             </div>
@@ -281,7 +295,7 @@ const Landing = () => {
 
       <Footer />
     </section>
-  );
+  )
 }
 
-export default Landing;
+export default Landing

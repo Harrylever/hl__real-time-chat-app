@@ -1,0 +1,17 @@
+          //   const filteredUsers = pChats.filter((u) => {
+          //     let isChatCreated = false;
+
+          //     if (user._id === u._id) return false;
+
+          //     if (chats) {
+          //       isChatCreated = chats.some((chat) => {
+          //         return (
+          //           chat.members &&
+          //           (chat.members[0] === u._id || chat.members[1] === u._id)
+          //         );
+          //       });
+
+          //       return !isChatCreated;
+          //     }
+          //   });
+

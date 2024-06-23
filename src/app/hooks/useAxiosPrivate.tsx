@@ -1,71 +1,48 @@
-/* eslint-disable no-console */
-import { useEffect, useCallback } from 'react';
-import useRefreshToken from './useRefreshToken';
-import useLogOutUser from './useLogOutUser';
-import { useAppSelector } from './hooks';
-import { IAuthState } from '../../../typings';
-import { axiosPrivate } from '../constants/const';
+import { useEffect, useMemo } from 'react'
+import { AuthRequests } from '../actions/auth'
+import { axiosInstance } from '../constants/const'
+import { useNavigate } from 'react-router-dom'
 
 const useAxiosPrivate = () => {
-  const { access } = useAppSelector((state) => state.authReduce);
-
-  const logOut = useLogOutUser();
-  const refresh = useRefreshToken();
-
-  const getAccessTokenFromStorage = useCallback(() => {
-    const authDataFromStorage = window.localStorage.getItem(
-      'auth'
-    ) as string;
-    if (authDataFromStorage === null) {
-      logOut();
-      return;
-    }
-    const authData: IAuthState = JSON.parse(authDataFromStorage);
-    return authData.access;
-  }, [logOut]);
+  const navigate = useNavigate()
+  const authRequests = useMemo(() => new AuthRequests(axiosInstance), [])
 
   useEffect(() => {
-    const requestInterceptors = axiosPrivate.interceptors.request.use(
+    const requestInterceptors = axiosInstance.interceptors.request.use(
       (config) => {
-        if (!config.headers.Authorization) {
-          config.headers.Authorization = `Bearer ${getAccessTokenFromStorage()}`;
-        }
-        return config;
+        return config
       },
-      (error) => Promise.reject(error)
-    );
+      (error) => Promise.reject(error),
+    )
 
-    const responseInterceptors = axiosPrivate.interceptors.response.use(
+    const responseInterceptors = axiosInstance.interceptors.response.use(
       (response) => response,
 
       async (error) => {
-        const prevRequest = error?.config;
-
-        // If access token expired
-        if (error?.response?.status === 401 && !prevRequest?.sent) {
-          console.warn('Access token expired... Refresh token sent.');
-          prevRequest.sent = true;
-          const newAccessToken = await refresh();
-          prevRequest.headers.Authorization = `Bearer ${newAccessToken.data.access}`;
-          return axiosPrivate(prevRequest);
+        console.log(error)
+        if (
+          error.response.status === 401 &&
+          error.response.data.message.toLowerCase() ===
+            'not authorized, sign in to continue'
+        ) {
+          const response = await authRequests.logout()
+          if (
+            response.message.toLowerCase() === 'user logged out successfully'
+          ) {
+            navigate('/login')
+          }
         }
-
-        // If refresh token expired
-        if (error?.response?.status === 403) {
-          console.warn('Refresh token expired... Authentication Failed!');
-          logOut();
-        }
-        return Promise.reject(error);
-      }
-    );
+        return Promise.reject(error)
+      },
+    )
 
     return () => {
-      axiosPrivate.interceptors.request.eject(requestInterceptors);
-      axiosPrivate.interceptors.response.eject(responseInterceptors);
-    };
-  }, [access, getAccessTokenFromStorage, logOut, refresh]);
+      axiosInstance.interceptors.request.eject(requestInterceptors)
+      axiosInstance.interceptors.response.eject(responseInterceptors)
+    }
+  }, [authRequests, navigate])
 
-  return axiosPrivate;
-};
+  return axiosInstance
+}
 
-export default useAxiosPrivate;
+export default useAxiosPrivate

@@ -1,33 +1,41 @@
-import { useAppDispatch } from './hooks';
-import { setToken } from '../slices/authSlice';
+import { useMemo } from 'react'
+import { useToast } from '@/components/ui/use-toast'
+import { AuthRequests, useAxiosPrivate } from 'src/app'
 
 const useLogOutUser = () => {
-  const dispatch = useAppDispatch();
+  const { toast } = useToast()
+  const axiosPrivate = useAxiosPrivate()
+  const authRequests = useMemo(
+    () => new AuthRequests(axiosPrivate),
+    [axiosPrivate],
+  )
 
-  const clearLocalToken = () => {
-    console.warn('Auth clear from storage...');
-    window.localStorage.removeItem('auth');
-    window.localStorage.removeItem('user');
-  };
-
-  const clearAuthReduceToken = () => {
-    console.warn('Auth clear from Reducer...');
-    dispatch(
-      setToken({
-        email: '',
-        access: '',
-        _id: '',
-        refresh: '',
+  const getlogOut = async () => {
+    try {
+      const response = await authRequests.logout()
+      return response
+    } catch (err) {
+      console.log(err)
+      toast({
+        variant: 'destructive',
+        title: 'Error logging out',
       })
-    );
-  };
+    }
+  }
 
-  const main = () => {
-    clearLocalToken();
-    clearAuthReduceToken();
-    window.location.assign('/login');
-  };
-  return main;
-};
+  const handleLogOutUser = async () => {
+    const res = await getlogOut()
+    if (
+      res &&
+      res.message &&
+      res.message.toLowerCase() === 'user logged out successfully'
+    ) {
+      window.localStorage.removeItem('auth')
+      window.location.href = '/'
+    }
+  }
 
-export default useLogOutUser;
+  return [handleLogOutUser]
+}
+
+export default useLogOutUser

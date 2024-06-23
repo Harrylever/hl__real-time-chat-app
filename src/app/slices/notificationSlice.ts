@@ -1,13 +1,13 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { INotification } from '../../../typings';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { INotification } from '../../../typings'
 
 interface INotificationSlice {
-  notifications: Array<INotification>;
+  notifications: Array<INotification>
 }
 
 const initState: INotificationSlice = {
   notifications: [],
-};
+}
 
 const notificationSlice = createSlice({
   name: 'notificationSlice',
@@ -15,12 +15,12 @@ const notificationSlice = createSlice({
   reducers: {
     setReduxNotifications: (
       state: INotificationSlice,
-      action: PayloadAction<INotificationSlice>
+      action: PayloadAction<INotificationSlice>,
     ) => {
-      state.notifications = action.payload.notifications;
+      state.notifications = action.payload.notifications
     },
   },
-});
+})
 
-export const { setReduxNotifications } = notificationSlice.actions;
-export default notificationSlice.reducer;
+export const { setReduxNotifications } = notificationSlice.actions
+export default notificationSlice.reducer

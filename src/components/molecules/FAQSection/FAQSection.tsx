@@ -3,7 +3,7 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from '../../../../@/components/ui/accordion';
+} from '../../../../@/components/ui/accordion'
 
 const FAQSection = () => {
   return (
@@ -46,7 +46,7 @@ const FAQSection = () => {
         </AccordionItem>
       </Accordion>
     </div>
-  );
-};
+  )
+}
 
-export default FAQSection;
+export default FAQSection
