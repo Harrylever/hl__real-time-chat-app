@@ -1,13 +1,12 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IMessage } from '../../../typings';
-
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { IMessage } from '../../../typings'
 
 interface ISliceState {
-    messages: Array<IMessage>;
+  messages: Array<IMessage>
 }
 
 const initialState: ISliceState = {
-  messages: []
+  messages: [],
 }
 
 const messagesSlice = createSlice({
@@ -22,9 +21,10 @@ const messagesSlice = createSlice({
     // Removes Item with the certain id
     removeItem: (state: ISliceState, action: PayloadAction<string>) => {
       state.messages = state.messages.filter((el) => el._id !== action.payload)
-    }
-  }
+    },
+  },
 })
 
-export const { addItem: addMessages, removeItem: removeMessage } = messagesSlice.actions; 
-export default messagesSlice.reducer;
+export const { addItem: addMessages, removeItem: removeMessage } =
+  messagesSlice.actions
+export default messagesSlice.reducer

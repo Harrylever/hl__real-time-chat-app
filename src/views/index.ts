@@ -1,4 +1,6 @@
-export { default as ChatView } from './Chat';
-export { default as RegisterView } from './Register';
-export { default as LoginView } from './Login';
-export { default as NotFoundView } from './NotFound';
+export { default as Terms } from './Terms'
+export { default as Landing } from './Landing'
+export { default as LoginView } from './auth/Login'
+export { default as NotFoundView } from './NotFound'
+export { default as RegisterView } from './auth/Register'
+export { default as ApplicationView } from './Application'

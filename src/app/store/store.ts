@@ -1,14 +1,14 @@
-import authReducer from '../slices/authSlice';
-import userReducer from '../slices/userSlice';
-import chatReducer from '../slices/chatSlice';
-import { configureStore } from '@reduxjs/toolkit';
-import socketReducer from '../slices/socketSlice';
-import messageReducer from '../slices/messagesSlice';
-import { authApiSlice } from '../slices/authApiSlice';
-import userChatsReducer from '../slices/userChatsSlice';
-import appUIStateReducer from '../slices/appUIStateSlice';
-import notificationReducer from '../slices/notificationSlice';
-import potentialChatsReducer from '../slices/potentialChatsSlice';
+import authReducer from '../slices/authSlice'
+import userReducer from '../slices/userSlice'
+import chatReducer from '../slices/chatSlice'
+import { configureStore } from '@reduxjs/toolkit'
+import socketReducer from '../slices/socketSlice'
+import messageReducer from '../slices/messagesSlice'
+import userChatsReducer from '../slices/userChatsSlice'
+import appUIStateReducer from '../slices/appUIStateSlice'
+import notificationReducer from '../slices/notificationSlice'
+import internalRouteReducer from '../slices/internalRouteSlice'
+import potentialChatsReducer from '../slices/potentialChatsSlice'
 
 const store = configureStore({
   reducer: {
@@ -21,13 +21,10 @@ const store = configureStore({
     appUIStateReduce: appUIStateReducer,
     socketReduce: socketReducer,
     notificationReduce: notificationReducer,
-    [authApiSlice.reducerPath]: authApiSlice.reducer,
+    internalRouteReduce: internalRouteReducer,
   },
+})
 
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApiSlice.middleware),
-});
-
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
-export default store;
+export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>
+export default store

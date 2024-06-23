@@ -1,83 +1,76 @@
-/* eslint-disable no-console */
-import { IUser } from '../../../typings';
-import { useEffect, useMemo } from 'react';
-import { setUser } from '../../app/slices/userSlice';
-import {  UserRequests} from '../../app/features/requests';
-import { setToken, useAppDispatch, useAppSelector, useAxiosPrivate } from '../../app';
+import { LoadingPlayer } from '../ui'
+import { IUser } from '../../../typings'
+import { goToLocation } from 'src/util/utils'
+import { setUser } from 'src/app/slices/userSlice'
+import { useToast } from '@/components/ui/use-toast'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { AuthRequests, useAppDispatch, useAxiosPrivate } from '../../app'
 
-export default function AuthRouteController() {
-  const dispatch = useAppDispatch();
-  const authState = useAppSelector((state) => state.authReduce);
+export default function AuthRouteController({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const { toast } = useToast()
+  const dispatch = useAppDispatch()
+  const axiosPrivate = useAxiosPrivate()
+  const authRequests = useMemo(
+    () => new AuthRequests(axiosPrivate),
+    [axiosPrivate],
+  )
 
-  const axiosInstance = useAxiosPrivate();
-  const userRequests = useMemo(() => new UserRequests(axiosInstance), [axiosInstance]);
+  const [canRender, setCanRender] = useState(false)
 
-  const sendlocation = (location: string) => {
-    window.location.assign(location);
-  }
+  const handleGetLoginStatus = useCallback(async () => {
+    try {
+      const response = await authRequests.loginStatus()
+      return response
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Something went wrong',
+        description: 'Could not login',
+      })
+    }
+  }, [authRequests, toast])
 
-  useEffect(() => {
-    const authContainer = window.localStorage.getItem('auth');
+  const main = useCallback(async () => {
+    const res = await handleGetLoginStatus()
 
-    if (authContainer === null) {
-      if (
-        window.location.pathname === '/login' ||
-        window.location.pathname === '/register'
-      ) {
-        //
-      } else {
-        // If auth details is missing from localStorage and user is trying
-        // accessing to access a private page, redirect them to the
-        // login page
-        console.log('Redirect to Login....');
-        sendlocation('/login');
-      }
+    if (
+      res &&
+      res.message &&
+      res.message.toLowerCase() === 'you are logged in'
+    ) {
+      const user = res.data as IUser
+      dispatch(
+        setUser({
+          _id: user._id,
+          email: user.email,
+          imgUri: user.imgUri,
+          username: user.username,
+          fullname: user.fullname,
+        }),
+      )
+      setCanRender(true)
     } else {
-      const jsonifyAuthContainer = JSON.parse(authContainer) as {
-        email: string;
-        _id: string;
-        access: string;
-        refresh: string;
-      };
-
-      const fetch = userRequests.useGetUserByIdQuery(jsonifyAuthContainer._id);
-
-      fetch
-        .then((res) => {
-          if (!res.success && res.message === 'user not found!') {
-            window.localStorage.removeItem('auth');
-            window.localStorage.removeItem('user');
-            sendlocation('/login');
-            return;
-          }
-          const userData = res.data as IUser;
-          const userDataString = JSON.stringify(userData);
-          localStorage.setItem('user', userDataString);
-          dispatch(setUser(userData));
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-
-      if (typeof authState !== 'undefined' && authState.access !== '') {
-        if (window.location.pathname === '/login' || window.location.pathname === '/register') {
-          // If user details available in localStorage and are stored in Redux authState/authReduce
-          // and user is on admin login page send user to dashboard
-          // page
-          sendlocation('/');
-        }
+      if (
+        window.location.pathname === '/' ||
+        window.location.pathname === '/login' ||
+        window.location.pathname === '/register' ||
+        window.location.pathname === '/terms'
+      ) {
+        setCanRender(true)
+        return
       } else {
-        // If user details is available in localStorage, but are not stored in Redux authReduce
-        // get details from localStorage and save in authReduce
-        // Then redirect to /dashboard
-        console.warn('Auth Present in Storage. Attaching to Reducer...');
-        dispatch(setToken(jsonifyAuthContainer));
-        if (window.location.pathname === '/login' || window.location.pathname === '/register') {
-          sendlocation('/');
-        }
+        goToLocation('/login')
       }
     }
-  }, [authState, dispatch, userRequests]);
+  }, [dispatch, handleGetLoginStatus])
 
-  return null;
+  useEffect(() => {
+    main()
+  }, [main])
+
+  return canRender ? children : <LoadingPlayer />
 }
