@@ -1,6 +1,6 @@
 export { default as ChatBox } from './ChatBox/ChatBox'
 export { default as FAQSection } from './FAQSection/FAQSection'
-export { default as UserMessageWrap } from './UserChat/UserChatWrap'
+export { default as UserChatsWrap } from './UserChat/UserChatsWrap'
 export { default as LgMenuComponent } from './LgMenuComponent/LgMenuComponent'
 export { default as PotentialChatWrap } from './PotentialChat/PotentialChatWrap'
 export { default as ChangeViewComponent } from './ChangeViewComponent/ChangeViewComponent'

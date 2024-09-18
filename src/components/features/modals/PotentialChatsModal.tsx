@@ -7,31 +7,16 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { IUser } from 'typings'
+import { useEffect } from 'react'
+import { LoadingPlayer } from 'src/components/ui'
+import { useAppDispatch, useAppSelector } from 'src/app'
 import { PotentialChatWrap } from 'src/components/molecules'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useUpdateCurrentChatHandler } from 'src/components/hooks'
+import { useGetAllUsersQuery } from 'src/app/api/hooks/useAccounts'
 import { addPotentialChat } from 'src/app/slices/potentialChatsSlice'
-import {
-  useAppDispatch,
-  useAppSelector,
-  useAxiosPrivate,
-  UserRequests,
-} from 'src/app'
-import { useToast } from '@/components/ui/use-toast'
 import { setPotentialChatsModalIsOpen } from 'src/app/slices/appUIStateSlice'
 
 const PotentialChatsModal = () => {
-  const { toast } = useToast()
   const dispatch = useAppDispatch()
-  const axiosInstance = useAxiosPrivate()
-  const user = useAppSelector((state) => state.userReduce)
-  const [pChatsIsLoading, setPChatsIsLoading] = useState(false)
-
-  const userRequests = useMemo(
-    () => new UserRequests(axiosInstance),
-    [axiosInstance],
-  )
 
   const potentialChatModalIsOpen = useAppSelector(
     (state) => state.appUIStateReduce.potentialChatsModalIsOpen,
@@ -40,43 +25,6 @@ const PotentialChatsModal = () => {
   const handleSetPotentialChatsModalIsOpen = (value: boolean) => {
     dispatch(setPotentialChatsModalIsOpen(value))
   }
-
-  // Memoize Important Values - potentialChats
-  const potentialChats = useAppSelector(
-    (state) => state.potentialChatsReduce.users,
-  )
-  const memoizedPotentialChats = useMemo(() => potentialChats, [potentialChats])
-
-  const getAllPotentialChatsHandler = useCallback(async () => {
-    try {
-      setPChatsIsLoading(true)
-      const response = (await userRequests.useGetAllUsersQuery()) as {
-        success: boolean
-        data: IUser[]
-      }
-
-      if (response.success) {
-        const pChats = response.data
-        const filteredChats = pChats.filter((chat) => chat._id !== user._id)
-        dispatch(addPotentialChat({ users: filteredChats }))
-      } else {
-        //
-      }
-    } catch (err) {
-      toast({
-        variant: 'destructive',
-        title: 'Failed to get users',
-      })
-    } finally {
-      setPChatsIsLoading(false)
-    }
-  }, [dispatch, toast, user._id, userRequests])
-
-  useEffect(() => {
-    getAllPotentialChatsHandler()
-  }, [getAllPotentialChatsHandler])
-
-  const [updateCurrentChatHandler] = useUpdateCurrentChatHandler()
 
   return (
     <AlertDialog
@@ -101,27 +49,57 @@ const PotentialChatsModal = () => {
         <AlertDialogHeader>
           <AlertDialogTitle>New Chat</AlertDialogTitle>
 
-          <div className="flex flex-row gap-x-2 pb-5">
-            {pChatsIsLoading ? (
-              <p>Loading chats...</p>
-            ) : (
-              // Potential-Chats-Wrap Component
-              // the potentialChats Array is being passed as the props from THE REDUX REDUCER
-              <PotentialChatWrap
-                props={memoizedPotentialChats}
-                updatePotentialChatsCb={(chat) =>
-                  updateCurrentChatHandler(chat)
-                }
-              />
-            )}
-          </div>
+          <PotentialChatsList />
         </AlertDialogHeader>
 
+        {/*  */}
         <AlertDialogFooter>
           <AlertDialogCancel>Close</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  )
+}
+
+const PotentialChatsList = () => {
+  const dispatch = useAppDispatch()
+  const { data, isFetching, isLoading, error, refetch } = useGetAllUsersQuery()
+  const user = useAppSelector((state) => state.userReduce.user)
+
+  const loading = isFetching || isLoading
+
+  if (error) {
+    return (
+      <div>
+        <p>Failed to get users</p>
+
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className="bg-mx-primary-2 py-3 px-5 rounded-lg text-white text-sm"
+        >
+          Try again
+        </button>
+      </div>
+    )
+  }
+
+  useEffect(() => {
+    if (data && user) {
+      console.log(data.data, user)
+
+      const filteredChats = data.data.filter(
+        (chat) => chat.email?.trim() !== user.email?.trim(),
+      )
+      dispatch(addPotentialChat({ users: filteredChats }))
+    }
+  }, [data, dispatch, user])
+
+  return (
+    <div className="flex flex-row gap-x-2 pb-5">
+      {loading && <LoadingPlayer />}
+      {data && data.success && <PotentialChatWrap />}
+    </div>
   )
 }
 

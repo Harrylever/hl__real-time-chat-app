@@ -1,103 +1,19 @@
 import { classNames } from 'src/styles'
+import { useAppSelector } from 'src/app'
 import PotentialChat from './PotentialChat'
-import { useToast } from '@/components/ui/use-toast'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { IChat, IPotentialChatWrapProps, IUser } from 'typings'
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import {
-  ChatRequests,
-  useAppDispatch,
-  useAppSelector,
-  useAxiosPrivate,
-} from 'src/app'
-import { addUserChat } from 'src/app/slices/userChatsSlice'
-import { setPotentialChatsModalIsOpen } from 'src/app/slices/appUIStateSlice'
+import { PotentialChatWrapProps, IAccount } from 'typings'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 
-const PotentialChatWrap: React.FC<{
-  props: IPotentialChatWrapProps
-  updatePotentialChatsCb: (chat: IChat) => void
-}> = ({ props, updatePotentialChatsCb }): JSX.Element => {
-  //
-  const { toast } = useToast()
-  const dispatch = useAppDispatch()
-  const axiosInstance = useAxiosPrivate()
-  const chatRequests = useMemo(
-    () => new ChatRequests(axiosInstance),
-    [axiosInstance],
-  )
-
-  const user = useAppSelector((state) => state.userReduce)
-  const userChats = useAppSelector((state) => state.userChatsReduce.chats)
-
-  const getUserChatsHandler = async () => {
-    try {
-      const response = (await chatRequests.useGetUserChatsQuery(
-        user._id as string,
-      )) as { success: boolean; message: string; data: IChat[] }
-      return response
-    } catch (err) {
-      toast({
-        variant: 'destructive',
-        title: 'Failed to update chats list',
-      })
-      console.log(err)
-    }
-  }
-
-  const createChatProcess = (id: string) => {
-    const chat = userChats.find(
-      (el) =>
-        el.members?.includes(user._id as string) && el.members.includes(id),
-    )
-    if (chat) {
-      updatePotentialChatsCb(chat)
-      dispatch(setPotentialChatsModalIsOpen(false))
-      return
-    }
-    const createChatObj = { userOneId: user._id as string, userTwoId: id }
-    const fetch = chatRequests.useCreateChatMutation(createChatObj)
-
-    fetch
-      .then(async (res) => {
-        const newChatResponse = res as {
-          data: IChat
-          message: string
-          success: boolean
-        }
-        if (
-          newChatResponse.success &&
-          newChatResponse.message.toLowerCase() === 'chat created successfully'
-        ) {
-          const resTwo = await getUserChatsHandler()
-          if (
-            resTwo?.message &&
-            resTwo.message.toLowerCase() === 'chats retrieved successfully'
-          ) {
-            dispatch(
-              addUserChat({
-                chats: resTwo.data,
-              }),
-            )
-            updatePotentialChatsCb(newChatResponse.data)
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-      .finally(() => {
-        console.log('Done')
-        dispatch(setPotentialChatsModalIsOpen(false))
-      })
-  }
-
+const PotentialChatWrap: React.FC<PotentialChatWrapProps> = (): JSX.Element => {
   const [searchValue, setSearchValue] = useState('')
-  const [searchedPotentialChats, setSearchedPotentialChats] = useState<IUser[]>(
-    [],
-  )
-  const memoizedSearchedPotentialChats = useMemo(
-    () => searchedPotentialChats,
-    [searchedPotentialChats],
+  const [chatIsLoading, setChatIsLoading] = useState(false)
+  const [searchedPotentialChats, setSearchedPotentialChats] = useState<
+    IAccount[]
+  >([])
+
+  const potentialChats = useAppSelector(
+    (state) => state.potentialChatsReduce.users,
   )
 
   const handleSearchValueChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -105,11 +21,11 @@ const PotentialChatWrap: React.FC<{
     setSearchValue(text)
 
     if (text === '') {
-      setSearchedPotentialChats(props)
+      setSearchedPotentialChats(potentialChats)
       return
     }
 
-    const filteredValues = props.filter((chat) => {
+    const filteredValues = potentialChats.filter((chat) => {
       return (
         chat.username?.toLowerCase().includes(text.toLowerCase()) ||
         chat.fullname?.toLowerCase().includes(text.toLowerCase())
@@ -119,8 +35,8 @@ const PotentialChatWrap: React.FC<{
   }
 
   useEffect(() => {
-    setSearchedPotentialChats(props)
-  }, [props])
+    setSearchedPotentialChats(potentialChats)
+  }, [potentialChats])
 
   return (
     <React.Fragment>
@@ -142,14 +58,17 @@ const PotentialChatWrap: React.FC<{
 
         <ScrollArea className="mt-4 h-[350px] w-full">
           <div className="flex flex-col gap-y-2 sm:gap-y-1.5">
-            {memoizedSearchedPotentialChats.map((chat, _) => (
+            {searchedPotentialChats.map((chat, index) => (
               <PotentialChat
-                key={_}
+                key={index}
                 chat={chat}
-                cb={() => createChatProcess(chat._id as string)}
+                chatIsLoading={chatIsLoading}
+                setChatIsLoading={setChatIsLoading}
               />
             ))}
-            {props.length < 1 && <p className="ml-3">No chats found.</p>}
+            {searchedPotentialChats.length === 0 && (
+              <p className="ml-3">No chats found.</p>
+            )}
           </div>
         </ScrollArea>
       </div>

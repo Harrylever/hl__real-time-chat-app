@@ -21,6 +21,7 @@ const SocketClient = () => {
   const reduxNotifications = useAppSelector(
     (state) => state.notificationReduce.notifications,
   )
+  const onlineUsersv = useAppSelector((state) => state.socketReduce.onlineUsers)
 
   useEffect(() => {
     if (user && user._id !== '') {
@@ -30,6 +31,7 @@ const SocketClient = () => {
         newSocket.on('connect', () => {
           setSocket(newSocket)
           setSocketId(newSocket.id)
+          console.log(newSocket.id)
 
           // Emit Current user id
           newSocket.emit('add-new-user', user._id)
@@ -48,6 +50,7 @@ const SocketClient = () => {
   useEffect(() => {
     if (socket) {
       const handleGetOnlineUsers = (res: IOnlineUser[]) => {
+        // console.log(res)
         const onlineUsersResponse = res
         dispatch(
           updateOnlineUsers({
@@ -71,6 +74,7 @@ const SocketClient = () => {
     if (socket) {
       if (newMessage && activeChat) {
         const recipientId = activeChat.members?.find((id) => id !== user._id)
+        console.log({ recipientId })
         socket.emit('send-message', { ...newMessage, recipientId })
       }
     }
@@ -80,6 +84,7 @@ const SocketClient = () => {
   useEffect(() => {
     if (socket) {
       const handleGetMessage = (res: IMessage & { recipientId: string }) => {
+        console.log(res)
         if (activeChat._id !== res.chatId) return
         dispatch(addMessages({ messages: [...allMessages, res] }))
       }

@@ -7,16 +7,21 @@ export interface IAuthState {
   refresh: string
 }
 
-export interface IUser {
-  _id?: string
+export interface IAccount {
   username?: string
   fullname?: string
   email?: string
   imgUri?: string
   password?: string
+  role?: ('standard' | 'admin')[]
 }
 
-export interface LoginResValues {
+export interface ApiBaseResponse {
+  success: boolean
+  message: string
+}
+
+export interface ILoginResValues {
   exp: number
   iat: number
   jti: string
@@ -31,59 +36,51 @@ export interface IChat {
   members?: Array<string>
 }
 
-export interface IChatSectionProps {
-  chatsIsLoading: boolean
-  userChats: IChat[]
-  currentChat: IChat
+export interface ChatSectionProps {
+  user: IAccount
 }
 
-export interface INavBarProps {
-  user?: IUser
-}
+export interface NavBarProps {}
 
 export interface PageProps<T = unknown> {
   extendProps?: Partial<T>
 }
 
-export interface IPotentialChatProps {
-  chat: IUser
-  cb?: () => void
+export interface PotentialChatProps {
+  chat: IAccount
+  chatIsLoading: boolean
+  setChatIsLoading: (value: boolean) => void
 }
 
-export type IPotentialChatWrapProps = Array<IUser>
+export interface PotentialChatWrapProps {}
 
-export interface IUserChatProps {
-  chat?: IChat
-  user?: IUser
+export interface UserChatProps {
+  chat: IChat
+  account: IAccount
+  recipientUser: IAccount
 }
 
-export interface IUserChatWrapProps {
-  messageType: 'chats' | 'groups'
+export interface UserChatsWrapProps {
   chats: Array<IChat>
-  user: IUser
-  isForMobile?: boolean
+  user: IAccount
 }
 
 export interface IMessage {
   _id?: string
   chatId: string
-  senderId: IUser
+  senderId: IAccount
   text: string
   createdAt?: string
 }
 
-export interface IChatBoxProps {
-  currentChat: IChat
-  user: IUser
+export interface ChatBoxProps {
+  user: IAccount
 }
 
-export interface IChatViewProps {
+export interface ChatViewProps {
   messages: IMessage[]
-  isLoading: boolean
-  messagesIsLoading: boolean
-  userId: string
-  chatId: string
-  recipientUser: IUser
+  userEmail: string
+  recipientUser: IAccount
 }
 
 export interface IMessageProps<T> {
@@ -95,13 +92,13 @@ export interface IMessageProps<T> {
 }
 
 export interface IOnlineUser {
-  userId: string
+  email: string
   socketId: string
 }
 
 export interface INotification {
   date: unknown
-  senderId: IUser
+  senderId: IAccount
   message: string
   isRead: boolean
 }
@@ -118,4 +115,9 @@ export type TInViewTabProps = {
   name: TInViewTab
   isMsgView: boolean
   icon: { active: string; inactive: string }
+}
+
+export interface IGetRecipientAccountValues {
+  members: string[]
+  accountId: string
 }

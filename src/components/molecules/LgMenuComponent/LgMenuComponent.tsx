@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { Menu, Transition } from '@headlessui/react'
-import { IChat, INotification, IUser } from 'typings'
+import { IChat, INotification, IAccount } from 'typings'
 import { BellIcon } from '@heroicons/react/24/outline'
 import { useAppDispatch, useAppSelector } from 'src/app'
 import { updateCurrentChat } from 'src/app/slices/chatSlice'
@@ -12,7 +12,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-const LgMenuComponent = ({ localUser }: { localUser: IUser }) => {
+const LgMenuComponent = ({ localUser }: { localUser: IAccount }) => {
   const dispatch = useAppDispatch()
   const [unreadNotifications, setUnreadNotifications] = useState<
     INotification[]
@@ -42,11 +42,11 @@ const LgMenuComponent = ({ localUser }: { localUser: IUser }) => {
     (
       notification: INotification,
       userChats: IChat[],
-      user: IUser,
+      user: IAccount,
       notifications: INotification[],
     ) => {
       const chatToOpen = userChats.find((chat) => {
-        const chatMembers = [user._id, notification.senderId._id]
+        const chatMembers = [user.email, notification.senderId.email]
         const isChatToOpen = chat.members?.every((member) => {
           return chatMembers.includes(member)
         })
@@ -76,7 +76,7 @@ const LgMenuComponent = ({ localUser }: { localUser: IUser }) => {
       if (!chatToOpen) return
       dispatch(
         updateCurrentChat({
-          chat: chatToOpen,
+          ...chatToOpen,
         }),
       )
     },
@@ -137,7 +137,7 @@ const LgMenuComponent = ({ localUser }: { localUser: IUser }) => {
                     markNotificationAsRead(
                       notification,
                       userChats,
-                      user,
+                      user.user as IAccount,
                       notifications,
                     )
                   }

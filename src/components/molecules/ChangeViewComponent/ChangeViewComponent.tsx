@@ -52,8 +52,7 @@ const views: IChangeViewItem[] = [
 
 const ChangeViewComponent = () => {
   const dispatch = useAppDispatch()
-
-  const [handleLogOutUser] = useLogOutUser()
+  const { handleLogOutUser } = useLogOutUser()
 
   const handleChangeInView = (route: TRoute) => {
     dispatch(setActiveRoute(route))

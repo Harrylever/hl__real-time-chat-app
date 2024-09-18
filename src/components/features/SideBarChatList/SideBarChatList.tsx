@@ -1,22 +1,10 @@
 import clsx from 'clsx'
 import React, { useState } from 'react'
 import { MdClose } from 'react-icons/md'
-import { ComingSoon, LoadingPlayer } from 'src/components/ui'
+import { ComingSoon } from 'src/components/ui'
 import { useAppDispatch, useAppSelector } from 'src/app'
 import { setSideBarChatDisplay } from 'src/app/slices/appUIStateSlice'
-import { PotentialChatWrap, UserMessageWrap } from 'src/components/molecules'
-import {
-  IChat,
-  IPotentialChatWrapProps,
-  TInViewTab,
-  TInViewTabProps,
-} from 'typings'
-import {
-  useGetScreenSize,
-  useMobileSelectChatHandler,
-  useUpdateCurrentChatHandler,
-} from 'src/components/hooks'
-import useLogOutUser from 'src/app/hooks/useLogOutUser'
+import { TInViewTab, TInViewTabProps } from 'typings'
 
 interface ISideBarChatListProps {}
 
@@ -24,8 +12,6 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.userReduce)
   const [inViewTabActive, setInViewTabActive] = useState<TInViewTab>('chats')
-
-  const [handleLogOutUser] = useLogOutUser()
 
   const inViewtabs: TInViewTabProps[] = [
     {
@@ -60,10 +46,7 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
   }
 
   return (
-    <section
-      data-aos="fade-right"
-      className="bg-mx-primary-9 absolute z-[40] top-0 left-0 w-screen h-screen overflow-hidden"
-    >
+    <section className="bg-mx-primary-9 absolute z-[40] top-0 left-0 w-screen h-screen overflow-hidden">
       <div className="relative w-full h-full flex flex-col items-start justify-start mt-5 px-7 pb-32">
         <div className="w-full flex flex-row items-center justify-between">
           <img
@@ -157,7 +140,7 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
           </button>
           <button
             type="button"
-            onClick={handleLogOutUser}
+            onClick={() => console.log('Log out')}
             className="w-full bg-red-600 text-white py-2 rounded-lg"
           >
             Logout
@@ -165,79 +148,6 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
         </div>
       </div>
     </section>
-  )
-}
-
-const ChatsView = () => {
-  const user = useAppSelector((state) => state.userReduce)
-  const potentialChats = useAppSelector(
-    (state) => state.potentialChatsReduce.users,
-  )
-
-  const [activeChats, setActiveChats] = useState<
-    'userschats' | 'potentialchats'
-  >('userschats')
-
-  const [callBackFromPotentialChatsWrap, userChats, chatsIsLoading] =
-    useMobileSelectChatHandler()
-
-  const [updateCurrentChatHandler] = useUpdateCurrentChatHandler()
-
-  const handleCallBackFromPotentialsChatsWrap = (chat: IChat) => {
-    if (
-      typeof callBackFromPotentialChatsWrap !== 'boolean' &&
-      typeof callBackFromPotentialChatsWrap !== 'object'
-    ) {
-      callBackFromPotentialChatsWrap()
-    }
-    updateCurrentChatHandler(chat)
-  }
-
-  const [screenWidth] = useGetScreenSize()
-
-  return (
-    <div className="w-full">
-      <div className="flex flex-row items-center justify-between">
-        <p>Select chat</p>
-
-        <button
-          type="button"
-          onClick={() =>
-            setActiveChats(
-              activeChats === 'userschats' ? 'potentialchats' : 'userschats',
-            )
-          }
-        >
-          <p className="text-xs font-medium text-mx-grey p-0.5 bg-[#ffffff8e] rounded-md">
-            {activeChats === 'userschats'
-              ? 'See all contacts'
-              : 'See your chats'}
-          </p>
-        </button>
-      </div>
-
-      {/* Potential Chats */}
-      <div>
-        {chatsIsLoading && <LoadingPlayer />}
-        {activeChats === 'userschats' ? (
-          <UserMessageWrap
-            props={{
-              chats: userChats as IChat[],
-              user: user,
-              messageType: 'chats',
-              isForMobile: screenWidth < 1024,
-            }}
-          />
-        ) : (
-          <PotentialChatWrap
-            props={potentialChats as IPotentialChatWrapProps}
-            updatePotentialChatsCb={(chat) =>
-              handleCallBackFromPotentialsChatsWrap(chat)
-            }
-          />
-        )}
-      </div>
-    </div>
   )
 }
 

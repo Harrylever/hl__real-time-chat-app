@@ -18,11 +18,7 @@ const useUpdateCurrentChatHandler = () => {
   const updateCurrentChatHandler = (chat: IChat) => {
     dispatch(setActiveRoute('chats'))
 
-    dispatch(
-      updateCurrentChat({
-        chat,
-      }),
-    )
+    dispatch(updateCurrentChat(chat))
 
     if (sideBarChatListIsOpen) {
       setTimeout(() => {
@@ -38,11 +34,7 @@ const useUpdateCurrentChatHandler = () => {
   ) => {
     dispatch(setActiveRoute('chats'))
 
-    dispatch(
-      updateCurrentChat({
-        chat,
-      }),
-    )
+    dispatch(updateCurrentChat(chat))
 
     if (
       notifications &&
@@ -59,7 +51,7 @@ const useUpdateCurrentChatHandler = () => {
     }
   }
 
-  return [updateCurrentChatHandler, updateCurrentChatHandlerWithNotifications]
+  return { updateCurrentChatHandler, updateCurrentChatHandlerWithNotifications }
 }
 
 export default useUpdateCurrentChatHandler

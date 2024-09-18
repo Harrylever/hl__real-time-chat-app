@@ -1,28 +1,33 @@
 import clsx from 'clsx'
-import { ChangeEvent, FormEvent } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 
-interface IMessageInputFormProps {
-  newMessage: string
-  handleMessageFormPostCb: (e: FormEvent<HTMLFormElement>) => void
-  handleUpdateNewMessageCb: (e: ChangeEvent<HTMLInputElement>) => void
+interface MessageInputFormProps {
   messageIsSending: boolean
 }
 
-const MessageInputForm: React.FC<IMessageInputFormProps> = ({
-  handleMessageFormPostCb,
-  newMessage,
-  handleUpdateNewMessageCb,
+const MessageInputForm: React.FC<MessageInputFormProps> = ({
   messageIsSending,
 }) => {
+  const [newMessage, setNewMessage] = useState('')
+
+  const handleSetNewMessage = (e: ChangeEvent<HTMLInputElement>) => {
+    const msg = e.target.value
+    setNewMessage(msg)
+  }
+
+  const handleMessageFormPost = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+  }
+
   return (
     <div className="relative w-full h-[100px] bg-mx-primary-9 shadow-inner flex items-center justify-center">
-      <form onSubmit={handleMessageFormPostCb} className="w-full h-fit">
+      <form onSubmit={handleMessageFormPost} className="w-full h-fit">
         <div className="relative h-[52px] flex flex-row items-center justify-start px-3.5 sm:px-10 w-full">
           <div className="w-full h-full relative">
             <input
               type="text"
               value={newMessage}
-              onChange={handleUpdateNewMessageCb}
+              onChange={handleSetNewMessage}
               placeholder="Type something"
               className="w-full h-full px-3.5 border-none focus:border-none outline-none rounded-l-lg placeholder:text-sm caret-mx-grey text-mx-black text-sm"
             />

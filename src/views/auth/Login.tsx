@@ -1,22 +1,17 @@
 import { PageProps } from 'typings'
 import { classNames } from 'src/styles'
 import { Link } from 'react-router-dom'
+import { handleRememberMe } from 'src/util/utils'
+import React, { useEffect, useState } from 'react'
 import { useToast } from '@/components/ui/use-toast'
-import { AuthRequests, useAxiosPrivate } from 'src/app'
-import React, { useEffect, useMemo, useState } from 'react'
 import DefaultWidth from 'src/components/layout/DefaultWidth'
-import { buildJWTDecode, handleRememberMe } from 'src/util/utils'
+import { useLoginUserMutation } from 'src/app/api/hooks/useAuth'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
 const Login: React.FC<{ props?: PageProps }> = () => {
   const { toast } = useToast()
-  const axiosPrivate = useAxiosPrivate()
-  const authRequests = useMemo(
-    () => new AuthRequests(axiosPrivate),
-    [axiosPrivate],
-  )
-
-  const [isLoading, setIsLoading] = useState(false)
+  const { mutateAsync: submitLoginRequest, isPending: isLoggingIn } =
+    useLoginUserMutation()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -26,7 +21,7 @@ const Login: React.FC<{ props?: PageProps }> = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
+
     handleRememberMe(email, rememberMeChecked)
 
     const loginData = {
@@ -35,38 +30,18 @@ const Login: React.FC<{ props?: PageProps }> = () => {
     }
 
     try {
-      const response = await authRequests.login(loginData)
-      if (
-        response.token &&
-        response.message.toLowerCase() === 'user logged in'
-      ) {
+      const response = await submitLoginRequest(loginData)
+
+      if (response.success) {
         toast({
           variant: 'success',
           title: 'Success',
           description: 'Logged in successfully!',
         })
 
-        const decoded = buildJWTDecode<{ email: string; _id: string }>(
-          response.token,
-        )
-        const token = {
-          _id: decoded._id,
-          token: response.token,
-        }
-        window.localStorage.setItem('auth', JSON.stringify(token))
-
         setTimeout(() => {
           window.location.href = '/app'
         }, 500)
-        return
-      }
-
-      if (response.message.toLowerCase() === 'invalid credentials!') {
-        toast({
-          variant: 'destructive',
-          title: 'Uh oh! Something went wrong',
-          description: 'Wrong/Invalid credentials!',
-        })
         return
       }
 
@@ -75,14 +50,13 @@ const Login: React.FC<{ props?: PageProps }> = () => {
         title: 'Uh oh! Something went wrong',
         description: 'Wrong/Invalid credentials!',
       })
+      return
     } catch (err) {
       toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong',
         description: 'Login failed. Please try again!',
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -144,7 +118,7 @@ const Login: React.FC<{ props?: PageProps }> = () => {
                   type="email"
                   value={email}
                   autoComplete="email"
-                  disabled={isLoading}
+                  disabled={isLoggingIn}
                   placeholder="johndoe@gmail.com"
                   className={classNames.authFormInput}
                   onChange={(e) => setEmail(e.target.value)}
@@ -165,7 +139,7 @@ const Login: React.FC<{ props?: PageProps }> = () => {
                   name="password"
                   value={password}
                   placeholder="*****"
-                  disabled={isLoading}
+                  disabled={isLoggingIn}
                   autoComplete="current-password"
                   className={classNames.authFormInput}
                   type={viewPassword ? 'text' : 'password'}
@@ -174,7 +148,7 @@ const Login: React.FC<{ props?: PageProps }> = () => {
                 {password.length > 1 ? (
                   <button
                     type="button"
-                    disabled={isLoading}
+                    disabled={isLoggingIn}
                     onClick={() => setViewPassword(!viewPassword)}
                     className="absolute top-1/2 -translate-y-1/2 right-5 text-indigo-700"
                   >
@@ -203,7 +177,7 @@ const Login: React.FC<{ props?: PageProps }> = () => {
                     type="checkbox"
                     id="remember-me"
                     name="remember-me"
-                    disabled={isLoading}
+                    disabled={isLoggingIn}
                     checked={rememberMeChecked}
                     onChange={() => setRememberMeChecked(!rememberMeChecked)}
                     className="block border border-mx-stroke bg-mx-white py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-lg sm:leading-6 w-[25px] h-[25px]"
@@ -221,10 +195,10 @@ const Login: React.FC<{ props?: PageProps }> = () => {
             <div className="mt-2">
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoggingIn}
                 className={classNames.authFormBtn}
               >
-                {isLoading ? 'Loading...' : 'Sign in'}
+                {isLoggingIn ? 'Loading...' : 'Sign in'}
               </button>
             </div>
           </form>

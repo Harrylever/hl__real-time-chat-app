@@ -12,6 +12,7 @@ const useGetScreenSize = () => {
   }
 
   useEffect(() => {
+    // getScreenSizeHandler()
     window.addEventListener('resize', getScreenSizeHandler)
 
     return () => {
@@ -19,7 +20,7 @@ const useGetScreenSize = () => {
     }
   }, [])
 
-  return [screenWidth, screenHeight]
+  return { screenWidth, screenHeight }
 }
 
 export default useGetScreenSize

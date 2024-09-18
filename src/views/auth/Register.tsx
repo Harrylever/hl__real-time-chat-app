@@ -1,23 +1,19 @@
 import clsx from 'clsx'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { classNames } from 'src/styles'
-import { IUser, PageProps } from 'typings'
+import { IAccount, PageProps } from 'typings'
+import { useToast } from '@/components/ui/use-toast'
+import { useRegisterUserMutation } from 'src/app/api/hooks'
 import DefaultWidth from 'src/components/layout/DefaultWidth'
 import { isValidEmail, isValidPassword } from 'src/util/utils'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
-// import { usePostRegisterMutation } from 'src/app/slices/authApiSlice'
-import { useToast } from '@/components/ui/use-toast'
-import { AuthRequests, useAxiosPrivate } from 'src/app'
+import { useNavigate } from 'react-router-dom'
 
 const Register: React.FC<{ props?: PageProps }> = () => {
   const { toast } = useToast()
-  const axiosPrivate = useAxiosPrivate()
-  const authRequests = useMemo(
-    () => new AuthRequests(axiosPrivate),
-    [axiosPrivate],
-  )
-
-  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+  const { mutateAsync: submitRegisterRequest, isPending: isRegistering } =
+    useRegisterUserMutation()
 
   // Form States
   const [username, setUsername] = useState('')
@@ -43,16 +39,13 @@ const Register: React.FC<{ props?: PageProps }> = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
 
     if (!isValidEmail(email)) {
-      setIsLoading(false)
       errorToast({ title: 'Please provide a valid email!' })
       return
     }
 
     if (!isValidPassword(password)) {
-      setIsLoading(false)
       errorToast({
         title: 'Please provide a valid password',
         description:
@@ -61,7 +54,7 @@ const Register: React.FC<{ props?: PageProps }> = () => {
       return
     }
 
-    const registerData: IUser = {
+    const registerData: IAccount = {
       username: username.toLowerCase().trim(),
       fullname,
       email: email.trim(),
@@ -70,8 +63,9 @@ const Register: React.FC<{ props?: PageProps }> = () => {
     }
 
     try {
-      const response = await authRequests.register(registerData)
-      if (response.message.toLowerCase() === 'account successfully created') {
+      const response = await submitRegisterRequest(registerData)
+
+      if (response.success) {
         toast({
           variant: 'success',
           title: 'Account created successfully',
@@ -80,33 +74,29 @@ const Register: React.FC<{ props?: PageProps }> = () => {
 
         setTimeout(() => {
           window.localStorage.setItem('email', email)
-          window.location.assign('/login')
-        }, 3700)
+          navigate('/auth/login')
+        }, 2000)
         return
       }
     } catch (err) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const error = err as any
-      if (
-        error.response.data.message.toLowerCase() === 'user with email exists!'
-      ) {
+      const errorMessage = error.response.data.message
+      if (errorMessage.toLowerCase() === 'user with email exists!') {
         toast({
           variant: 'destructive',
           title: 'User already exists with email',
         })
         return
       }
-      if (
-        error.response.data.message.toLowerCase() ===
-        'user with username exists!'
-      ) {
+      if (errorMessage.toLowerCase() === 'user with username exists!') {
         toast({
           variant: 'destructive',
           title: 'User already exists with username',
         })
         return
       }
-      if (error.response.data.message.toLowerCase() === 'invalid password!') {
+      if (errorMessage.toLowerCase() === 'invalid password!') {
         toast({
           title: 'Please provide a valid password',
           description:
@@ -119,8 +109,6 @@ const Register: React.FC<{ props?: PageProps }> = () => {
         title: 'Uh oh! Something went wrong',
         description: 'Login failed. Please try again!',
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -170,7 +158,7 @@ const Register: React.FC<{ props?: PageProps }> = () => {
                   id="username"
                   name="username"
                   value={username}
-                  disabled={isLoading}
+                  disabled={isRegistering}
                   autoComplete="username"
                   placeholder="johndoe35x"
                   className={classNames.authFormInput}
@@ -194,7 +182,7 @@ const Register: React.FC<{ props?: PageProps }> = () => {
                   name="fullname"
                   value={fullname}
                   placeholder="john doe"
-                  disabled={isLoading}
+                  disabled={isRegistering}
                   autoComplete="fullname"
                   className={classNames.authFormInput}
                   onChange={(e) => setFullname(e.target.value)}
@@ -217,7 +205,7 @@ const Register: React.FC<{ props?: PageProps }> = () => {
                   type="email"
                   value={email}
                   autoComplete="email"
-                  disabled={isLoading}
+                  disabled={isRegistering}
                   placeholder="johndoe@gmail.com"
                   className={classNames.authFormInput}
                   onChange={(e) => setEmail(e.target.value)}
@@ -241,7 +229,7 @@ const Register: React.FC<{ props?: PageProps }> = () => {
                   name="password"
                   value={password}
                   placeholder="*****"
-                  disabled={isLoading}
+                  disabled={isRegistering}
                   autoComplete="current-password"
                   className={classNames.authFormInput}
                   type={viewPassword ? 'text' : 'password'}
@@ -250,7 +238,7 @@ const Register: React.FC<{ props?: PageProps }> = () => {
                 {password.length > 1 ? (
                   <button
                     type="button"
-                    disabled={isLoading}
+                    disabled={isRegistering}
                     onClick={() => setViewPassword(!viewPassword)}
                     className="absolute top-1/2 -translate-y-1/2 right-5 text-indigo-700"
                   >
@@ -286,7 +274,7 @@ const Register: React.FC<{ props?: PageProps }> = () => {
                   value={password}
                   id="accept-terms"
                   name="accept-terms"
-                  disabled={isLoading}
+                  disabled={isRegistering}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block border border-mx-stroke bg-mx-white py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-lg sm:leading-6 w-[25px] h-[25px]"
                 />
@@ -299,13 +287,13 @@ const Register: React.FC<{ props?: PageProps }> = () => {
                 className={clsx([
                   classNames.authFormBtn,
                   {
-                    'bg-indigo-600': !isLoading,
-                    'bg-indigo-400': isLoading,
+                    'bg-indigo-600': !isRegistering,
+                    'bg-indigo-400': isRegistering,
                   },
                 ])}
-                disabled={isLoading}
+                disabled={isRegistering}
               >
-                {isLoading ? 'Loading...' : 'Sign up'}
+                {isRegistering ? 'Loading...' : 'Sign up'}
               </button>
             </div>
           </form>

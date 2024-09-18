@@ -1,24 +1,27 @@
+import { IAccount } from '../../../typings'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IUser } from '../../../typings'
 
-const initState: IUser = {
-  _id: '',
-  username: '',
-  fullname: '',
-  email: '',
-  imgUri: '',
+interface IUserSlice {
+  user: IAccount | undefined
+}
+
+interface ISetUserPayload {
+  username?: string
+  fullname?: string
+  email?: string
+  imgUri?: string
+}
+
+const initState: IUserSlice = {
+  user: undefined,
 }
 
 const userSlice = createSlice({
   name: 'userSlice',
   initialState: initState,
   reducers: {
-    setUser: (state: IUser, action: PayloadAction<IUser>) => {
-      ;(state._id = action.payload._id),
-        (state.username = action.payload.username),
-        (state.fullname = action.payload.fullname),
-        (state.email = action.payload.email)
-      state.imgUri = action.payload.imgUri
+    setUser: (state: IUserSlice, action: PayloadAction<ISetUserPayload>) => {
+      state.user = action.payload
     },
   },
 })

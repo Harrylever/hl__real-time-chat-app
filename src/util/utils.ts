@@ -1,9 +1,13 @@
 import { jwtDecode } from 'jwt-decode'
-import { IUser } from 'typings'
+import { IAccount, IOnlineUser } from 'typings'
 
-export function checkIsNum(value: string): boolean {
-  const isNum = /^\d+$/
-  return isNum.test(value)
+// export function checkIsNum(value: string): boolean {
+//   const isNum = /^\d+$/
+//   return isNum.test(value)
+// }
+
+export function isNumeric(value: any) {
+  return isNaN(Number(value))
 }
 
 /**
@@ -11,22 +15,22 @@ export function checkIsNum(value: string): boolean {
  * @param token
  * @returns
  */
-function buildJWTDecode<T>(token: string): T {
+export function buildJWTDecode<T>(token: string): T {
   return jwtDecode(token)
 }
 
-function isValidEmail(email: string): boolean {
+export function isValidEmail(email: string): boolean {
   const validEmailRegEx =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
   return validEmailRegEx.test(email)
 }
 
-function isValidPassword(password: string): boolean {
+export function isValidPassword(password: string): boolean {
   const validPasswordRegEx = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).+$/
   return validPasswordRegEx.test(password)
 }
 
-function generatePassword() {
+export function generatePassword() {
   const length = 13
   const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz'
@@ -48,11 +52,11 @@ function generatePassword() {
   }
 }
 
-function goToLocation(pathname: string) {
+export function goToLocation(pathname: string) {
   window.location.href = pathname
 }
 
-function handleRememberMe(email: string, rememberMe: boolean) {
+export function handleRememberMe(email: string, rememberMe: boolean) {
   if (rememberMe) {
     const rememberMeEmail = window.localStorage.getItem('rememberMeEmail')
 
@@ -66,17 +70,20 @@ function handleRememberMe(email: string, rememberMe: boolean) {
   }
 }
 
-function userIsPresent(user: IUser | undefined) {
+export function userIsPresent(user: IAccount | undefined) {
   if (user && user._id && user._id.length > 0) return true
   return false
 }
 
-export {
-  goToLocation,
-  isValidEmail,
-  userIsPresent,
-  buildJWTDecode,
-  isValidPassword,
-  generatePassword,
-  handleRememberMe,
+export function truncateText(text: string) {
+  let shortText = text.substring(0, 20)
+
+  if (text.length > 20) {
+    shortText = shortText + '...'
+  }
+  return shortText
+}
+
+export function userIsOnline(accountId: string, onlineUsers: IOnlineUser[]) {
+  return onlineUsers.some((user) => user.userId === accountId)
 }

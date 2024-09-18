@@ -1,24 +1,14 @@
 import clsx from 'clsx'
 import moment from 'moment'
+import { useEffect, useMemo, useState } from 'react'
+import { useAppSelector } from '../../../app'
 import { FetchLatestMessage } from '../../tools'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { truncateText, userIsOnline } from 'src/util/utils'
+import { IChat, INotification, UserChatProps } from 'typings'
 import { useUpdateCurrentChatHandler } from 'src/components/hooks'
-import { IChat, IUser, INotification, IUserChatProps } from 'typings'
 import { UnreadNotificationsFunc } from 'src/util/manipulate-notification'
-import { useAppSelector, useAxiosPrivate, UserRequests } from '../../../app'
 
-const UserChat: React.FC<{ props: IUserChatProps }> = ({
-  props: { user, chat },
-}) => {
-  const axiosInstance = useAxiosPrivate()
-  const userRequests = useMemo(
-    () => new UserRequests(axiosInstance),
-    [axiosInstance],
-  )
-
-  const [recipientUser, setRecipientUser] = useState<IUser | undefined>(
-    undefined,
-  )
+const UserChat: React.FC<UserChatProps> = ({ chat, recipientUser }) => {
   const [unReadNotifications, setUnReadNotifications] = useState<
     INotification[]
   >([])
@@ -26,38 +16,7 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
     INotification[]
   >([])
 
-  const [, setIsLoading] = useState(false)
-
-  const getRecipientUserProcess = useCallback(() => {
-    setIsLoading(true)
-    const recipientId = chat?.members?.find((id) => id !== user?._id)
-
-    if (!recipientId) return null
-    const fetch = userRequests.useGetUserByIdQuery(recipientId)
-    fetch
-      .then((res) => {
-        if (res.success) {
-          setRecipientUser(res.data as IUser)
-        } else {
-          console.log('Unexpected error occured')
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
-  }, [chat?.members, user?._id, userRequests])
-
-  useEffect(() => {
-    getRecipientUserProcess()
-  }, [getRecipientUserProcess])
-
   const onlineUsers = useAppSelector((state) => state.socketReduce.onlineUsers)
-  const isOnline =
-    onlineUsers &&
-    onlineUsers.some((user) => user.userId === recipientUser?._id)
 
   const notifications = useAppSelector(
     (state) => state.notificationReduce.notifications,
@@ -72,47 +31,45 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
   // Update User Notification for Specific Sender
   useEffect(() => {
     const newThisUserNotifications = unReadNotifications.filter(
-      (notif) => notif.senderId._id === recipientUser?._id,
+      (notif) => notif.senderId.email === recipientUser?.email,
     )
     setThisUserNotifications(newThisUserNotifications)
-  }, [recipientUser?._id, unReadNotifications])
+  }, [recipientUser?.email, unReadNotifications])
 
-  const [, updateCurrentChatHandlerWithNotifications] =
+  const { updateCurrentChatHandlerWithNotifications } =
     useUpdateCurrentChatHandler()
 
-  const latestMessage = FetchLatestMessage(chat as IChat)
-
-  const truncateText = (text: string) => {
-    let shortText = text.substring(0, 20)
-
-    if (text.length > 20) {
-      shortText = shortText + '...'
-    }
-    return shortText
-  }
+  const latestMessage = FetchLatestMessage()
 
   const currentChat = useAppSelector((state) => state.chatReduce.chat)
+  const isOnline = userIsOnline(recipientUser.email ?? '', onlineUsers ?? [])
+  const thisUserNotificationsExists = useMemo(
+    () => thisUserNotifications.length > 0,
+    [thisUserNotifications.length],
+  )
+
+  const handleButtonClick = () => {
+    updateCurrentChatHandlerWithNotifications(
+      chat as IChat,
+      notifications,
+      thisUserNotifications,
+    )
+  }
 
   return (
     <button
       type="button"
-      onClick={() =>
-        updateCurrentChatHandlerWithNotifications(
-          chat as IChat,
-          notifications,
-          thisUserNotifications,
-        )
-      }
+      onClick={handleButtonClick}
       className={clsx([
         'flex flex-row items-center justify-between w-full max-w-full border-b border-[#ffffff2d] py-0.5 sm:py-2 pl-1 pr-3 rounded-lg hover:bg-mx-primary-8 duration-150',
-        { 'bg-mx-primary-8': currentChat._id === chat?._id },
+        { 'bg-mx-primary-8': currentChat?._id === chat?._id },
       ])}
     >
       <div className="flex flex-row items-center justify-center gap-x-2.5">
         <div className="w-fit border-2 border-[#ffffff73] rounded-full hover:border-white relative">
           <img
-            src={recipientUser?.imgUri}
-            alt={recipientUser?.username}
+            src={recipientUser.imgUri}
+            alt={recipientUser.username}
             className="rounded-full h-[50px] w-[50px] shadow-lg overflow-hidden"
           />
           {isOnline && (
@@ -122,9 +79,9 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
         <div className="flex flex-col gap-2.5 items-start justify-center mt-1">
           <div>
             <p className="text-mx-black font-medium text-sm/[0.6rem] sm:text-sm/[0.7rem] tracking-wide capitalize">
-              {recipientUser?.username && recipientUser.username.length > 10
-                ? `${recipientUser?.username.substring(0, 7)}..`
-                : recipientUser?.username}
+              {recipientUser.username && recipientUser.username.length > 10
+                ? `${recipientUser.username.substring(0, 7)}..`
+                : recipientUser.username}
             </p>
           </div>
 
@@ -142,8 +99,8 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
         className={clsx([
           'flex flex-col items-end justify-between mt-2 h-full min-h-[45px] gap-y-1.5',
           {
-            'gap-0.5': thisUserNotifications.length > 0,
-            'gap-4': thisUserNotifications.length === 0,
+            'gap-0.5': thisUserNotificationsExists,
+            'gap-4': !thisUserNotificationsExists,
           },
         ])}
       >
@@ -156,7 +113,7 @@ const UserChat: React.FC<{ props: IUserChatProps }> = ({
         </div>
 
         <div className="h-1/2">
-          {thisUserNotifications.length > 0 && (
+          {thisUserNotificationsExists && (
             <div className="bg-mx-primary h-[16px] w-[16px] rounded-full flex items-center justify-center">
               <span className="text-white text-xs font-bold">
                 {thisUserNotifications.length}

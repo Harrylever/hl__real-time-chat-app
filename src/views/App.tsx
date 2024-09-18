@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { TRoute } from '../../typings'
 import { useAppSelector } from '../app'
 import { ChatInView, GroupsInView, SettingsInView } from './InView'
@@ -14,7 +14,7 @@ const ApplicationView = () => {
     settings: <SettingsInView />,
   }
 
-  return <>{views[activeInView]}</>
+  return <Fragment>{views[activeInView]}</Fragment>
 }
 
 export default ApplicationView
