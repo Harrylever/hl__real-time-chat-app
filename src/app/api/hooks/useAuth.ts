@@ -8,36 +8,36 @@ import {
   createUserAccount,
 } from '../actions/auth'
 import { AxiosError } from 'axios'
-import { ApiBaseResponse, IAccount } from 'typings'
+import { BaseResponse, IAccount } from 'typings'
 
 export function useIndexQuery() {
-  return useQuery<ApiBaseResponse, AxiosError>({
+  return useQuery<BaseResponse, AxiosError>({
     queryKey: ['index'],
     queryFn: getIndex,
   })
 }
 
 export function useLoginUserMutation() {
-  return useMutation<ApiBaseResponse, AxiosError, ILoginValues>({
+  return useMutation<BaseResponse, AxiosError, ILoginValues>({
     mutationFn: (credentials) => loginUser(credentials),
   })
 }
 
 export function useRegisterUserMutation() {
-  return useMutation<ApiBaseResponse, AxiosError, IAccount>({
+  return useMutation<BaseResponse, AxiosError, IAccount>({
     mutationFn: (user) => createUserAccount(user),
   })
 }
 
 export function useLoginStatusQuery() {
-  return useQuery<ApiBaseResponse, AxiosError>({
+  return useQuery<BaseResponse, AxiosError>({
     queryKey: ['loginstatus'],
     queryFn: loginStatus,
   })
 }
 
 export function useLogoutUser() {
-  return useQuery<ApiBaseResponse, AxiosError>({
+  return useQuery<BaseResponse, AxiosError>({
     queryKey: ['logout'],
     queryFn: logoutUser,
   })

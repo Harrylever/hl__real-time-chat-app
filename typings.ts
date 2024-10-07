@@ -1,3 +1,5 @@
+import { LegacyRef } from 'react'
+
 export const BASE_URL = import.meta.env.VITE_BE_URL
 
 export interface IAuthState {
@@ -16,9 +18,15 @@ export interface IAccount {
   role?: ('standard' | 'admin')[]
 }
 
-export interface ApiBaseResponse {
+export interface BaseResponse {
   success: boolean
   message: string
+}
+
+export interface ApiBaseResponse<T> {
+  success: boolean
+  message: string
+  data: T
 }
 
 export interface ILoginResValues {
@@ -32,8 +40,8 @@ export interface ILoginResValues {
 }
 
 export interface IChat {
-  _id?: string
-  members?: Array<string>
+  id?: string
+  members: Array<string>
 }
 
 export interface ChatSectionProps {
@@ -56,13 +64,10 @@ export interface PotentialChatWrapProps {}
 
 export interface UserChatProps {
   chat: IChat
-  account: IAccount
-  recipientUser: IAccount
 }
 
 export interface UserChatsWrapProps {
   chats: Array<IChat>
-  user: IAccount
 }
 
 export interface IMessage {
@@ -83,7 +88,7 @@ export interface ChatViewProps {
   recipientUser: IAccount
 }
 
-export interface IMessageProps<T> {
+export interface MessageProps<T> {
   prevMessage?: IMessage
   nextMessage?: IMessage
   message: IMessage
@@ -120,4 +125,15 @@ export type TInViewTabProps = {
 export interface IGetRecipientAccountValues {
   members: string[]
   accountId: string
+}
+
+export interface UserChatTemplateProps {
+  ref: LegacyRef<HTMLButtonElement>
+  chat: IChat
+  recipientUser: IAccount
+  currentChat: IChat | undefined
+  isOnline: boolean
+  handleButtonClick: () => void
+  latestMessage: IMessage | undefined
+  thisUserNotifications: INotification[]
 }

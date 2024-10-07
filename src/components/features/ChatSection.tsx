@@ -12,7 +12,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ user }) => {
         <div className="h-full w-full pl-8 pr-0">
           {/* // User-Chats-Wrap Component
           // the userChats Array is being passed as the props from THE REDUX REDUCER */}
-          <UserChatsWrap user={user} chats={userChats} />
+          <UserChatsWrap chats={userChats} />
         </div>
       </div>
 

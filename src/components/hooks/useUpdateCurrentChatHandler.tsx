@@ -23,7 +23,7 @@ const useUpdateCurrentChatHandler = () => {
     if (sideBarChatListIsOpen) {
       setTimeout(() => {
         dispatch(setSideBarChatDisplay(false))
-      }, 500)
+      }, 200)
     }
   }
 
@@ -33,7 +33,6 @@ const useUpdateCurrentChatHandler = () => {
     thisUserNotifications?: INotification[],
   ) => {
     dispatch(setActiveRoute('chats'))
-
     dispatch(updateCurrentChat(chat))
 
     if (
@@ -47,7 +46,7 @@ const useUpdateCurrentChatHandler = () => {
     if (sideBarChatListIsOpen) {
       setTimeout(() => {
         dispatch(setSideBarChatDisplay(false))
-      }, 500)
+      }, 200)
     }
   }
 

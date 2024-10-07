@@ -1,8 +1,7 @@
-import ChatView from './ChatView'
-import React, { useEffect } from 'react'
-import { ChatBoxProps, IAccount, IChat } from '../../../../typings'
-import { useGetChatMessagesQuery } from 'src/app/api/hooks'
+import React from 'react'
 import { useAppSelector } from 'src/app'
+import { ChatBoxProps } from '../../../../typings'
+import ChatViewContainer from './ChatViewContainer'
 
 const ChatBox: React.FC<ChatBoxProps> = ({ user }) => {
   const currentChat = useAppSelector((state) => state.chatReduce.chat)
@@ -27,38 +26,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({ user }) => {
           </div>
         </div>
       )}
-    </div>
-  )
-}
-
-interface ChatViewContainerProps {
-  user: IAccount
-  currentChat: IChat
-}
-
-const ChatViewContainer: React.FC<ChatViewContainerProps> = ({
-  user,
-  currentChat,
-}) => {
-  console.log(currentChat._id)
-  const { data, error } = useGetChatMessagesQuery(currentChat._id as string)
-
-  useEffect(() => {
-    if (error) {
-      console.log(error)
-    }
-    if (data) {
-      console.log(data.data)
-    }
-  }, [data, error])
-
-  return (
-    <div className="w-full h-full">
-      <ChatView
-        messages={[]}
-        userEmail={user.email ?? ''}
-        recipientUser={user}
-      />
     </div>
   )
 }

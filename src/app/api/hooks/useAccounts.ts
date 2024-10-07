@@ -7,30 +7,31 @@ import {
 import { AxiosError } from 'axios'
 import { ApiBaseResponse, IAccount, IGetRecipientAccountValues } from 'typings'
 
-interface IUseGetActiveUserQueryResponse extends ApiBaseResponse {
-  data: Pick<IAccount, 'email' | 'fullname' | 'imgUri' | 'username'>
-}
-
 export function useGetActiveUserQuery() {
-  return useQuery<IUseGetActiveUserQueryResponse, AxiosError>({
+  return useQuery<
+    ApiBaseResponse<
+      Pick<IAccount, 'email' | 'fullname' | 'imgUri' | 'username'>
+    >,
+    AxiosError
+  >({
     queryKey: ['getactiveuser'],
     queryFn: getActiveAccount,
   })
 }
 
-export function useGetRecipientUserQuery(values: IGetRecipientAccountValues) {
-  return useQuery<IAccount, AxiosError>({
+export function useGetRecipientUserQuery(
+  values: IGetRecipientAccountValues,
+  { enabled }: { enabled: boolean },
+) {
+  return useQuery<ApiBaseResponse<IAccount>, AxiosError>({
     queryKey: ['getrecipientuser'],
     queryFn: () => getRecipientAccount(values),
+    enabled,
   })
 }
 
-interface IUseGetAllUsersQuery extends ApiBaseResponse {
-  data: IAccount[]
-}
-
 export function useGetAllUsersQuery() {
-  return useQuery<IUseGetAllUsersQuery, AxiosError>({
+  return useQuery<ApiBaseResponse<IAccount[]>, AxiosError>({
     queryKey: ['getallaccounts'],
     queryFn: getAccounts,
   })

@@ -86,8 +86,6 @@ const PotentialChatsList = () => {
 
   useEffect(() => {
     if (data && user) {
-      console.log(data.data, user)
-
       const filteredChats = data.data.filter(
         (chat) => chat.email?.trim() !== user.email?.trim(),
       )

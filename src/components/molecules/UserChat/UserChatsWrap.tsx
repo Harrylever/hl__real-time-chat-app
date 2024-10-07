@@ -4,7 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { UserChatsWrapProps } from '../../../../typings'
 import { PotentialChatsModal } from 'src/components/features'
 
-const UserChatsWrap: React.FC<UserChatsWrapProps> = ({ user, chats }) => {
+const UserChatsWrap: React.FC<UserChatsWrapProps> = ({ chats }) => {
   return (
     <div className="w-full h-full">
       <div className="hidden sm:flex flex-row items-center justify-between">
@@ -17,7 +17,7 @@ const UserChatsWrap: React.FC<UserChatsWrapProps> = ({ user, chats }) => {
           <div className="flex flex-col gap-y-2 sm:gap-y-1.5">
             {chats.map((chat, _) => (
               <div key={_}>
-                <UserChat chat={chat} account={user} recipientUser={user} />
+                <UserChat chat={chat} />
               </div>
             ))}
           </div>

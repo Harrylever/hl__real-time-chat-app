@@ -1,52 +1,73 @@
-import clsx from 'clsx'
-import moment from 'moment'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useAppSelector } from '../../../app'
+import { userIsOnline } from 'src/util/utils'
 import { FetchLatestMessage } from '../../tools'
-import { truncateText, userIsOnline } from 'src/util/utils'
+import UserChatTemplate from './UserChatTemplate'
+import { useInView } from 'react-intersection-observer'
+import { useGetRecipientUserQuery } from 'src/app/api/hooks'
 import { IChat, INotification, UserChatProps } from 'typings'
 import { useUpdateCurrentChatHandler } from 'src/components/hooks'
 import { UnreadNotificationsFunc } from 'src/util/manipulate-notification'
 
-const UserChat: React.FC<UserChatProps> = ({ chat, recipientUser }) => {
-  const [unReadNotifications, setUnReadNotifications] = useState<
-    INotification[]
-  >([])
-  const [thisUserNotifications, setThisUserNotifications] = useState<
-    INotification[]
-  >([])
+const useNotifications = (
+  notifications: INotification[],
+  recipientEmail?: string,
+) => {
+  const unReadNotifications = useMemo(
+    () => UnreadNotificationsFunc(notifications),
+    [notifications],
+  )
 
-  const onlineUsers = useAppSelector((state) => state.socketReduce.onlineUsers)
+  const thisUserNotifications = useMemo(
+    () =>
+      unReadNotifications.filter(
+        (notif) => notif.senderId.email === recipientEmail,
+      ),
+    [recipientEmail, unReadNotifications],
+  )
 
+  return { unReadNotifications, thisUserNotifications }
+}
+
+const UserChat: React.FC<UserChatProps> = ({ chat }) => {
+  const user = useAppSelector((state) => state.userReduce.user)
   const notifications = useAppSelector(
     (state) => state.notificationReduce.notifications,
   )
+  const currentChat = useAppSelector((state) => state.chatReduce.chat)
+  const onlineUsers = useAppSelector((state) => state.socketReduce.onlineUsers)
 
-  // Update all unread messages
-  useEffect(() => {
-    const newUnReadNotifications = UnreadNotificationsFunc(notifications)
-    setUnReadNotifications(newUnReadNotifications)
-  }, [notifications])
+  const { ref, inView } = useInView()
 
-  // Update User Notification for Specific Sender
-  useEffect(() => {
-    const newThisUserNotifications = unReadNotifications.filter(
-      (notif) => notif.senderId.email === recipientUser?.email,
+  const { data, error, isFetching, isLoading, refetch } =
+    useGetRecipientUserQuery(
+      {
+        accountId: user?.email ?? '',
+        members: chat?.members ?? [],
+      },
+      { enabled: true },
     )
-    setThisUserNotifications(newThisUserNotifications)
-  }, [recipientUser?.email, unReadNotifications])
+
+  useEffect(() => {
+    if (inView) {
+      refetch()
+    }
+  }, [inView, refetch])
+
+  const recipientUser = useMemo(
+    () => (data?.success ? data.data : undefined),
+    [data],
+  )
+  const loading = isFetching || isLoading
+
+  const { thisUserNotifications } = useNotifications(
+    notifications,
+    recipientUser?.email,
+  )
 
   const { updateCurrentChatHandlerWithNotifications } =
     useUpdateCurrentChatHandler()
-
   const latestMessage = FetchLatestMessage()
-
-  const currentChat = useAppSelector((state) => state.chatReduce.chat)
-  const isOnline = userIsOnline(recipientUser.email ?? '', onlineUsers ?? [])
-  const thisUserNotificationsExists = useMemo(
-    () => thisUserNotifications.length > 0,
-    [thisUserNotifications.length],
-  )
 
   const handleButtonClick = () => {
     updateCurrentChatHandlerWithNotifications(
@@ -56,74 +77,48 @@ const UserChat: React.FC<UserChatProps> = ({ chat, recipientUser }) => {
     )
   }
 
-  return (
-    <button
-      type="button"
-      onClick={handleButtonClick}
-      className={clsx([
-        'flex flex-row items-center justify-between w-full max-w-full border-b border-[#ffffff2d] py-0.5 sm:py-2 pl-1 pr-3 rounded-lg hover:bg-mx-primary-8 duration-150',
-        { 'bg-mx-primary-8': currentChat?._id === chat?._id },
-      ])}
-    >
-      <div className="flex flex-row items-center justify-center gap-x-2.5">
-        <div className="w-fit border-2 border-[#ffffff73] rounded-full hover:border-white relative">
-          <img
-            src={recipientUser.imgUri}
-            alt={recipientUser.username}
-            className="rounded-full h-[50px] w-[50px] shadow-lg overflow-hidden"
-          />
-          {isOnline && (
-            <div className="rounded-full h-[10px] w-[10px] bg-mx-primary-4 absolute bottom-[8%] left-[75%]"></div>
-          )}
-        </div>
-        <div className="flex flex-col gap-2.5 items-start justify-center mt-1">
-          <div>
-            <p className="text-mx-black font-medium text-sm/[0.6rem] sm:text-sm/[0.7rem] tracking-wide capitalize">
-              {recipientUser.username && recipientUser.username.length > 10
-                ? `${recipientUser.username.substring(0, 7)}..`
-                : recipientUser.username}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-[0.7rem]/[0.5rem] sm:text-xs/[0.7rem] font-normal text-mx-grey-2">
-              {latestMessage
-                ? truncateText(latestMessage.text)
-                : 'Send a message'}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={clsx([
-          'flex flex-col items-end justify-between mt-2 h-full min-h-[45px] gap-y-1.5',
-          {
-            'gap-0.5': thisUserNotificationsExists,
-            'gap-4': !thisUserNotificationsExists,
-          },
-        ])}
-      >
-        <div className="h-1/2">
-          <p className="block text-[0.7rem] text-mx-black">
-            {latestMessage
-              ? moment(latestMessage.createdAt as string).format('LLL')
-              : ''}
-          </p>
-        </div>
-
-        <div className="h-1/2">
-          {thisUserNotificationsExists && (
-            <div className="bg-mx-primary h-[16px] w-[16px] rounded-full flex items-center justify-center">
-              <span className="text-white text-xs font-bold">
-                {thisUserNotifications.length}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-    </button>
+  const isOnline = useMemo(
+    () => userIsOnline(recipientUser?.email ?? '', onlineUsers ?? []),
+    [onlineUsers, recipientUser?.email],
   )
+
+  if (loading)
+    return (
+      <div className="border border-blue-100 shadow rounded-lg p-4 max-w-sm w-full mx-auto opacity-70">
+        <div className="animate-pulse flex space-x-4">
+          <div className="rounded-full bg-slate-300 h-10 w-10"></div>
+          <div className="flex-1 space-y-3 py-1">
+            <div className="h-2 bg-slate-300 rounded"></div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="h-2 bg-slate-300 rounded col-span-2"></div>
+              <div className="h-2 bg-slate-300 rounded col-span-1"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+
+  if (error || !recipientUser)
+    return (
+      <div>
+        <p>Error loading recipient</p>
+      </div>
+    )
+
+  if (recipientUser) {
+    return (
+      <UserChatTemplate
+        ref={ref}
+        chat={chat}
+        isOnline={isOnline}
+        currentChat={currentChat}
+        recipientUser={recipientUser}
+        latestMessage={latestMessage}
+        handleButtonClick={handleButtonClick}
+        thisUserNotifications={thisUserNotifications}
+      />
+    )
+  }
 }
 
 export default UserChat

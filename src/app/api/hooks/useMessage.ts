@@ -3,24 +3,24 @@ import { AxiosError, AxiosResponse } from 'axios'
 import {
   getChatMessages,
   getLastChatMessage,
-  IPostChatMessagesValues,
+  IPostChatMessageValues,
   postChatMessages,
 } from '../actions/message'
-import { ApiBaseResponse } from 'typings'
+import { ApiBaseResponse, IMessage } from 'typings'
+import { delay } from 'src/util/utils'
 
-interface IUseGetChatMessagesQuery extends ApiBaseResponse {
-  data: any[]
-}
-
-export function useGetChatMessagesQuery(chatId: string) {
-  return useQuery<IUseGetChatMessagesQuery, AxiosError>({
+export function useGetChatMessagesQuery(chatId: string, delayMs: number = 500) {
+  return useQuery<ApiBaseResponse<IMessage[]>, AxiosError>({
     queryKey: ['getchatmessages'],
-    queryFn: () => getChatMessages(chatId),
+    queryFn: async () => {
+      await delay(delayMs)
+      return getChatMessages(chatId)
+    },
   })
 }
 
-export function usePostChatMessagesMutation() {
-  return useMutation<AxiosResponse, AxiosError, IPostChatMessagesValues>({
+export function usePostChatMessageMutation() {
+  return useMutation<AxiosResponse, AxiosError, IPostChatMessageValues>({
     mutationFn: (values) => postChatMessages(values),
   })
 }

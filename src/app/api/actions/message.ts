@@ -10,7 +10,7 @@ export async function getChatMessages(chatId: string) {
   return fetch.data
 }
 
-export interface IPostChatMessagesValues {
+export interface IPostChatMessageValues {
   chatId: string
   senderId: string
   text: string
@@ -19,7 +19,7 @@ export interface IPostChatMessagesValues {
  * @description Post new messages to the server
  * @returns
  */
-export async function postChatMessages(data: IPostChatMessagesValues) {
+export async function postChatMessages(data: IPostChatMessageValues) {
   const fetch = await axiosInstance.post('/messages/create', data)
   return fetch.data
 }

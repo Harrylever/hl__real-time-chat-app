@@ -88,8 +88,9 @@ const PotentialChat: React.FC<PotentialChatProps> = ({
       <div className="flex flex-col gap-2.5 items-start justify-center mt-1">
         <div>
           <p className="text-mx-black font-medium text-sm/[0.6rem] sm:text-sm/[0.7rem] tracking-wide capitalize">
-            {isPending && `Creating new chat with ${formattedUsername}`}
-            {!isPending && formattedUsername}
+            {isPending
+              ? `Creating new chat with ${formattedUsername}`
+              : formattedUsername}
           </p>
         </div>
 

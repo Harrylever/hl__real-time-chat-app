@@ -1,11 +1,6 @@
 import { jwtDecode } from 'jwt-decode'
 import { IAccount, IOnlineUser } from 'typings'
 
-// export function checkIsNum(value: string): boolean {
-//   const isNum = /^\d+$/
-//   return isNum.test(value)
-// }
-
 export function isNumeric(value: any) {
   return isNaN(Number(value))
 }
@@ -20,9 +15,9 @@ export function buildJWTDecode<T>(token: string): T {
 }
 
 export function isValidEmail(email: string): boolean {
-  const validEmailRegEx =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-  return validEmailRegEx.test(email)
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+    email,
+  )
 }
 
 export function isValidPassword(password: string): boolean {
@@ -71,7 +66,7 @@ export function handleRememberMe(email: string, rememberMe: boolean) {
 }
 
 export function userIsPresent(user: IAccount | undefined) {
-  if (user && user._id && user._id.length > 0) return true
+  if (user && user.email && user.email.length > 0) return true
   return false
 }
 
@@ -85,5 +80,8 @@ export function truncateText(text: string) {
 }
 
 export function userIsOnline(accountId: string, onlineUsers: IOnlineUser[]) {
-  return onlineUsers.some((user) => user.userId === accountId)
+  return onlineUsers.some((user) => user.email === accountId)
 }
+
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms))
