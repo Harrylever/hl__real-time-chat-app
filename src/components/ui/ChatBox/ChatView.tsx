@@ -1,9 +1,10 @@
-import clsx from 'clsx'
 import { useEffect, useRef } from 'react'
+import clsx from 'clsx'
+import Message from '../Message'
 import { IMessage, IUser } from 'typings'
-import { ScrollArea } from '@radix-ui/react-scroll-area'
+import MessageInputForm from '../MessageInput'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Message, MessageInputForm } from 'src/components/ui'
+import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { IoIosInformationCircleOutline } from 'react-icons/io'
 
 interface ChatViewProps {

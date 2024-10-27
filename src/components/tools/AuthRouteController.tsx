@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { LoadingPlayer } from '../ui'
 import { useAppDispatch } from 'src/app'
+import LoadingPlayer from '../ui/LoadingPlayer'
 import { setUser } from 'src/app/slices/userSlice'
 import { useGetActiveUserQuery } from 'src/app/api/hooks'
 import { useLocation, useNavigate } from 'react-router-dom'

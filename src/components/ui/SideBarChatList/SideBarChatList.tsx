@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import clsx from 'clsx'
+import ComingSoon from '../ComingSoon'
 import { MdClose } from 'react-icons/md'
 import { useAppDispatch } from 'src/app'
-import { ComingSoon } from 'src/components/ui'
 import { IUser, TInViewTab } from 'typings'
 import { setSideBarChatDisplay } from 'src/app/slices/appUIStateSlice'
 
