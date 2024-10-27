@@ -19,6 +19,7 @@ module.exports = {
     'jsx-quotes': ['error', 'prefer-double'],
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
-    "@typescript-eslint/no-explicit-any": ['warn']
+    "@typescript-eslint/no-explicit-any": ['off'],
+    "react-hooks/rules-of-hooks": ['off'],
   },
 }

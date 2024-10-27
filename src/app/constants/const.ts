@@ -1,11 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import axios from 'axios'
-import { IAuthState, BASE_URL } from '../../../typings'
-
-const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true,
-})
+import { IAuthState } from '../../../typings'
 
 const getLocalStorageValueForAuth = (): IAuthState | null => {
   const authDataFromStorage = window.localStorage.getItem('auth') as string
@@ -21,4 +15,4 @@ const getLocalStorageValueForAuth = (): IAuthState | null => {
   return authData
 }
 
-export { axiosInstance, getLocalStorageValueForAuth }
+export { getLocalStorageValueForAuth }

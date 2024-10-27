@@ -1,76 +1,45 @@
+import { useEffect } from 'react'
 import { LoadingPlayer } from '../ui'
-import { IUser } from '../../../typings'
-import { goToLocation } from 'src/util/utils'
+import { useAppDispatch } from 'src/app'
 import { setUser } from 'src/app/slices/userSlice'
-import { useToast } from '@/components/ui/use-toast'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { AuthRequests, useAppDispatch, useAxiosPrivate } from '../../app'
+import { useGetActiveUserQuery } from 'src/app/api/hooks'
+import { useLocation, useNavigate } from 'react-router-dom'
+
+const publicRoutes = ['/', '/auth/login', '/auth/register', '/terms']
 
 export default function AuthRouteController({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { toast } = useToast()
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const axiosPrivate = useAxiosPrivate()
-  const authRequests = useMemo(
-    () => new AuthRequests(axiosPrivate),
-    [axiosPrivate],
-  )
-
-  const [canRender, setCanRender] = useState(false)
-
-  const handleGetLoginStatus = useCallback(async () => {
-    try {
-      const response = await authRequests.loginStatus()
-      return response
-    } catch (err) {
-      toast({
-        variant: 'destructive',
-        title: 'Something went wrong',
-        description: 'Could not login',
-      })
-    }
-  }, [authRequests, toast])
-
-  const main = useCallback(async () => {
-    const res = await handleGetLoginStatus()
-
-    if (
-      res &&
-      res.message &&
-      res.message.toLowerCase() === 'you are logged in'
-    ) {
-      const user = res.data as IUser
-      dispatch(
-        setUser({
-          _id: user._id,
-          email: user.email,
-          imgUri: user.imgUri,
-          username: user.username,
-          fullname: user.fullname,
-        }),
-      )
-      setCanRender(true)
-    } else {
-      if (
-        window.location.pathname === '/' ||
-        window.location.pathname === '/login' ||
-        window.location.pathname === '/register' ||
-        window.location.pathname === '/terms'
-      ) {
-        setCanRender(true)
-        return
-      } else {
-        goToLocation('/login')
-      }
-    }
-  }, [dispatch, handleGetLoginStatus])
+  const pathname = useLocation().pathname
+  const { data, error, isFetching } = useGetActiveUserQuery()
 
   useEffect(() => {
-    main()
-  }, [main])
+    if (error) {
+      if (
+        (error?.response?.data as any)?.message.toLowerCase() ===
+        'no token provided'
+      ) {
+        if (!publicRoutes.includes(pathname)) navigate('/auth/login')
+      }
+    }
+    if (data?.data) {
+      const { _id, profileImage, username, email, fullname } = data.data
+      dispatch(
+        setUser({
+          _id,
+          email,
+          username,
+          fullname,
+          profileImage,
+        }),
+      )
+      if (publicRoutes.includes(pathname)) navigate('/app')
+    }
+  }, [data?.data, dispatch, error, navigate, pathname])
 
-  return canRender ? children : <LoadingPlayer />
+  return isFetching ? <LoadingPlayer /> : children
 }

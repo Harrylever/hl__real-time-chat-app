@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IChat } from '../../../typings'
 
 interface ISliceState {
-  chats: Array<IChat>
+  chats: IChat[]
 }
 
 const initialState: ISliceState = {
@@ -20,7 +20,7 @@ const userChatsSlice = createSlice({
 
     // Removes Item with the certain id
     removeItem: (state: ISliceState, action: PayloadAction<string>) => {
-      state.chats = state.chats.filter((el) => el._id !== action.payload)
+      state.chats = state.chats.filter((el) => el.id !== action.payload)
     },
   },
 })

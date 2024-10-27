@@ -1,22 +1,31 @@
 export const BASE_URL = import.meta.env.VITE_BE_URL
 
 export interface IAuthState {
-  _id: string
+  id: string
   email: string
   access: string
   refresh: string
 }
 
-export interface IUser {
-  _id?: string
-  username?: string
-  fullname?: string
-  email?: string
-  imgUri?: string
-  password?: string
+export interface IAccount extends ICreateAccountFormValues {
+  _id: string
+  profileImage: string
+  role: ('standard' | 'admin')[]
 }
 
-export interface LoginResValues {
+export interface ICreateAccountFormValues {
+  username: string
+  fullname: string
+  email: string
+  password: string
+}
+
+export interface BaseResponse<T> {
+  message: string
+  data: T
+}
+
+export interface ILoginResValues {
   exp: number
   iat: number
   jti: string
@@ -27,81 +36,30 @@ export interface LoginResValues {
 }
 
 export interface IChat {
-  _id?: string
-  members?: Array<string>
+  id: string
+  members: Array<string>
 }
 
-export interface IChatSectionProps {
-  chatsIsLoading: boolean
-  userChats: IChat[]
-  currentChat: IChat
-}
-
-export interface INavBarProps {
-  user?: IUser
-}
-
-export interface PageProps<T = unknown> {
-  extendProps?: Partial<T>
-}
-
-export interface IPotentialChatProps {
-  chat: IUser
-  cb?: () => void
-}
-
-export type IPotentialChatWrapProps = Array<IUser>
-
-export interface IUserChatProps {
-  chat?: IChat
-  user?: IUser
-}
-
-export interface IUserChatWrapProps {
-  messageType: 'chats' | 'groups'
-  chats: Array<IChat>
+export interface PageProps {
   user: IUser
-  isForMobile?: boolean
 }
 
 export interface IMessage {
   _id?: string
   chatId: string
-  senderId: IUser
+  senderId: IAccount
   text: string
   createdAt?: string
 }
 
-export interface IChatBoxProps {
-  currentChat: IChat
-  user: IUser
-}
-
-export interface IChatViewProps {
-  messages: IMessage[]
-  isLoading: boolean
-  messagesIsLoading: boolean
-  userId: string
-  chatId: string
-  recipientUser: IUser
-}
-
-export interface IMessageProps<T> {
-  prevMessage?: IMessage
-  nextMessage?: IMessage
-  message: IMessage
-  isMainUserMessage: boolean
-  ref?: React.LegacyRef<T>
-}
-
 export interface IOnlineUser {
-  userId: string
+  email: string
   socketId: string
 }
 
 export interface INotification {
   date: unknown
-  senderId: IUser
+  senderId: IAccount
   message: string
   isRead: boolean
 }
@@ -114,8 +72,12 @@ export interface InternalRoute {
 
 export type TInViewTab = 'chats' | 'groups'
 
-export type TInViewTabProps = {
-  name: TInViewTab
-  isMsgView: boolean
-  icon: { active: string; inactive: string }
+export interface IGetRecipientAccountValues {
+  members: string[]
+  accountId: string
 }
+
+export type IUser = Pick<
+  IAccount,
+  '_id' | 'email' | 'fullname' | 'profileImage' | 'username'
+>

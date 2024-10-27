@@ -8,8 +8,8 @@ import { setReduxNotifications } from '../../app/slices/notificationSlice'
 
 const SocketClient = () => {
   const dispatch = useAppDispatch()
-  const user = useAppSelector((state) => state.userReduce)
-  const activeChat = useAppSelector((state) => state.chatReduce.chat)
+  const { user } = useAppSelector((state) => state.userReduce)
+  const { chat: activeChat } = useAppSelector((state) => state.chatReduce)
   const allMessages = useAppSelector((state) => state.messageReduce.messages)
   const newMessage = useAppSelector((state) => state.socketReduce.newMessage)
 
@@ -21,6 +21,7 @@ const SocketClient = () => {
   const reduxNotifications = useAppSelector(
     (state) => state.notificationReduce.notifications,
   )
+  // const onlineUsers = useAppSelector((state) => state.socketReduce.onlineUsers)
 
   useEffect(() => {
     if (user && user._id !== '') {
@@ -30,6 +31,7 @@ const SocketClient = () => {
         newSocket.on('connect', () => {
           setSocket(newSocket)
           setSocketId(newSocket.id)
+          console.log(newSocket.id)
 
           // Emit Current user id
           newSocket.emit('add-new-user', user._id)
@@ -48,6 +50,7 @@ const SocketClient = () => {
   useEffect(() => {
     if (socket) {
       const handleGetOnlineUsers = (res: IOnlineUser[]) => {
+        // console.log(res)
         const onlineUsersResponse = res
         dispatch(
           updateOnlineUsers({
@@ -69,8 +72,9 @@ const SocketClient = () => {
   // Add Message
   useEffect(() => {
     if (socket) {
-      if (newMessage && activeChat) {
+      if (newMessage && activeChat && user) {
         const recipientId = activeChat.members?.find((id) => id !== user._id)
+        console.log({ recipientId })
         socket.emit('send-message', { ...newMessage, recipientId })
       }
     }
@@ -80,7 +84,8 @@ const SocketClient = () => {
   useEffect(() => {
     if (socket) {
       const handleGetMessage = (res: IMessage & { recipientId: string }) => {
-        if (activeChat._id !== res.chatId) return
+        console.log(res)
+        if (activeChat && activeChat.id !== res.chatId) return
         dispatch(addMessages({ messages: [...allMessages, res] }))
       }
 
@@ -96,9 +101,10 @@ const SocketClient = () => {
   useEffect(() => {
     if (socket) {
       const handleGetNotification = (res: INotification) => {
-        const isChatOpen = activeChat.members?.some(
-          (id) => id === res.senderId._id,
-        )
+        const isChatOpen =
+          (activeChat &&
+            activeChat.members?.some((id) => id === res.senderId._id)) ??
+          false
 
         if (isChatOpen) {
           let newNotifications: INotification[] = []

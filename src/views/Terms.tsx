@@ -1,5 +1,5 @@
 import { classNames } from '../styles'
-import DefaultWidth from 'src/components/layout/DefaultWidth'
+import DefaultWidth from 'src/components/ui/DefaultWidth'
 
 const Terms = () => {
   return (

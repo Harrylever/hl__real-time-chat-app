@@ -1,15 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IChat } from '../../../typings'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface ISliceState {
-  chat: IChat
+  chat: IChat | undefined
 }
 
 const initialState: ISliceState = {
-  chat: {
-    _id: '',
-    members: [],
-  },
+  chat: undefined,
 }
 
 const chatSlice = createSlice({
@@ -17,11 +14,8 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
     //
-    updateCurrentChat: (
-      state: ISliceState,
-      action: PayloadAction<ISliceState>,
-    ) => {
-      state.chat = action.payload.chat
+    updateCurrentChat: (state: ISliceState, action: PayloadAction<IChat>) => {
+      state.chat = action.payload
     },
   },
 })

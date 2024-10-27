@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IUser } from '../../../typings'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface ISliceState {
-  users: Array<IUser>
+  users: IUser[]
 }
 
 const initialState: ISliceState = {

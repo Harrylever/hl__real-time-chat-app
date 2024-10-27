@@ -1,11 +1,12 @@
 import { useAppSelector } from 'src/app'
 import { goToLocation } from '../util/utils'
-import { RiTwitterXFill } from 'react-icons/ri'
-import { FAQSection } from '../components/molecules'
-import { MdOutlineArrowRightAlt } from 'react-icons/md'
-import DefaultWidth from 'src/components/layout/DefaultWidth'
-import { Footer, OurFeaturesList } from '../components/features'
 import { useNavigate } from 'react-router-dom'
+import { RiTwitterXFill } from 'react-icons/ri'
+import { MdOutlineArrowRightAlt } from 'react-icons/md'
+import DefaultWidth from 'src/components/ui/DefaultWidth'
+import OurFeaturesList from 'src/components/ui/OurFeaturesWrap'
+import FAQSection from 'src/components/ui/FAQSection'
+import Footer from 'src/components/ui/Footer'
 
 const Landing = () => {
   const navigate = useNavigate()
