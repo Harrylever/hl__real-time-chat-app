@@ -7,9 +7,18 @@ const ApplicationView = () => {
   const activeInView = useAppSelector(
     (state) => state.internalRouteReduce.active,
   )
+  const { user } = useAppSelector((state) => state.userReduce)
+
+  if (!user) {
+    return (
+      <div>
+        <p>User not found</p>
+      </div>
+    )
+  }
 
   const views: Record<TRoute, React.ReactNode> = {
-    chats: <ChatInView />,
+    chats: <ChatInView user={user} />,
     groups: <GroupsInView />,
     settings: <SettingsInView />,
   }

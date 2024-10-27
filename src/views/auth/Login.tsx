@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { handleRememberMe } from 'src/util/utils'
 import React, { useEffect, useState } from 'react'
 import { useToast } from '@/components/ui/use-toast'
-import DefaultWidth from 'src/components/layout/DefaultWidth'
+import DefaultWidth from 'src/components/ui/DefaultWidth'
 import { useLoginUserMutation } from 'src/app/api/hooks/useAuth'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 

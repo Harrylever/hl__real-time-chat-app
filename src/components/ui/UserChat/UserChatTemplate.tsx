@@ -1,8 +1,19 @@
 import clsx from 'clsx'
 import moment from 'moment'
-import { useMemo } from 'react'
+import { LegacyRef, useMemo } from 'react'
 import { truncateText } from 'src/util/utils'
-import { UserChatTemplateProps } from 'typings'
+import { IChat, IMessage, INotification, IUser } from 'typings'
+
+interface UserChatTemplateProps {
+  ref: LegacyRef<HTMLButtonElement>
+  chat: IChat
+  recipientUser: IUser
+  currentChat: IChat
+  isOnline: boolean
+  handleButtonClick: () => void
+  latestMessage?: IMessage
+  thisUserNotifications: INotification[]
+}
 
 const UserChatTemplate: React.FC<UserChatTemplateProps> = ({
   ref,
@@ -26,13 +37,13 @@ const UserChatTemplate: React.FC<UserChatTemplateProps> = ({
       onClick={handleButtonClick}
       className={clsx([
         'flex flex-row items-center justify-between w-full max-w-full border-b border-[#ffffff2d] py-0.5 sm:py-2 pl-1 pr-3 rounded-lg hover:bg-mx-primary-8 duration-150',
-        { 'bg-mx-primary-8': currentChat?._id === chat?._id },
+        { 'bg-mx-primary-8': currentChat.id === chat.id },
       ])}
     >
       <div className="flex flex-row items-center justify-center gap-x-2.5">
         <div className="w-fit border-2 border-[#ffffff73] rounded-full hover:border-white relative">
           <img
-            src={recipientUser.imgUri}
+            src={recipientUser.profileImage}
             alt={recipientUser.username}
             className="rounded-full h-[50px] w-[50px] shadow-lg overflow-hidden"
           />

@@ -1,7 +1,9 @@
 import { useAppSelector } from 'src/app'
 
 const EditProfilePictureUI = () => {
-  const user = useAppSelector((state) => state.userReduce)
+  const { user } = useAppSelector((state) => state.userReduce)
+
+  if (!user) return null
 
   return (
     <div>
@@ -11,7 +13,13 @@ const EditProfilePictureUI = () => {
         </div>
 
         <div>
-          <img src={user.imgUri} alt={user.fullname + ' Profile Picture'} />
+          <img
+            src={user.profileImage}
+            alt={user.fullname + ' Profile Picture'}
+            width={0}
+            height={0}
+            className="w-[30px] h-auto"
+          />
         </div>
 
         <input type="text" name="profile-image" id="profile-image" />

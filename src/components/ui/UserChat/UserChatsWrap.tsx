@@ -1,8 +1,12 @@
 import React from 'react'
+import { IChat } from 'typings'
 import UserChat from './UserChat'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { UserChatsWrapProps } from '../../../../typings'
-import { PotentialChatsModal } from 'src/components/features'
+import PotentialChatsModal from 'src/components/modals/PotentialChatsModal'
+
+interface UserChatsWrapProps {
+  chats: IChat[]
+}
 
 const UserChatsWrap: React.FC<UserChatsWrapProps> = ({ chats }) => {
   return (
@@ -15,8 +19,8 @@ const UserChatsWrap: React.FC<UserChatsWrapProps> = ({ chats }) => {
       <div className="mt-4 w-full h-full">
         <ScrollArea className="w-full h-full rounded-sm">
           <div className="flex flex-col gap-y-2 sm:gap-y-1.5">
-            {chats.map((chat, _) => (
-              <div key={_}>
+            {chats.map((chat, index) => (
+              <div key={index}>
                 <UserChat chat={chat} />
               </div>
             ))}

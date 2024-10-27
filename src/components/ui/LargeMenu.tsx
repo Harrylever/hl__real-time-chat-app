@@ -12,7 +12,14 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-const LgMenuComponent = ({ localUser }: { localUser: IAccount }) => {
+const LgMenuComponent = ({
+  localUser,
+}: {
+  localUser: Pick<
+    IAccount,
+    '_id' | 'email' | 'fullname' | 'username' | 'profileImage'
+  >
+}) => {
   const dispatch = useAppDispatch()
   const [unreadNotifications, setUnreadNotifications] = useState<
     INotification[]
@@ -42,11 +49,11 @@ const LgMenuComponent = ({ localUser }: { localUser: IAccount }) => {
     (
       notification: INotification,
       userChats: IChat[],
-      user: IAccount,
+      userEmail: string,
       notifications: INotification[],
     ) => {
       const chatToOpen = userChats.find((chat) => {
-        const chatMembers = [user.email, notification.senderId.email]
+        const chatMembers = [userEmail, notification.senderId.email]
         const isChatToOpen = chat.members?.every((member) => {
           return chatMembers.includes(member)
         })
@@ -83,7 +90,6 @@ const LgMenuComponent = ({ localUser }: { localUser: IAccount }) => {
     [dispatch],
   )
 
-  const user = useAppSelector((state) => state.userReduce)
   const userChats = useAppSelector((state) => state.userChatsReduce.chats)
 
   return (
@@ -137,7 +143,7 @@ const LgMenuComponent = ({ localUser }: { localUser: IAccount }) => {
                     markNotificationAsRead(
                       notification,
                       userChats,
-                      user.user as IAccount,
+                      localUser.email,
                       notifications,
                     )
                   }
@@ -183,7 +189,7 @@ const LgMenuComponent = ({ localUser }: { localUser: IAccount }) => {
           <span className="sr-only">Open user menu</span>
           <img
             className="h-12 w-12 rounded-full"
-            src={localUser.imgUri}
+            src={localUser.profileImage}
             alt={localUser.fullname + ' Profile Image'}
           />
         </div>

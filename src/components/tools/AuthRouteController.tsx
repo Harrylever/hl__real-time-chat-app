@@ -18,26 +18,28 @@ export default function AuthRouteController({
   const { data, error, isFetching } = useGetActiveUserQuery()
 
   useEffect(() => {
-    if (
-      error &&
-      (error.response?.data as any).message.toLowerCase() ===
-        'no token provided!'
-    ) {
-      if (!publicRoutes.includes(pathname)) navigate('/auth/login')
+    if (error) {
+      if (
+        (error?.response?.data as any)?.message.toLowerCase() ===
+        'no token provided'
+      ) {
+        if (!publicRoutes.includes(pathname)) navigate('/auth/login')
+      }
     }
-    if (data?.success) {
-      if (publicRoutes.includes(pathname)) navigate('/app')
-      const { imgUri, username, email, fullname } = data.data
+    if (data?.data) {
+      const { _id, profileImage, username, email, fullname } = data.data
       dispatch(
         setUser({
+          _id,
           email,
-          imgUri,
           username,
           fullname,
+          profileImage,
         }),
       )
+      if (publicRoutes.includes(pathname)) navigate('/app')
     }
-  }, [data, dispatch, error, navigate, pathname])
+  }, [data?.data, dispatch, error, navigate, pathname])
 
   return isFetching ? <LoadingPlayer /> : children
 }

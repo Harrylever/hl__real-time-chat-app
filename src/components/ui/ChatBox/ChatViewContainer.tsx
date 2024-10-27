@@ -4,12 +4,12 @@ import {
   useGetRecipientUserQuery,
 } from 'src/app/api/hooks'
 import ChatView from './ChatView'
-import { IAccount, IChat } from 'typings'
+import { IChat, IUser } from 'typings'
 import { LoadingPlayer } from 'src/components/ui'
 import { useToast } from '@/components/ui/use-toast'
 
 interface ChatViewContainerProps {
-  user: IAccount
+  user: IUser
   currentChat: IChat
 }
 
@@ -38,7 +38,7 @@ const ChatViewContainer: React.FC<ChatViewContainerProps> = ({
   )
 
   const recipientUser = useMemo(
-    () => (recipientUserData?.success ? recipientUserData.data : undefined),
+    () => (recipientUserData?.data ? recipientUserData.data : undefined),
     [recipientUserData],
   )
   const messages = useMemo(() => messagesData?.data ?? [], [messagesData])

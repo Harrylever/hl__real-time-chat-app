@@ -5,12 +5,9 @@ import store from './app/store/store'
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom/client'
 import { Toaster } from '@/components/ui/toaster'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AuthRouteController } from './components/tools'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import {
-  //  SocketClient
-  AuthRouteController,
-} from './components/tools'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()
 
@@ -20,7 +17,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <Provider store={store}>
           <AuthRouteController>
-            {/* <SocketClient /> */}
             <Routes>
               <Route path="/*" element={<AppRoutes />} />
             </Routes>

@@ -1,11 +1,17 @@
 import React, { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '../../../app'
+import { IUser } from 'typings'
 import { useToast } from '@/components/ui/use-toast'
-import { PotentialChatProps } from '../../../../typings'
 import { useCreateChatMutation } from 'src/app/api/hooks'
 import { addUserChat } from 'src/app/slices/userChatsSlice'
 import { updateCurrentChat } from 'src/app/slices/chatSlice'
+import { useAppDispatch, useAppSelector } from '../../../app'
 import { setPotentialChatsModalIsOpen } from 'src/app/slices/appUIStateSlice'
+
+interface PotentialChatProps {
+  chat: IUser
+  chatIsLoading: boolean
+  setChatIsLoading: (value: boolean) => void
+}
 
 const PotentialChat: React.FC<PotentialChatProps> = ({
   chat,
@@ -75,7 +81,7 @@ const PotentialChat: React.FC<PotentialChatProps> = ({
     >
       <div className="w-fit border-2 border-[#ffffff73] rounded-full hover:border-white relative">
         <img
-          src={chat.imgUri}
+          src={chat.profileImage}
           alt={chat.username}
           className="rounded-full h-[50px] w-[50px] shadow-lg overflow-hidden"
         />

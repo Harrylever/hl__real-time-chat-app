@@ -1,7 +1,12 @@
 import React from 'react'
-import { ChatSectionProps } from '../../../typings'
-import { ChatBox, UserChatsWrap } from '../molecules'
+import { IUser } from 'typings'
+import ChatBox from './ChatBox/ChatBox'
 import { useAppSelector } from 'src/app'
+import UserChatsWrap from './UserChat/UserChatsWrap'
+
+interface ChatSectionProps {
+  user: IUser
+}
 
 const ChatSection: React.FC<ChatSectionProps> = ({ user }) => {
   const userChats = useAppSelector((state) => state.userChatsReduce.chats)

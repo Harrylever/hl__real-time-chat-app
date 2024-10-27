@@ -1,16 +1,18 @@
+import React, { ChangeEvent, useEffect, useState } from 'react'
+import { IUser } from 'typings'
 import { classNames } from 'src/styles'
 import { useAppSelector } from 'src/app'
 import PotentialChat from './PotentialChat'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { PotentialChatWrapProps, IAccount } from 'typings'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+
+interface PotentialChatWrapProps {}
 
 const PotentialChatWrap: React.FC<PotentialChatWrapProps> = (): JSX.Element => {
   const [searchValue, setSearchValue] = useState('')
   const [chatIsLoading, setChatIsLoading] = useState(false)
-  const [searchedPotentialChats, setSearchedPotentialChats] = useState<
-    IAccount[]
-  >([])
+  const [searchedPotentialChats, setSearchedPotentialChats] = useState<IUser[]>(
+    [],
+  )
 
   const potentialChats = useAppSelector(
     (state) => state.potentialChatsReduce.users,

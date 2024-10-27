@@ -1,34 +1,31 @@
 import { useEffect } from 'react'
 import { PageProps } from 'typings'
+import { useAppDispatch } from 'src/app'
 import { LoadingPlayer } from 'src/components/ui'
-import { useAppDispatch, useAppSelector } from 'src/app'
+import ChatSection from 'src/components/ui/ChatSection'
 import { addUserChat } from 'src/app/slices/userChatsSlice'
 import { useGetUserChatsQuery } from 'src/app/api/hooks/useChat'
-import { ChatSection } from 'src/components/features'
 
-const ChatInView: React.FC<{ props?: PageProps }> = () => {
+const ChatInView: React.FC<PageProps> = ({ user }) => {
   const dispatch = useAppDispatch()
-  const user = useAppSelector((state) => state.userReduce.user)
 
-  const { data, error, refetch, isFetching, isLoading } = useGetUserChatsQuery()
-
-  const loading = isLoading || isFetching
+  const { data, error, refetch, isFetching } = useGetUserChatsQuery()
 
   useEffect(() => {
-    if (!loading && data) {
+    if (!isFetching && data) {
       dispatch(
         addUserChat({
           chats: data.data,
         }),
       )
     }
-  }, [data, dispatch, loading])
+  }, [data, dispatch, isFetching])
 
   return (
     <div className="relative w-full h-full pb-5">
       {user && (
         <>
-          {loading && <LoadingPlayer />}
+          {isFetching && <LoadingPlayer />}
 
           {/* Chat Section */}
           {data && <ChatSection user={user} />}

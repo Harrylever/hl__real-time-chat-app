@@ -5,15 +5,10 @@ import {
   getRecipientAccount,
 } from '../actions/accounts'
 import { AxiosError } from 'axios'
-import { ApiBaseResponse, IAccount, IGetRecipientAccountValues } from 'typings'
+import { IUser, BaseResponse, IGetRecipientAccountValues } from 'typings'
 
 export function useGetActiveUserQuery() {
-  return useQuery<
-    ApiBaseResponse<
-      Pick<IAccount, 'email' | 'fullname' | 'imgUri' | 'username'>
-    >,
-    AxiosError
-  >({
+  return useQuery<BaseResponse<IUser>, AxiosError>({
     queryKey: ['getactiveuser'],
     queryFn: getActiveAccount,
   })
@@ -23,7 +18,7 @@ export function useGetRecipientUserQuery(
   values: IGetRecipientAccountValues,
   { enabled }: { enabled: boolean },
 ) {
-  return useQuery<ApiBaseResponse<IAccount>, AxiosError>({
+  return useQuery<BaseResponse<IUser>, AxiosError>({
     queryKey: ['getrecipientuser'],
     queryFn: () => getRecipientAccount(values),
     enabled,
@@ -31,7 +26,7 @@ export function useGetRecipientUserQuery(
 }
 
 export function useGetAllUsersQuery() {
-  return useQuery<ApiBaseResponse<IAccount[]>, AxiosError>({
+  return useQuery<BaseResponse<IUser[]>, AxiosError>({
     queryKey: ['getallaccounts'],
     queryFn: getAccounts,
   })

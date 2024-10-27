@@ -1,15 +1,16 @@
 import React from 'react'
 import { useAppSelector } from 'src/app'
+import NavBarComponent from '../ui/NavBar'
+import { useGetScreenSize } from 'src/hooks'
 import { LoadingPlayer } from 'src/components/ui'
 import { Toaster } from '@/components/ui/toaster'
 import { useIndexQuery } from 'src/app/api/hooks'
 import { Outlet, useLocation } from 'react-router-dom'
-import { useGetScreenSize } from 'src/components/hooks'
-import { ChangeViewComponent } from 'src/components/molecules'
-import { NavBarComponent, SideBarChatList } from 'src/components/features'
+import ChangeViewComponent from '../ui/ChangeViewComponent'
+import SideBarChatList from '../ui/SideBarChatList/SideBarChatList'
 
 export default function Layout() {
-  const user = useAppSelector((state) => state.userReduce)
+  const { user } = useAppSelector((state) => state.userReduce)
   const sideBarChatListIsOpen = useAppSelector(
     (state) => state.appUIStateReduce.sideBarChatOpen,
   )
@@ -27,7 +28,7 @@ export default function Layout() {
         <div className="w-full">
           <div className="w-full relative">
             {screenWidth < 1024 && user && sideBarChatListIsOpen && (
-              <SideBarChatList />
+              <SideBarChatList user={user} />
             )}
 
             <div className="relative z-[20] w-full bg-mx-white shadow-md">

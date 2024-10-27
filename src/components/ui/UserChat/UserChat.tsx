@@ -5,8 +5,8 @@ import { FetchLatestMessage } from '../../tools'
 import UserChatTemplate from './UserChatTemplate'
 import { useInView } from 'react-intersection-observer'
 import { useGetRecipientUserQuery } from 'src/app/api/hooks'
-import { IChat, INotification, UserChatProps } from 'typings'
-import { useUpdateCurrentChatHandler } from 'src/components/hooks'
+import { IChat, INotification } from 'typings'
+import { useUpdateCurrentChatHandler } from 'src/hooks'
 import { UnreadNotificationsFunc } from 'src/util/manipulate-notification'
 
 const useNotifications = (
@@ -27,6 +27,10 @@ const useNotifications = (
   )
 
   return { unReadNotifications, thisUserNotifications }
+}
+
+interface UserChatProps {
+  chat: IChat
 }
 
 const UserChat: React.FC<UserChatProps> = ({ chat }) => {
@@ -55,7 +59,7 @@ const UserChat: React.FC<UserChatProps> = ({ chat }) => {
   }, [inView, refetch])
 
   const recipientUser = useMemo(
-    () => (data?.success ? data.data : undefined),
+    () => (data?.data ? data.data : undefined),
     [data],
   )
   const loading = isFetching || isLoading
@@ -105,7 +109,7 @@ const UserChat: React.FC<UserChatProps> = ({ chat }) => {
       </div>
     )
 
-  if (recipientUser) {
+  if (recipientUser && currentChat) {
     return (
       <UserChatTemplate
         ref={ref}

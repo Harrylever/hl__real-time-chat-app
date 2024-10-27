@@ -1,16 +1,16 @@
+import { AxiosError } from 'axios'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { AxiosError, AxiosResponse } from 'axios'
 import {
   getChatMessages,
+  postChatMessages,
   getLastChatMessage,
   IPostChatMessageValues,
-  postChatMessages,
 } from '../actions/message'
-import { ApiBaseResponse, IMessage } from 'typings'
 import { delay } from 'src/util/utils'
+import { BaseResponse, IMessage } from 'typings'
 
-export function useGetChatMessagesQuery(chatId: string, delayMs: number = 500) {
-  return useQuery<ApiBaseResponse<IMessage[]>, AxiosError>({
+export function useGetChatMessagesQuery(chatId: string, delayMs: number = 100) {
+  return useQuery<BaseResponse<IMessage[]>, AxiosError>({
     queryKey: ['getchatmessages'],
     queryFn: async () => {
       await delay(delayMs)
@@ -20,13 +20,13 @@ export function useGetChatMessagesQuery(chatId: string, delayMs: number = 500) {
 }
 
 export function usePostChatMessageMutation() {
-  return useMutation<AxiosResponse, AxiosError, IPostChatMessageValues>({
+  return useMutation<BaseResponse<any>, AxiosError, IPostChatMessageValues>({
     mutationFn: (values) => postChatMessages(values),
   })
 }
 
 export function useGetLastChatMessageQuery(chatId: string) {
-  return useQuery<AxiosResponse, AxiosError>({
+  return useQuery<BaseResponse<any>, AxiosError>({
     queryKey: ['getlastchatmessage'],
     queryFn: () => getLastChatMessage(chatId),
   })

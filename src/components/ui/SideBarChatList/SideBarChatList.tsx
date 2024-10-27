@@ -1,16 +1,23 @@
-import clsx from 'clsx'
 import React, { useState } from 'react'
+import clsx from 'clsx'
 import { MdClose } from 'react-icons/md'
+import { useAppDispatch } from 'src/app'
 import { ComingSoon } from 'src/components/ui'
-import { useAppDispatch, useAppSelector } from 'src/app'
+import { IUser, TInViewTab } from 'typings'
 import { setSideBarChatDisplay } from 'src/app/slices/appUIStateSlice'
-import { TInViewTab, TInViewTabProps } from 'typings'
 
-interface ISideBarChatListProps {}
+interface ISideBarChatListProps {
+  user: IUser
+}
 
-const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
+type TInViewTabProps = {
+  name: TInViewTab
+  isMsgView: boolean
+  icon: { active: string; inactive: string }
+}
+
+const SideBarChatList: React.FC<ISideBarChatListProps> = ({ user }) => {
   const dispatch = useAppDispatch()
-  const user = useAppSelector((state) => state.userReduce)
   const [inViewTabActive, setInViewTabActive] = useState<TInViewTab>('chats')
 
   const inViewtabs: TInViewTabProps[] = [
@@ -69,9 +76,10 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
             <span className="absolute -inset-1.5" />
             <span className="sr-only">Open user menu</span>
             <img
-              className="h-16 w-16 rounded-full"
-              src={user.imgUri}
+              width={0}
+              src={user.profileImage}
               alt={user.fullname + ' Profile Image'}
+              className="h-16 w-16 rounded-full"
             />
           </div>
 
@@ -148,6 +156,14 @@ const SideBarChatList: React.FC<ISideBarChatListProps> = () => {
         </div>
       </div>
     </section>
+  )
+}
+
+const ChatsView = () => {
+  return (
+    <div className="h-full">
+      <ComingSoon text="Chats coming soon" />
+    </div>
   )
 }
 

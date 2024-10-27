@@ -1,13 +1,13 @@
 import clsx from 'clsx'
 import React, { useState } from 'react'
 import { classNames } from 'src/styles'
-import { IAccount, PageProps } from 'typings'
+import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/components/ui/use-toast'
+import DefaultWidth from 'src/components/ui/DefaultWidth'
 import { useRegisterUserMutation } from 'src/app/api/hooks'
-import DefaultWidth from 'src/components/layout/DefaultWidth'
+import { ICreateAccountFormValues, PageProps } from 'typings'
 import { isValidEmail, isValidPassword } from 'src/util/utils'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
-import { useNavigate } from 'react-router-dom'
 
 const Register: React.FC<{ props?: PageProps }> = () => {
   const { toast } = useToast()
@@ -54,18 +54,17 @@ const Register: React.FC<{ props?: PageProps }> = () => {
       return
     }
 
-    const registerData: IAccount = {
+    const registerData: ICreateAccountFormValues = {
       username: username.toLowerCase().trim(),
       fullname,
       email: email.trim(),
       password: password.trim(),
-      imgUri: 'placeholder',
     }
 
     try {
       const response = await submitRegisterRequest(registerData)
 
-      if (response.success) {
+      if (response.data) {
         toast({
           variant: 'success',
           title: 'Account created successfully',

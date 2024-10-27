@@ -1,7 +1,11 @@
 import React from 'react'
+import { IUser } from 'typings'
 import { useAppSelector } from 'src/app'
-import { ChatBoxProps } from '../../../../typings'
 import ChatViewContainer from './ChatViewContainer'
+
+interface ChatBoxProps {
+  user: IUser
+}
 
 const ChatBox: React.FC<ChatBoxProps> = ({ user }) => {
   const currentChat = useAppSelector((state) => state.chatReduce.chat)

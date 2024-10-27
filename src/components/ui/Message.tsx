@@ -1,7 +1,15 @@
 import clsx from 'clsx'
 import moment from 'moment'
 import React from 'react'
-import { MessageProps } from 'typings'
+import { IMessage } from 'typings'
+
+interface MessageProps<T> {
+  prevMessage?: IMessage
+  nextMessage?: IMessage
+  message: IMessage
+  isMainUserMessage: boolean
+  ref?: React.LegacyRef<T>
+}
 
 const Message: React.FC<MessageProps<HTMLDivElement>> = ({
   ref,

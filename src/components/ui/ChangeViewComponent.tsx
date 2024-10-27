@@ -1,8 +1,8 @@
 import clsx from 'clsx'
-import { TRoute } from '../../../../typings'
-import { useAppDispatch, useAppSelector } from '../../../app'
-import { TInsideView } from '../../../app/slices/appUIStateSlice'
-import { setActiveRoute } from '../../../app/slices/internalRouteSlice'
+import { TRoute } from '../../../typings'
+import { useAppDispatch, useAppSelector } from '../../app'
+import { TInsideView } from '../../app/slices/appUIStateSlice'
+import { setActiveRoute } from '../../app/slices/internalRouteSlice'
 import useLogOutUser from 'src/app/hooks/useLogOutUser'
 
 interface IChangeViewItem {

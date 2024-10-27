@@ -1,15 +1,8 @@
-import { IAccount } from '../../../typings'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { IUser } from 'typings'
 
 interface IUserSlice {
-  user: IAccount | undefined
-}
-
-interface ISetUserPayload {
-  username?: string
-  fullname?: string
-  email?: string
-  imgUri?: string
+  user: IUser | undefined
 }
 
 const initState: IUserSlice = {
@@ -20,7 +13,7 @@ const userSlice = createSlice({
   name: 'userSlice',
   initialState: initState,
   reducers: {
-    setUser: (state: IUserSlice, action: PayloadAction<ISetUserPayload>) => {
+    setUser: (state: IUserSlice, action: PayloadAction<IUser>) => {
       state.user = action.payload
     },
   },

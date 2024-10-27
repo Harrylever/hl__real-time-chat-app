@@ -1,17 +1,18 @@
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
-import { NavBarProps } from 'typings'
-import { LgMenuComponent } from '../molecules'
 import { Fade as Hamburger } from 'hamburger-react'
 import { useAppDispatch, useAppSelector } from 'src/app'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { setSideBarChatDisplay } from 'src/app/slices/appUIStateSlice'
+import LgMenuComponent from './LargeMenu'
+
+interface NavBarProps {}
 
 const NavBar: React.FC<NavBarProps> = () => {
   const location = useLocation()
   const dispatch = useAppDispatch()
 
-  const user = useAppSelector((state) => state.userReduce.user)
+  const { user } = useAppSelector((state) => state.userReduce)
 
   const [isScrollEnabled, setIsScrollEnabled] = useState(true)
   const [mobileNavIsOpen, setMobileNavIsOpen] = useState(false)

@@ -1,10 +1,16 @@
 import clsx from 'clsx'
-import { ChatViewProps } from 'typings'
 import { useEffect, useRef } from 'react'
+import { IMessage, IUser } from 'typings'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Message, MessageInputForm } from 'src/components/ui'
 import { IoIosInformationCircleOutline } from 'react-icons/io'
+
+interface ChatViewProps {
+  messages: IMessage[]
+  userEmail: string
+  recipientUser: IUser
+}
 
 const ChatView: React.FC<ChatViewProps> = ({
   messages,
@@ -46,7 +52,7 @@ const ChatView: React.FC<ChatViewProps> = ({
           <div>
             <img
               alt={recipientUser.email}
-              src={recipientUser.imgUri}
+              src={recipientUser.profileImage}
               className="w-[50px] sm:w-[50px] h-auto"
             />
           </div>

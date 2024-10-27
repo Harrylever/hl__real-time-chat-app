@@ -1,4 +1,4 @@
-import DefaultWidth from '../layout/DefaultWidth'
+import DefaultWidth from './DefaultWidth'
 
 const Footer = () => {
   return (

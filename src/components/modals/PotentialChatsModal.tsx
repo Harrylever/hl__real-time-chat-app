@@ -10,9 +10,9 @@ import {
 import { useEffect } from 'react'
 import { LoadingPlayer } from 'src/components/ui'
 import { useAppDispatch, useAppSelector } from 'src/app'
-import { PotentialChatWrap } from 'src/components/molecules'
 import { useGetAllUsersQuery } from 'src/app/api/hooks/useAccounts'
 import { addPotentialChat } from 'src/app/slices/potentialChatsSlice'
+import PotentialChatWrap from '../ui/PotentialChat/PotentialChatWrap'
 import { setPotentialChatsModalIsOpen } from 'src/app/slices/appUIStateSlice'
 
 const PotentialChatsModal = () => {
@@ -96,7 +96,7 @@ const PotentialChatsList = () => {
   return (
     <div className="flex flex-row gap-x-2 pb-5">
       {loading && <LoadingPlayer />}
-      {data && data.success && <PotentialChatWrap />}
+      {data && data?.data && <PotentialChatWrap />}
     </div>
   )
 }
