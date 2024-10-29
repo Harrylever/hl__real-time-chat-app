@@ -1,30 +1,37 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
-  getIndex,
   loginUser,
   logoutUser,
   loginStatus,
-  ILoginValues,
+  useGoogleAuth,
   createUserAccount,
 } from '../actions/auth'
 import { AxiosError } from 'axios'
-import { BaseResponse, ICreateAccountFormValues } from 'typings'
+import {
+  ILoginFormValues,
+  IUseGoogleAuthValues,
+  MutationBaseResponse,
+  ICreateAccountFormValues,
+} from 'typings'
 
-export function useIndexQuery() {
-  return useQuery<any, AxiosError>({
-    queryKey: ['index'],
-    queryFn: getIndex,
+export function useGoogleAuthMutation() {
+  return useMutation<MutationBaseResponse, AxiosError, IUseGoogleAuthValues>({
+    mutationFn: (credentials) => useGoogleAuth(credentials),
   })
 }
 
 export function useLoginUserMutation() {
-  return useMutation<any, AxiosError, ILoginValues>({
+  return useMutation<MutationBaseResponse, AxiosError, ILoginFormValues>({
     mutationFn: (credentials) => loginUser(credentials),
   })
 }
 
-export function useRegisterUserMutation<T>() {
-  return useMutation<BaseResponse<T>, AxiosError, ICreateAccountFormValues>({
+export function useCreateAccountMutation() {
+  return useMutation<
+    MutationBaseResponse,
+    AxiosError,
+    ICreateAccountFormValues
+  >({
     mutationFn: (user) => createUserAccount(user),
   })
 }

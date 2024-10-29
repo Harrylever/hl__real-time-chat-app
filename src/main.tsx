@@ -5,25 +5,27 @@ import store from './app/store/store'
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom/client'
 import { Toaster } from '@/components/ui/toaster'
-import { AuthRouteController } from './components/tools'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Provider store={store}>
-          <AuthRouteController>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_AUTH_GOOGLE_CLIENT_ID}>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Provider store={store}>
             <Routes>
               <Route path="/*" element={<AppRoutes />} />
             </Routes>
-          </AuthRouteController>
-          <Toaster />
-        </Provider>
-      </BrowserRouter>
-    </QueryClientProvider>
+            <Toaster />
+          </Provider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   </React.StrictMode>,
 )

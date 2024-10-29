@@ -1,13 +1,14 @@
 import React, { Fragment } from 'react'
-import { TRoute } from '../../typings'
 import { useAppSelector } from '../app'
+import { RouteProps, TRoute } from '../../typings'
 import { ChatInView, GroupsInView, SettingsInView } from './InView'
 
-const ApplicationView = () => {
+interface ApplicationViewProps extends RouteProps {}
+
+const ApplicationView: React.FC<ApplicationViewProps> = ({ user }) => {
   const activeInView = useAppSelector(
     (state) => state.internalRouteReduce.active,
   )
-  const { user } = useAppSelector((state) => state.userReduce)
 
   if (!user) {
     return (

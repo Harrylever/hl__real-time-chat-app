@@ -13,5 +13,5 @@ export const classNames = {
     'block w-full rounded-md border border-[#0708083f] focus:border-[#0708083f] focus:outline-none py-3.5 sm:py-2 px-3.5 text-gray-900 text-sm shadow-sm focus:shadow-md placeholder:text-gray-400 placeholder:text-sm ring-0 focus:ring-0 sm:text-sm sm:leading-6 duration-300',
 
   authFormBtn:
-    'flex w-full justify-center rounded-md bg-mx-primary px-3 py-2 text-sm font-semibold leading-6 text-mx-white shadow-sm hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 duration-300',
+    'flex w-full justify-center rounded-md bg-mx-primary px-3 py-2 text-sm font-semibold leading-6 text-mx-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 duration-300',
 }

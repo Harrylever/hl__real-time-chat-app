@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo } from 'react'
 import { useAppSelector } from '../../../app'
 import { userIsOnline } from 'src/util/utils'
-import { FetchLatestMessage } from '../../tools'
 import UserChatTemplate from './UserChatTemplate'
 import { useInView } from 'react-intersection-observer'
 import { useGetRecipientUserQuery } from 'src/app/api/hooks'
 import { IChat, INotification } from 'typings'
 import { useUpdateCurrentChatHandler } from 'src/hooks'
 import { UnreadNotificationsFunc } from 'src/util/manipulate-notification'
+import FetchLatestMessage from 'src/components/tools/useFetchLatestMessage'
 
 const useNotifications = (
   notifications: INotification[],

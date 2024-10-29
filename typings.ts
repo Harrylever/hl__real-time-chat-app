@@ -20,9 +20,26 @@ export interface ICreateAccountFormValues {
   password: string
 }
 
-export interface BaseResponse<T> {
+export interface ILoginFormValues {
+  email: string
+  password: string
+}
+
+export interface IUseGoogleAuthValues {
+  username: string
+  fullname: string
+  email: string
+  profileImage: string
+}
+
+export interface QueryBaseResponse<T> {
   message: string
   data: T
+}
+
+export interface MutationBaseResponse {
+  data?: any
+  message: string
 }
 
 export interface ILoginResValues {
@@ -81,3 +98,7 @@ export type IUser = Pick<
   IAccount,
   '_id' | 'email' | 'fullname' | 'profileImage' | 'username'
 >
+
+export interface RouteProps {
+  user?: IUser
+}

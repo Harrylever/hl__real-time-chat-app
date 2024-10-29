@@ -1,16 +1,18 @@
-import { useAppSelector } from 'src/app'
+import React from 'react'
+import { RouteProps } from 'typings'
 import { goToLocation } from '../util/utils'
+import Footer from 'src/components/ui/Footer'
 import { useNavigate } from 'react-router-dom'
 import { RiTwitterXFill } from 'react-icons/ri'
+import FAQSection from 'src/components/ui/FAQSection'
 import { MdOutlineArrowRightAlt } from 'react-icons/md'
 import DefaultWidth from 'src/components/ui/DefaultWidth'
 import OurFeaturesList from 'src/components/ui/OurFeaturesWrap'
-import FAQSection from 'src/components/ui/FAQSection'
-import Footer from 'src/components/ui/Footer'
 
-const Landing = () => {
+interface LandingPageProps extends RouteProps {}
+
+const LandingPage: React.FC<LandingPageProps> = ({ user }) => {
   const navigate = useNavigate()
-  const user = useAppSelector((state) => state.userReduce)
 
   return (
     <section>
@@ -108,17 +110,17 @@ const Landing = () => {
                 </p>
                 <p className="font-normal text-mx-black text-sm">
                   *Experience the convenience of instant messaging amplified by
-                  MX Chat's{' '}
+                  MX Chat's
                   <span className="text-mx-primary-3 font-semibold">
                     user-friendly interface and robust features
-                  </span>{' '}
+                  </span>
                   designed to enhance your communication experience.
                 </p>
                 <p className="font-normal text-mx-black text-sm">
-                  *Chatting made easy.{' '}
+                  *Chatting made easy.
                   <span className="text-mx-primary-3 font-semibold">
                     Message privately or join groups seamlessly
-                  </span>{' '}
+                  </span>
                   with MX Chat.
                 </p>
               </div>
@@ -299,4 +301,4 @@ const Landing = () => {
   )
 }
 
-export default Landing
+export default LandingPage

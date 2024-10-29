@@ -1,5 +1,5 @@
 import { PageProps } from '../../../typings'
-import { ComingSoon } from 'src/components/ui'
+import ComingSoon from 'src/components/ui/ComingSoon'
 
 const GroupsInView: React.FC<{ props?: PageProps }> = () => {
   return (
