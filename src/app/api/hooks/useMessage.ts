@@ -7,10 +7,10 @@ import {
   IPostChatMessageValues,
 } from '../actions/message'
 import { delay } from 'src/util/utils'
-import { BaseResponse, IMessage } from 'typings'
+import { QueryBaseResponse, IMessage, MutationBaseResponse } from 'typings'
 
 export function useGetChatMessagesQuery(chatId: string, delayMs: number = 100) {
-  return useQuery<BaseResponse<IMessage[]>, AxiosError>({
+  return useQuery<QueryBaseResponse<IMessage[]>, AxiosError>({
     queryKey: ['getchatmessages'],
     queryFn: async () => {
       await delay(delayMs)
@@ -20,13 +20,13 @@ export function useGetChatMessagesQuery(chatId: string, delayMs: number = 100) {
 }
 
 export function usePostChatMessageMutation() {
-  return useMutation<BaseResponse<any>, AxiosError, IPostChatMessageValues>({
+  return useMutation<MutationBaseResponse, AxiosError, IPostChatMessageValues>({
     mutationFn: (values) => postChatMessages(values),
   })
 }
 
 export function useGetLastChatMessageQuery(chatId: string) {
-  return useQuery<BaseResponse<any>, AxiosError>({
+  return useQuery<QueryBaseResponse<any>, AxiosError>({
     queryKey: ['getlastchatmessage'],
     queryFn: () => getLastChatMessage(chatId),
   })

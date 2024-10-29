@@ -8,13 +8,16 @@ import {
   RegisterView,
   Terms,
 } from './views'
+import { useAppSelector } from './app'
 
 export default function AppRoutes() {
+  const { user } = useAppSelector((state) => state.userReduce)
+
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route path="" element={<Landing />} />
-        <Route path="app" element={<AppView />} />
+      <Route path="/" element={<Layout user={user} />}>
+        <Route path="" element={<Landing user={user} />} />
+        <Route path="app" element={<AppView user={user} />} />
         <Route path="auth/register" element={<RegisterView />} />
         <Route path="auth/login" element={<LoginView />} />
         <Route path="terms" element={<Terms />} />

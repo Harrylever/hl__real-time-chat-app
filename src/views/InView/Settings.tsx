@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useState } from 'react'
 import { PageProps } from '../../../typings'
-import { ComingSoon } from 'src/components/ui'
+import ComingSoon from 'src/components/ui/ComingSoon'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 type TabType = 'profile' | 'application'

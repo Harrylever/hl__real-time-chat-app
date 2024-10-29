@@ -5,7 +5,7 @@ import {
 } from 'src/app/api/hooks'
 import ChatView from './ChatView'
 import { IChat, IUser } from 'typings'
-import { LoadingPlayer } from 'src/components/ui'
+import LoadingPlayer from '../LoadingPlayer'
 import { useToast } from '@/components/ui/use-toast'
 
 interface ChatViewContainerProps {

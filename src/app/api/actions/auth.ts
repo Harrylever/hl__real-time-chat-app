@@ -1,23 +1,22 @@
-import { ICreateAccountFormValues } from 'typings'
+import {
+  ICreateAccountFormValues,
+  ILoginFormValues,
+  IUseGoogleAuthValues,
+} from 'typings'
 import axiosInstance from 'src/app/constants/axiosInstance'
 
-export interface ILoginValues {
-  email: string
-  password: string
-}
-
-export async function getIndex() {
-  const fetch = await axiosInstance.get('/')
-  return fetch.data
-}
-
-export async function loginUser(credentials: ILoginValues) {
+export async function loginUser(credentials: ILoginFormValues) {
   const fetch = await axiosInstance.post('/auth/login', credentials)
   return fetch.data
 }
 
 export async function createUserAccount(user: ICreateAccountFormValues) {
-  const fetch = await axiosInstance.post('/auth/register', user)
+  const fetch = await axiosInstance.post('/auth/create-account', user)
+  return fetch.data
+}
+
+export async function useGoogleAuth(credentials: IUseGoogleAuthValues) {
+  const fetch = await axiosInstance.post('/auth/google', credentials)
   return fetch.data
 }
 

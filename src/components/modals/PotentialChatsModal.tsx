@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import {
   AlertDialog,
   AlertDialogTitle,
@@ -7,8 +8,7 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { useEffect } from 'react'
-import { LoadingPlayer } from 'src/components/ui'
+import LoadingPlayer from '../ui/LoadingPlayer'
 import { useAppDispatch, useAppSelector } from 'src/app'
 import { useGetAllUsersQuery } from 'src/app/api/hooks/useAccounts'
 import { addPotentialChat } from 'src/app/slices/potentialChatsSlice'

@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { PageProps } from 'typings'
 import { useAppDispatch } from 'src/app'
-import { LoadingPlayer } from 'src/components/ui'
 import ChatSection from 'src/components/ui/ChatSection'
 import { addUserChat } from 'src/app/slices/userChatsSlice'
+import LoadingPlayer from 'src/components/ui/LoadingPlayer'
 import { useGetUserChatsQuery } from 'src/app/api/hooks/useChat'
 
 const ChatInView: React.FC<PageProps> = ({ user }) => {
