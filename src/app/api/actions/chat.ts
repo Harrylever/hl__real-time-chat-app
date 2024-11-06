@@ -11,8 +11,8 @@ export async function getUserChats() {
 }
 
 export interface ICreateChatValues {
-  userOneEmail: string
-  userTwoEmail: string
+  emailOne: string
+  emailTwo: string
 }
 /**
  * Takes two params

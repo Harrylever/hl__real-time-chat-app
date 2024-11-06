@@ -23,19 +23,16 @@ const ChatViewContainer: React.FC<ChatViewContainerProps> = ({
     data: messagesData,
     error: messagesError,
     isLoading: isLoadingMessages,
-  } = useGetChatMessagesQuery(currentChat.id as string)
+  } = useGetChatMessagesQuery(currentChat.id)
 
   const {
     data: recipientUserData,
     error: recipientUserError,
     isLoading: isLoadingRecipientUser,
-  } = useGetRecipientUserQuery(
-    {
-      accountId: user?.email ?? '',
-      members: currentChat.members ?? [],
-    },
-    { enabled: !!user.email && currentChat.members?.length > 0 },
-  )
+  } = useGetRecipientUserQuery({
+    accountId: user.email,
+    members: currentChat.members,
+  })
 
   const recipientUser = useMemo(
     () => (recipientUserData?.data ? recipientUserData.data : undefined),
@@ -76,7 +73,7 @@ const ChatViewContainer: React.FC<ChatViewContainerProps> = ({
     <div className="w-full h-full">
       <ChatView
         messages={messages}
-        userEmail={user.email ?? ''}
+        userEmail={user.email}
         recipientUser={recipientUser}
       />
     </div>

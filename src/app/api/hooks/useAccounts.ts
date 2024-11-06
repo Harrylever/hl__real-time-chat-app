@@ -9,25 +9,21 @@ import { IUser, IGetRecipientAccountValues, QueryBaseResponse } from 'typings'
 
 export function useGetActiveUserQuery() {
   return useQuery<QueryBaseResponse<IUser>, AxiosError>({
-    queryKey: ['getactiveuser'],
+    queryKey: ['active-user'],
     queryFn: getActiveAccount,
   })
 }
 
-export function useGetRecipientUserQuery(
-  values: IGetRecipientAccountValues,
-  { enabled }: { enabled: boolean },
-) {
+export function useGetRecipientUserQuery(values: IGetRecipientAccountValues) {
   return useQuery<QueryBaseResponse<IUser>, AxiosError>({
-    queryKey: ['getrecipientuser'],
+    queryKey: ['recipient-user'],
     queryFn: () => getRecipientAccount(values),
-    enabled,
   })
 }
 
 export function useGetAllUsersQuery() {
   return useQuery<QueryBaseResponse<IUser[]>, AxiosError>({
-    queryKey: ['getallaccounts'],
+    queryKey: ['all-user-accounts'],
     queryFn: getAccounts,
   })
 }

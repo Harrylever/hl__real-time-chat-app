@@ -4,7 +4,6 @@ import chatReducer from '../slices/chatSlice'
 import { configureStore } from '@reduxjs/toolkit'
 import socketReducer from '../slices/socketSlice'
 import messageReducer from '../slices/messagesSlice'
-import userChatsReducer from '../slices/userChatsSlice'
 import appUIStateReducer from '../slices/appUIStateSlice'
 import notificationReducer from '../slices/notificationSlice'
 import internalRouteReducer from '../slices/internalRouteSlice'
@@ -14,7 +13,6 @@ const store = configureStore({
   reducer: {
     authReduce: authReducer,
     userReduce: userReducer,
-    userChatsReduce: userChatsReducer,
     potentialChatsReduce: potentialChatsReducer,
     chatReduce: chatReducer,
     messageReduce: messageReducer,

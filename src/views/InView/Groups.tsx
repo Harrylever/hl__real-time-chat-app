@@ -1,7 +1,6 @@
-import { PageProps } from '../../../typings'
 import ComingSoon from 'src/components/ui/ComingSoon'
 
-const GroupsInView: React.FC<{ props?: PageProps }> = () => {
+const GroupsView = () => {
   return (
     <div className="relative w-full h-full">
       <ComingSoon text="Groups coming soon" />
@@ -9,4 +8,4 @@ const GroupsInView: React.FC<{ props?: PageProps }> = () => {
   )
 }
 
-export default GroupsInView
+export default GroupsView

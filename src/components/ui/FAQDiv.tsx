@@ -5,7 +5,7 @@ import {
   AccordionContent,
 } from '../../../@/components/ui/accordion'
 
-const FAQSection = () => {
+const FAQDiv = () => {
   return (
     <div className="bg-mx-white px-10">
       <Accordion type="single" collapsible>
@@ -49,4 +49,4 @@ const FAQSection = () => {
   )
 }
 
-export default FAQSection
+export default FAQDiv

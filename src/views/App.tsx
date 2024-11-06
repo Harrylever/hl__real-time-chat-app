@@ -1,30 +1,34 @@
-import React, { Fragment } from 'react'
+import React from 'react'
+import ChatView from './InView/Chat'
+import { TRoute } from '../../typings'
 import { useAppSelector } from '../app'
-import { RouteProps, TRoute } from '../../typings'
-import { ChatInView, GroupsInView, SettingsInView } from './InView'
+import GroupsView from './InView/Groups'
+import SettingsView from './InView/Settings'
+import useHeaderHeight from 'src/hooks/useHeaderHeight'
+import ChangeViewComponent from 'src/components/ui/ChangeViewComponent'
 
-interface ApplicationViewProps extends RouteProps {}
+const ApplicationView = () => {
+  const headerHeight = useHeaderHeight()
 
-const ApplicationView: React.FC<ApplicationViewProps> = ({ user }) => {
   const activeInView = useAppSelector(
     (state) => state.internalRouteReduce.active,
   )
 
-  if (!user) {
-    return (
-      <div>
-        <p>User not found</p>
-      </div>
-    )
-  }
-
   const views: Record<TRoute, React.ReactNode> = {
-    chats: <ChatInView user={user} />,
-    groups: <GroupsInView />,
-    settings: <SettingsInView />,
+    chats: <ChatView />,
+    groups: <GroupsView />,
+    settings: <SettingsView />,
   }
 
-  return <Fragment>{views[activeInView]}</Fragment>
+  return (
+    <main
+      style={{ height: `calc(100vh - ${headerHeight}px)` }}
+      className="flex flex-row w-full"
+    >
+      <ChangeViewComponent />
+      <div className="h-full w-full">{views[activeInView]}</div>
+    </main>
+  )
 }
 
 export default ApplicationView

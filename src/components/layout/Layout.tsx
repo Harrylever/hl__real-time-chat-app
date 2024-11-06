@@ -1,29 +1,20 @@
-import { Fragment } from 'react'
-import NavBar from '../ui/NavBar'
-import { RouteProps } from 'typings'
-import MainContent from './MainContent'
-import { Toaster } from '@/components/ui/toaster'
 import useUserEffect from 'src/hooks/useUserEffect'
-import SideBarWrapper from '../ui/SideBarChatList/SideBarWrapper'
+import Header from '../ui/Header/index'
+import { Outlet } from 'react-router-dom'
+import LoadingPlayer from '../ui/LoadingPlayer'
 
-interface LayoutProps extends RouteProps {}
+export default function Layout() {
+  const { loading } = useUserEffect()
 
-export default function Layout({ user }: LayoutProps) {
-  useUserEffect()
+  return loading ? (
+    <LoadingPlayer />
+  ) : (
+    <section className="w-full h-full">
+      <Header />
 
-  return (
-    <Fragment>
-      <div className="w-full relative">
-        <SideBarWrapper user={user} />
-
-        <div className="relative z-[20] w-full bg-mx-white shadow-md">
-          <NavBar />
-        </div>
-
-        <MainContent user={user} />
+      <div className="relative">
+        <Outlet />
       </div>
-
-      <Toaster />
-    </Fragment>
+    </section>
   )
 }

@@ -57,10 +57,6 @@ export interface IChat {
   members: Array<string>
 }
 
-export interface PageProps {
-  user: IUser
-}
-
 export interface IMessage {
   _id?: string
   chatId: string

@@ -1,14 +1,11 @@
-import clsx from 'clsx'
 import { useEffect, useState } from 'react'
+import NotificationMenu from './NotificationMenu'
 import { Fade as Hamburger } from 'hamburger-react'
+import { useLocation, Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'src/app'
-import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { setSideBarChatDisplay } from 'src/app/slices/appUIStateSlice'
-import LgMenuComponent from './LargeMenu'
 
-interface NavBarProps {}
-
-const NavBar: React.FC<NavBarProps> = () => {
+const Header = () => {
   const location = useLocation()
   const dispatch = useAppDispatch()
 
@@ -49,14 +46,10 @@ const NavBar: React.FC<NavBarProps> = () => {
 
   return (
     <header
-      className={clsx([
-        'w-full',
-        {
-          'h-screen': mobileNavIsOpen,
-        },
-      ])}
+      id="header"
+      className="relative z-[20] w-full bg-mx-white shadow-md"
     >
-      <nav className="py-6 h-[11.6%] sm:h-[12vh] w-full flex flex-row items-center justify-between md:justify-center bg-transparent">
+      <nav className=" py-6 h-[12vh] w-full flex flex-row items-center justify-between md:justify-center bg-transparent">
         <div className="w-full px-5 sm:px-12 flex items-center justify-center">
           <div className="w-full flex items-center justify-between">
             <Link to={user ? '#' : '/'}>
@@ -72,7 +65,7 @@ const NavBar: React.FC<NavBarProps> = () => {
             {/* Desktop Menu Button */}
             <div className="hidden lg:block">
               {user ? (
-                <LgMenuComponent localUser={user} />
+                <NotificationMenu />
               ) : (
                 <Link to={isLoginPage ? 'auth/register' : 'auth/login'}>
                   <div className="group border border-blue-3 hover:bg-indigo-600 duration-500 rounded-sm py-2.5 px-16">
@@ -121,54 +114,8 @@ const NavBar: React.FC<NavBarProps> = () => {
           </div>
         </div>
       </nav>
-
-      {/*  */}
-      <MobileNav
-        isOpen={mobileNavIsOpen}
-        setMobileNavOpen={(value) => setMobileNavIsOpen(value)}
-      />
     </header>
   )
 }
 
-const MobileNav = ({
-  isOpen,
-  setMobileNavOpen,
-}: {
-  isOpen: boolean
-  setMobileNavOpen: (value: boolean) => void
-}) => {
-  const navigate = useNavigate()
-
-  const handleButtonClick = (route: string) => {
-    navigate(route)
-    setMobileNavOpen(!isOpen)
-  }
-
-  return isOpen ? (
-    <div className=" w-full h-[88.4%] relative flex flex-col items-center pt-[100px] gap-6">
-      <button
-        type="button"
-        onClick={() => handleButtonClick('auth/login')}
-        className="group border border-blue-3 hover:bg-indigo-600 duration-500 rounded-sm py-2.5 px-16"
-      >
-        <p className="text-mx-primary group-hover:text-mx-white font-semibold text-sm tracking-tight">
-          'Log in'
-        </p>
-      </button>
-
-      {/*  */}
-      <button
-        type="button"
-        onClick={() => handleButtonClick('auth/register')}
-        className="group border border-blue-3 bg-indigo-600 duration-500 rounded-sm py-2.5 px-16"
-      >
-        <p className="text-mx-white font-semibold text-sm tracking-tight">
-          Sign up
-        </p>
-      </button>
-    </div>
-  ) : null
-}
-
-export default NavBar
+export default Header

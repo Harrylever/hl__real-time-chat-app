@@ -47,10 +47,6 @@ export function generatePassword() {
   }
 }
 
-export function goToLocation(pathname: string) {
-  window.location.href = pathname
-}
-
 export function handleRememberMe(email: string, rememberMe: boolean) {
   if (rememberMe) {
     const rememberMeEmail = window.localStorage.getItem('rememberMeEmail')

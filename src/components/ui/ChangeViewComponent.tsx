@@ -3,7 +3,7 @@ import { TRoute } from '../../../typings'
 import { useAppDispatch, useAppSelector } from '../../app'
 import { TInsideView } from '../../app/slices/appUIStateSlice'
 import { setActiveRoute } from '../../app/slices/internalRouteSlice'
-import useLogOutUser from 'src/app/hooks/useLogOutUser'
+import useLogOut from 'src/hooks/useLogOutUser'
 
 interface IChangeViewItem {
   title: string
@@ -52,15 +52,15 @@ const views: IChangeViewItem[] = [
 
 const ChangeViewComponent = () => {
   const dispatch = useAppDispatch()
-  const { handleLogOutUser } = useLogOutUser()
+  const { handleLogOut } = useLogOut()
 
   const handleChangeInView = (route: TRoute) => {
     dispatch(setActiveRoute(route))
   }
 
   return (
-    <section className="w-full h-full bg-mx-primary-9 pt-10">
-      <div className="w-full h-full flex flex-col items-center justify-start gap-16 bg-transparent">
+    <aside className="hidden lg:block max-w-[160px] xl:max-w-[190px] w-full h-full bg-mx-primary-9 pt-10">
+      <div className="w-full h-full flex flex-col items-center gap-16 bg-transparent">
         {views.slice(0, 3).map((view, index) => (
           <ViewItem
             key={index}
@@ -70,9 +70,9 @@ const ChangeViewComponent = () => {
         ))}
 
         {/* Log out */}
-        <ViewItem props={views[3]} callback={handleLogOutUser} />
+        <ViewItem props={views[3]} callback={handleLogOut} />
       </div>
-    </section>
+    </aside>
   )
 }
 
@@ -87,7 +87,7 @@ const ViewItem: React.FC<{ props: IChangeViewItem; callback?: () => void }> = ({
   return (
     <div
       className={clsx([
-        'w-[170px] h-fit flex items-center justify-center duration-500',
+        'w-[140px] xl:w-[170px] h-fit flex items-center justify-center duration-500',
         {
           'border-r-4 border-mx-primary-5': activeInternalRoute === props.route,
         },

@@ -11,7 +11,7 @@ import { QueryBaseResponse, IMessage, MutationBaseResponse } from 'typings'
 
 export function useGetChatMessagesQuery(chatId: string, delayMs: number = 100) {
   return useQuery<QueryBaseResponse<IMessage[]>, AxiosError>({
-    queryKey: ['getchatmessages'],
+    queryKey: ['chat-messages'],
     queryFn: async () => {
       await delay(delayMs)
       return getChatMessages(chatId)
@@ -27,7 +27,7 @@ export function usePostChatMessageMutation() {
 
 export function useGetLastChatMessageQuery(chatId: string) {
   return useQuery<QueryBaseResponse<any>, AxiosError>({
-    queryKey: ['getlastchatmessage'],
+    queryKey: ['last-chat-message'],
     queryFn: () => getLastChatMessage(chatId),
   })
 }

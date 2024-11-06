@@ -1,17 +1,17 @@
 import { AxiosError } from 'axios'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createChat, getUserChats, ICreateChatValues } from '../actions/chat'
-import { IChat, QueryBaseResponse } from 'typings'
+import { IChat, MutationBaseResponse, QueryBaseResponse } from 'typings'
 
 export function useGetUserChatsQuery() {
   return useQuery<QueryBaseResponse<IChat[]>, AxiosError>({
-    queryKey: ['getuserchats'],
+    queryKey: ['user-chats'],
     queryFn: getUserChats,
   })
 }
 
 export function useCreateChatMutation() {
-  return useMutation<any, AxiosError, ICreateChatValues>({
+  return useMutation<MutationBaseResponse, AxiosError, ICreateChatValues>({
     mutationFn: (values) => createChat(values),
   })
 }

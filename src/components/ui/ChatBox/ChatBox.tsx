@@ -1,18 +1,13 @@
-import React from 'react'
-import { IUser } from 'typings'
 import { useAppSelector } from 'src/app'
 import ChatViewContainer from './ChatViewContainer'
 
-interface ChatBoxProps {
-  user: IUser
-}
-
-const ChatBox: React.FC<ChatBoxProps> = ({ user }) => {
+const ChatBox = () => {
+  const { user } = useAppSelector((state) => state.userReduce)
   const currentChat = useAppSelector((state) => state.chatReduce.chat)
 
   return (
-    <div className="w-full h-full">
-      {currentChat ? (
+    <div className="w-full lg:w-[73%] h-full lg:pr-5">
+      {currentChat && user ? (
         <ChatViewContainer user={user} currentChat={currentChat} />
       ) : (
         <div className="w-full h-full">

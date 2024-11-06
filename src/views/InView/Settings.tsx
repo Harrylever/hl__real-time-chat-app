@@ -1,6 +1,5 @@
 import clsx from 'clsx'
 import { useState } from 'react'
-import { PageProps } from '../../../typings'
 import ComingSoon from 'src/components/ui/ComingSoon'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
@@ -32,7 +31,7 @@ const TabButton = ({
   )
 }
 
-const SettingsInView: React.FC<{ props?: PageProps }> = () => {
+const SettingsView = () => {
   const comingSoon = true
   const [activeTab, setActiveTab] = useState<TabType>('profile')
 
@@ -86,4 +85,4 @@ const ApplicationSection = () => {
   return <div className="w-full h-full"></div>
 }
 
-export default SettingsInView
+export default SettingsView

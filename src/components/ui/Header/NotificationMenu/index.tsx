@@ -1,10 +1,10 @@
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import moment from 'moment'
+import { INotification } from 'typings'
+import UserProfileIcon from './UserProfileIcon'
 import { Menu, Transition } from '@headlessui/react'
-import { IChat, INotification, IAccount } from 'typings'
 import { BellIcon } from '@heroicons/react/24/outline'
 import { useAppDispatch, useAppSelector } from 'src/app'
-import { updateCurrentChat } from 'src/app/slices/chatSlice'
-import { Fragment, useCallback, useEffect, useState } from 'react'
 import { setReduxNotifications } from 'src/app/slices/notificationSlice'
 import { UnreadNotificationsFunc } from 'src/util/manipulate-notification'
 
@@ -12,14 +12,8 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-const LgMenuComponent = ({
-  localUser,
-}: {
-  localUser: Pick<
-    IAccount,
-    '_id' | 'email' | 'fullname' | 'username' | 'profileImage'
-  >
-}) => {
+const NotificationMenu = () => {
+  const { user } = useAppSelector((state) => state.userReduce)
   const dispatch = useAppDispatch()
   const [unreadNotifications, setUnreadNotifications] = useState<
     INotification[]
@@ -45,57 +39,14 @@ const LgMenuComponent = ({
     [dispatch],
   )
 
-  const markNotificationAsRead = useCallback(
-    (
-      notification: INotification,
-      userChats: IChat[],
-      userEmail: string,
-      notifications: INotification[],
-    ) => {
-      const chatToOpen = userChats.find((chat) => {
-        const chatMembers = [userEmail, notification.senderId.email]
-        const isChatToOpen = chat.members?.every((member) => {
-          return chatMembers.includes(member)
-        })
+  //   const { markNotificationAsRead } = useNotifications()
 
-        return isChatToOpen
-      })
-
-      // Modified Clicked notification to isRead = true
-      const mNotifications = notifications.map((el) => {
-        if (notification.senderId === el.senderId) {
-          return {
-            ...notification,
-            isRead: true,
-          }
-        } else {
-          return el
-        }
-      })
-
-      // Update Modified notification list
-      dispatch(
-        setReduxNotifications({
-          notifications: mNotifications,
-        }),
-      )
-
-      if (!chatToOpen) return
-      dispatch(
-        updateCurrentChat({
-          ...chatToOpen,
-        }),
-      )
-    },
-    [dispatch],
-  )
-
-  const userChats = useAppSelector((state) => state.userChatsReduce.chats)
+  const hasNotifications = notifications.length > 0
 
   return (
     <div className="ml-4 flex items-center gap-7">
       {/* Notification Dropdown */}
-      <Menu as="div" className={'relative ml-4'}>
+      <Menu as="div" className="relative ml-4">
         <div>
           <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-mx-white text-sm focus:outline-none ring-0 ring-transparent">
             <span className="absolute -inset-1.5" />
@@ -137,45 +88,41 @@ const LgMenuComponent = ({
 
             {/* Handle notification list */}
             {notifications.map((notification, index) => (
-              <Menu.Item key={index}>
-                <Menu.Button
-                  onClick={() =>
-                    markNotificationAsRead(
-                      notification,
-                      userChats,
-                      localUser.email,
-                      notifications,
-                    )
-                  }
-                  className={classNames(
-                    notification.isRead ? '' : 'bg-gray-100',
-                    'w-full flex flex-col px-5 py-2 text-sm text-gray-700 cursor-pointer',
-                  )}
-                >
-                  <p className="">
-                    <span className=" capitalize mr-1 font-medium">
-                      {notification.senderId.fullname}
-                    </span>
-                    sent you message
-                  </p>
-                  <p className="mt-0.5 text-xs">
-                    {moment(notification.date as string).calendar()}
-                  </p>
-                </Menu.Button>
+              <Menu.Item
+                key={index}
+                as="button"
+                // onClick={() => {}}
+                //   markNotificationAsRead(
+                //     notification,
+                //     userChats,
+                //     localUser.email,
+                //     notifications,
+                //   )
+                // }
+                className={classNames(
+                  notification.isRead ? '' : 'bg-gray-100',
+                  'w-full flex flex-col px-5 py-2 text-sm text-gray-700 cursor-pointer',
+                )}
+              >
+                <p>
+                  <span className=" capitalize mr-1 font-medium">
+                    {notification.senderId.fullname}
+                  </span>
+                  sent you message
+                </p>
+                <p className="mt-0.5 text-xs">
+                  {moment(notification.date as string).calendar()}
+                </p>
               </Menu.Item>
             ))}
 
             {/* If no notification in notification list */}
-            {notifications.length < 1 && (
-              <Menu.Item>
-                <button
-                  type="button"
-                  className={classNames(
-                    'w-full flex px-5 py-2 text-sm text-gray-700',
-                  )}
-                >
-                  No Notification
-                </button>
+            {!hasNotifications && (
+              <Menu.Item
+                as="p"
+                className="w-full flex px-5 py-2 text-sm text-gray-700"
+              >
+                No Notification
               </Menu.Item>
             )}
           </Menu.Items>
@@ -183,19 +130,9 @@ const LgMenuComponent = ({
       </Menu>
 
       {/* Profile dropdown */}
-      <div className="relative ml-4">
-        <div className="relative flex max-w-xs items-center rounded-full bg-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-400">
-          <span className="absolute -inset-1.5" />
-          <span className="sr-only">Open user menu</span>
-          <img
-            className="h-12 w-12 rounded-full"
-            src={localUser.profileImage}
-            alt={localUser.fullname + ' Profile Image'}
-          />
-        </div>
-      </div>
+      {user && <UserProfileIcon user={user} />}
     </div>
   )
 }
 
-export default LgMenuComponent
+export default NotificationMenu
