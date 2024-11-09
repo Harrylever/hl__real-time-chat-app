@@ -1,6 +1,8 @@
 import clsx from 'clsx'
 import moment from 'moment'
 import { useMemo } from 'react'
+import { useAppDispatch } from 'src/app'
+import { updateCurrentChat } from 'src/app/slices/chatSlice'
 import { truncateText } from 'src/util/utils'
 import { IChat, IMessage, INotification, IUser } from 'typings'
 
@@ -9,7 +11,6 @@ interface UserChatButtonProps {
   recipientUser: IUser
   currentChat?: IChat
   isOnline: boolean
-  handleButtonClick: () => void
   latestMessage?: IMessage
   thisUserNotifications: INotification[]
 }
@@ -20,18 +21,23 @@ const UserChatButton: React.FC<UserChatButtonProps> = ({
   recipientUser,
   currentChat,
   latestMessage,
-  handleButtonClick,
+
   thisUserNotifications,
 }) => {
+  const dispatch = useAppDispatch()
   const thisUserNotificationsExists = useMemo(
     () => thisUserNotifications.length > 0,
     [thisUserNotifications.length],
   )
 
+  const onClick = () => {
+    dispatch(updateCurrentChat(chat))
+  }
+
   return (
     <button
       type="button"
-      onClick={handleButtonClick}
+      onClick={onClick}
       className={clsx([
         'flex flex-row items-center justify-between w-full max-w-full border-b border-[#ffffff2d] py-0.5 sm:py-2 pl-1 pr-3 rounded-lg hover:bg-mx-primary-8 duration-150',
         { 'bg-mx-primary-8': currentChat?.id === chat.id },

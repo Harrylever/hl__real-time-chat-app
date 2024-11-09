@@ -4,30 +4,26 @@ import {
   getChatMessages,
   postChatMessages,
   getLastChatMessage,
-  IPostChatMessageValues,
+  IMessageFormValues,
 } from '../actions/message'
-import { delay } from 'src/util/utils'
 import { QueryBaseResponse, IMessage, MutationBaseResponse } from 'typings'
 
-export function useGetChatMessagesQuery(chatId: string, delayMs: number = 100) {
+export function useGetChatMessagesQuery(chatId: string) {
   return useQuery<QueryBaseResponse<IMessage[]>, AxiosError>({
-    queryKey: ['chat-messages'],
-    queryFn: async () => {
-      await delay(delayMs)
-      return getChatMessages(chatId)
-    },
+    queryKey: ['chat-messages', chatId],
+    queryFn: async () => getChatMessages(chatId),
   })
 }
 
 export function usePostChatMessageMutation() {
-  return useMutation<MutationBaseResponse, AxiosError, IPostChatMessageValues>({
+  return useMutation<MutationBaseResponse, AxiosError, IMessageFormValues>({
     mutationFn: (values) => postChatMessages(values),
   })
 }
 
 export function useGetLastChatMessageQuery(chatId: string) {
   return useQuery<QueryBaseResponse<any>, AxiosError>({
-    queryKey: ['last-chat-message'],
+    queryKey: ['last-chat-message', chatId],
     queryFn: () => getLastChatMessage(chatId),
   })
 }

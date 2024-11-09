@@ -13,9 +13,7 @@ const UserChatsWrap: React.FC<UserChatsWrapProps> = ({ userChats }) => {
     <div className="flex flex-col gap-y-2 sm:gap-y-1.5">
       {user &&
         userChats.map((chat, index) => (
-          <div key={index}>
-            <UserChat chat={chat} user={user} />
-          </div>
+          <UserChat key={index} chat={chat} user={user} />
         ))}
     </div>
   )

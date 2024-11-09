@@ -1,18 +1,18 @@
+import React from 'react'
 import clsx from 'clsx'
 import moment from 'moment'
-import React from 'react'
-import { IMessage } from 'typings'
+import { IPlainMessage } from 'src/hooks/decrypt-message/useDecryptMessage'
 
 interface MessageProps<T> {
-  prevMessage?: IMessage
-  nextMessage?: IMessage
-  message: IMessage
+  prevMessage?: IPlainMessage
+  nextMessage?: IPlainMessage
+  message: IPlainMessage
   isMainUserMessage: boolean
-  ref?: React.LegacyRef<T>
+  messageRef?: React.LegacyRef<T>
 }
 
 const Message: React.FC<MessageProps<HTMLDivElement>> = ({
-  ref,
+  messageRef,
   message,
   prevMessage,
   isMainUserMessage,
@@ -48,7 +48,7 @@ const Message: React.FC<MessageProps<HTMLDivElement>> = ({
         },
       ])}
     >
-      <div ref={ref} className={messageBubbleClasses}>
+      <div ref={messageRef} className={messageBubbleClasses}>
         {/* Show triangle marker for the first or new message */}
         {isNewMessage && <div className={triangleMarkerClasses}></div>}
 

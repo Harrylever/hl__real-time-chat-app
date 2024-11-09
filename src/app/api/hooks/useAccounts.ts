@@ -16,8 +16,9 @@ export function useGetActiveUserQuery() {
 
 export function useGetRecipientUserQuery(values: IGetRecipientAccountValues) {
   return useQuery<QueryBaseResponse<IUser>, AxiosError>({
-    queryKey: ['recipient-user'],
+    queryKey: ['recipient-user', values.accountId, values.members],
     queryFn: () => getRecipientAccount(values),
+    enabled: !!values.accountId && values.members.length > 0,
   })
 }
 

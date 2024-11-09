@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BASE_URL } from '../../../typings'
+import { BASE_URL } from 'src/config'
 
 const publicRoutes = ['/', '/auth/login', '/auth/register', '/terms']
 

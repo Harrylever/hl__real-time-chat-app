@@ -1,5 +1,3 @@
-export const BASE_URL = import.meta.env.VITE_BE_URL
-
 export interface IAuthState {
   id: string
   email: string
@@ -60,6 +58,8 @@ export interface IChat {
 export interface IMessage {
   _id?: string
   chatId: string
+  aesKey: string
+  iv: string
   senderId: IAccount
   text: string
   createdAt?: string

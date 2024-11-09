@@ -7,9 +7,7 @@ import PotentialChatsModal from 'src/components/modals/PotentialChatsModal'
 
 const UserChatsBox = () => {
   const { data, isFetching, error, refetch } = useGetUserChatsQuery()
-
   const userChats = useMemo(() => data?.data ?? [], [data?.data])
-
   const hasChats = userChats.length > 0
 
   if (error) {
@@ -27,20 +25,18 @@ const UserChatsBox = () => {
     <div className="hidden lg:flex flex-col items-start justify-start w-[27%] min-w-[320px] pl-8 pr-0 h-full overflow-hidden">
       <div className="w-full flex flex-row items-center justify-between">
         <p className="text-3xl font-medium capitalize">chats</p>
-        <PotentialChatsModal />
+        {!isFetching && <PotentialChatsModal />}
       </div>
 
-      {isFetching && <LoadingPlayer />}
-
-      <div className="mt-4 w-full h-full">
-        {hasChats ? (
-          <ScrollArea className="w-full h-full rounded-sm">
-            <UserChatsWrap userChats={userChats} />
-          </ScrollArea>
-        ) : (
-          <p className="italic">No chats available</p>
-        )}
-      </div>
+      {isFetching ? (
+        <LoadingPlayer />
+      ) : hasChats ? (
+        <ScrollArea className="mt-4 w-full h-full rounded-sm">
+          <UserChatsWrap userChats={userChats} />
+        </ScrollArea>
+      ) : (
+        <p className="mt-4 italic">No chats available</p>
+      )}
     </div>
   )
 }

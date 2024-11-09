@@ -1,9 +1,8 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { IChat, IUser } from 'typings'
 import { useAppSelector } from '../../../app'
 import { userIsOnline } from 'src/util/utils'
 import UserChatButton from './UserChatButton'
-import { useUpdateCurrentChatHandler } from 'src/hooks'
 import useNotifications from 'src/hooks/useNotifications'
 import useRecipientUser from 'src/hooks/useRecipientUser'
 import FetchLatestMessage from 'src/components/tools/useFetchLatestMessage'
@@ -31,22 +30,6 @@ const UserChat: React.FC<UserChatProps> = ({ user, chat }) => {
   )
   const latestMessage = FetchLatestMessage()
 
-  const { updateCurrentChatHandlerWithNotifications } =
-    useUpdateCurrentChatHandler()
-
-  const handleButtonClick = useCallback(() => {
-    updateCurrentChatHandlerWithNotifications(
-      chat,
-      notifications,
-      thisUserNotifications,
-    )
-  }, [
-    chat,
-    notifications,
-    thisUserNotifications,
-    updateCurrentChatHandlerWithNotifications,
-  ])
-
   const isOnline = useMemo(
     () => userIsOnline(recipientUser?.email ?? '', onlineUsers ?? []),
     [onlineUsers, recipientUser?.email],
@@ -62,7 +45,6 @@ const UserChat: React.FC<UserChatProps> = ({ user, chat }) => {
       currentChat={currentChat}
       recipientUser={recipientUser}
       latestMessage={latestMessage}
-      handleButtonClick={handleButtonClick}
       thisUserNotifications={thisUserNotifications}
     />
   )
@@ -70,7 +52,7 @@ const UserChat: React.FC<UserChatProps> = ({ user, chat }) => {
 
 const LoadingSkeleton = () => {
   return (
-    <div className="border border-blue-100 shadow rounded-lg p-4 max-w-sm w-full mx-auto opacity-70">
+    <div className="border border-blue-100 shadow rounded-lg p-4 max-w-sm w-full mx-auto opacity-60">
       <div className="animate-pulse flex space-x-4">
         <div className="rounded-full bg-slate-300 h-10 w-10"></div>
         <div className="flex-1 space-y-3 py-1">
