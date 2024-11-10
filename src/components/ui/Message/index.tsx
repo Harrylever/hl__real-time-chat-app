@@ -55,16 +55,15 @@ const Message: React.FC<MessageProps<HTMLDivElement>> = ({
         {/* Message Text */}
         <div>
           <p
+            dangerouslySetInnerHTML={{ __html: message.text }}
             className={clsx([
-              'text-xs md:text-sm',
+              'text-xs md:text-sm whitespace-pre-line',
               {
                 'text-mx-grey-2': !isMainUserMessage,
                 'text-white': isMainUserMessage,
               },
             ])}
-          >
-            {message.text}
-          </p>
+          />
         </div>
       </div>
 

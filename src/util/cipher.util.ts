@@ -8,12 +8,27 @@ export class CipherUtil {
     return { key, iv }
   }
 
+  toUnicodePoints(text: string) {
+    return text.replace(/[\s\S]/g, (char) => {
+      const codePoint = char.codePointAt(0) ?? 0
+      const codePointString = codePoint !== 0 ? codePoint.toString(16) : ''
+      return '\\u' + codePointString
+    })
+  }
+
+  fromUnicodePoints(text: string) {
+    return text.replace(/\\u[\dA-F]{4}/gi, (match) =>
+      String.fromCodePoint(parseInt(match.replace('\\u', ''), 16)),
+    )
+  }
+
   async encryptData(data: string) {
+    const base64Data = forge.util.encode64(data)
     const { key, iv } = this.#generateAesKeyAndIV()
 
     const cipher = forge.cipher.createCipher('AES-CBC', key)
     cipher.start({ iv })
-    cipher.update(forge.util.createBuffer(data))
+    cipher.update(forge.util.createBuffer(base64Data))
     cipher.finish()
 
     const encryptedAesKey = this.#encryptWithPublicKey(key)
@@ -37,7 +52,7 @@ export class CipherUtil {
     decipher.start({ iv: decryptedIV })
     decipher.update(encryptedDataBuffer)
     decipher.finish()
-    return decipher.output.toString()
+    return forge.util.decode64(decipher.output.toString())
   }
 
   #hexToByteStringBuffer(hexString: any) {

@@ -35,11 +35,7 @@ const Header = () => {
   }, [isScrollEnabled])
 
   useEffect(() => {
-    if (mobileNavIsOpen) {
-      setIsScrollEnabled(false)
-    } else {
-      setIsScrollEnabled(true)
-    }
+    setIsScrollEnabled(mobileNavIsOpen ? false : true)
   }, [mobileNavIsOpen, user])
 
   const isLoginPage = location.pathname === '/auth/login'
@@ -57,7 +53,9 @@ const Header = () => {
                 <img
                   src="/svg/mxchat-new-logo.svg"
                   alt="MX Chat Company Logo"
-                  className="w-[120px] md:w-[210px]"
+                  className="relative w-[120px] md:w-[210px]"
+                  width={0}
+                  height={0}
                 />
               </div>
             </Link>
@@ -89,7 +87,6 @@ const Header = () => {
                 </>
               ) : (
                 <div className="sm:pt-2">
-                  {/*  */}
                   <div className="hidden sm:block pb-3 pt-4">
                     <Link to={isLoginPage ? 'auth/register' : 'auth/login'}>
                       <div className="group border border-blue-3 hover:bg-indigo-600 duration-500 rounded-sm py-2.5 px-16">
@@ -100,7 +97,6 @@ const Header = () => {
                     </Link>
                   </div>
 
-                  {/*  */}
                   <div className="sm:hidden">
                     <Hamburger
                       size={28}

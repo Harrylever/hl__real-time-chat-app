@@ -2,8 +2,8 @@ import clsx from 'clsx'
 import moment from 'moment'
 import { useMemo } from 'react'
 import { useAppDispatch } from 'src/app'
-import { updateCurrentChat } from 'src/app/slices/chatSlice'
 import { truncateText } from 'src/util/utils'
+import { updateCurrentChat } from 'src/app/slices/chatSlice'
 import { IChat, IMessage, INotification, IUser } from 'typings'
 
 interface UserChatButtonProps {
@@ -39,16 +39,16 @@ const UserChatButton: React.FC<UserChatButtonProps> = ({
       type="button"
       onClick={onClick}
       className={clsx([
-        'flex flex-row items-center justify-between w-full max-w-full border-b border-[#ffffff2d] py-0.5 sm:py-2 pl-1 pr-3 rounded-lg hover:bg-mx-primary-8 duration-150',
-        { 'bg-mx-primary-8': currentChat?.id === chat.id },
+        'group/user-button flex flex-row items-center justify-between w-full max-w-full border-b border-[#ffffff2d] py-0.5 sm:py-2 pl-1 pr-3 rounded-lg hover:bg-mx-primary-8 duration-150',
+        { 'bg-mx-primary-8/50': currentChat?.id === chat.id },
       ])}
     >
       <div className="flex flex-row items-center justify-center gap-x-2.5">
-        <div className="w-fit border-2 border-[#ffffff73] rounded-full hover:border-white relative">
+        <div className="w-fit border-1 border-[#ffffff1a] rounded-full group-hover/user-button:border-white relative">
           <img
             src={recipientUser.profileImage}
             alt={recipientUser.username}
-            className="rounded-full h-[50px] w-[50px] shadow-lg overflow-hidden"
+            className="rounded-full h-[50px] w-[50px] overflow-hidden"
           />
           {isOnline && (
             <div className="rounded-full h-[10px] w-[10px] bg-mx-primary-4 absolute bottom-[8%] left-[75%]"></div>
@@ -57,9 +57,9 @@ const UserChatButton: React.FC<UserChatButtonProps> = ({
         <div className="flex flex-col gap-2.5 items-start justify-center mt-1">
           <div>
             <p className="text-mx-black font-medium text-sm/[0.6rem] sm:text-sm/[0.7rem] tracking-wide capitalize">
-              {recipientUser.username && recipientUser.username.length > 10
-                ? `${recipientUser.username.substring(0, 7)}..`
-                : recipientUser.username}
+              {recipientUser.fullname && recipientUser.fullname.length > 10
+                ? `${recipientUser.fullname.substring(0, 7)}..`
+                : recipientUser.fullname}
             </p>
           </div>
 

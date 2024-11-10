@@ -2,35 +2,22 @@ import { useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import Message from '.'
 import { IUser } from 'typings'
+import { useAppSelector } from 'src/app'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { IPlainMessage } from 'src/hooks/decrypt-message/useDecryptMessage'
 
 interface MessageWrapperProps {
   user: IUser
-  messages: IPlainMessage[]
 }
 
-const MessageWrapper: React.FC<MessageWrapperProps> = ({ user, messages }) => {
+const MessageWrapper: React.FC<MessageWrapperProps> = ({ user }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const { messages } = useAppSelector((state) => state.messageReduce)
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
-
-  //   useEffect(() => {
-  //     const scrollContainer = scrollContainerRef.current?.querySelector('div')
-
-  //     const handleOnScroll = () => {
-  //       if (scrollContainer?.scrollTop === 0) {
-  //         console.log('At Top')
-  //       }
-  //     }
-
-  //     scrollContainer?.addEventListener('scroll', handleOnScroll)
-  //     return () => scrollContainer?.removeEventListener('scroll', handleOnScroll)
-  //   }, [])
 
   // Classes for message alignment and chat container
   const messageContainerClasses = (isMainUser: boolean) =>

@@ -10,8 +10,11 @@ export const decryptMessages = async (
 ): Promise<IPlainMessage[]> => {
   return await Promise.all(
     messages.map(async ({ text, aesKey, iv, ...rest }) => {
-      const decryptedData = await cipherUtil.decryptData(text, { aesKey, iv })
-      return { ...rest, text: decryptedData }
+      const decryptedData = await cipherUtil.decryptData(text, {
+        aesKey,
+        iv,
+      })
+      return { ...rest, text: JSON.parse(decryptedData) }
     }),
   )
 }

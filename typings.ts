@@ -55,6 +55,12 @@ export interface IChat {
   members: Array<string>
 }
 
+export interface IMobileChat {
+  id: string
+  me: string
+  recipient: IUser
+}
+
 export interface IMessage {
   _id?: string
   chatId: string
@@ -77,7 +83,7 @@ export interface INotification {
   isRead: boolean
 }
 
-export type TRoute = 'chats' | 'groups' | 'settings'
+export type TRoute = 'chats' | 'groups' | 'settings' | 'contacts'
 
 export interface InternalRoute {
   active: TRoute

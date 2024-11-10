@@ -1,16 +1,19 @@
-import { ChangeEvent, FormEvent, useRef, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
 import SendButton from './SendButton'
 import EmojiPicker from '../EmojiPicker'
 import { toast } from '@/components/ui/use-toast'
+import EmojiPickerPopover from 'src/components/popover/EmojiPickerPopover'
 
 interface MessageInputFormProps {
   onSubmit: (message: string) => void
   isSending: boolean
+  isSuccess: boolean
 }
 
 const MessageInputForm: React.FC<MessageInputFormProps> = ({
   onSubmit,
   isSending,
+  isSuccess,
 }) => {
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const [newMessage, setNewMessage] = useState('')
@@ -25,10 +28,8 @@ const MessageInputForm: React.FC<MessageInputFormProps> = ({
     if (!newMessage.trim()) return
 
     try {
-      onSubmit(newMessage.trim())
-      setNewMessage('')
+      onSubmit(JSON.stringify(newMessage.trim()))
     } catch (error) {
-      console.log(error)
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -36,6 +37,12 @@ const MessageInputForm: React.FC<MessageInputFormProps> = ({
       })
     }
   }
+
+  useEffect(() => {
+    if (!isSending && isSuccess) {
+      setNewMessage('')
+    }
+  }, [isSending, isSuccess])
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -70,7 +77,9 @@ const MessageInputForm: React.FC<MessageInputFormProps> = ({
             ></textarea>
 
             <div className="h-full w-[55px] absolute top-1/2 -translate-y-1/2 right-0 py-2.5 flex items-center justify-center border-l border-mx-grey">
-              <EmojiPicker onChange={addEmoji} />
+              <EmojiPickerPopover>
+                <EmojiPicker hideButton onChange={addEmoji} />
+              </EmojiPickerPopover>
             </div>
           </div>
 

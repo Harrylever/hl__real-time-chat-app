@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { IMessage } from '../../../typings'
+import { IPlainMessage } from 'src/hooks/decrypt-message/useDecryptMessage'
 
 interface ISliceState {
-  messages: Array<IMessage>
+  messages: Array<IPlainMessage>
 }
 
 const initialState: ISliceState = {

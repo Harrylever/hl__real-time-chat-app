@@ -25,3 +25,8 @@ export async function createChat(data: ICreateChatValues) {
   const fetch = await axiosInstance.post('/chats/create', data)
   return fetch.data
 }
+
+export async function getMobileUserChats() {
+  const fetch = await axiosInstance.get('/chats/mobile/me')
+  return fetch.data
+}

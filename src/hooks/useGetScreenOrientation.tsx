@@ -1,18 +1,28 @@
 import { useEffect, useState } from 'react'
 
-const useGetScreenSize = () => {
+type ScreenOrientation = 'mobile' | 'desktop'
+
+const useGetScreenOrientation = () => {
   const [screenWidth, setScreenWidth] = useState(0)
   const [screenHeight, setScreenHeight] = useState(0)
+  const [screenOrientation, setScreenOrientation] =
+    useState<ScreenOrientation>('desktop')
 
   const getScreenSizeHandler = () => {
     const width = window.innerWidth
     const height = window.innerHeight
     setScreenWidth(width)
     setScreenHeight(height)
+
+    if (width > 1023) {
+      setScreenOrientation('desktop')
+    } else {
+      setScreenOrientation('mobile')
+    }
   }
 
   useEffect(() => {
-    // getScreenSizeHandler()
+    getScreenSizeHandler()
     window.addEventListener('resize', getScreenSizeHandler)
 
     return () => {
@@ -20,7 +30,7 @@ const useGetScreenSize = () => {
     }
   }, [])
 
-  return { screenWidth, screenHeight }
+  return { screenWidth, screenHeight, screenOrientation }
 }
 
-export default useGetScreenSize
+export default useGetScreenOrientation

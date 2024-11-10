@@ -4,7 +4,7 @@ import {
   Landing,
   AppView,
   LoginView,
-  NotFoundView,
+  // NotFoundView,
   RegisterView,
   Terms,
 } from './views'
@@ -20,7 +20,7 @@ export default function AppRoutes() {
         <Route path="auth/login" element={<LoginView />} />
         <Route path="terms" element={<Terms />} />
       </Route>
-      <Route path="*" element={<NotFoundView />} />
+      <Route path="*" element={<Navigate to="/app" replace />} />
     </Routes>
   )
 }
