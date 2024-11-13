@@ -11,8 +11,8 @@ export async function getUserChats() {
 }
 
 export interface ICreateChatValues {
-  userOneEmail: string
-  userTwoEmail: string
+  emailOne: string
+  emailTwo: string
 }
 /**
  * Takes two params
@@ -23,5 +23,10 @@ export interface ICreateChatValues {
  */
 export async function createChat(data: ICreateChatValues) {
   const fetch = await axiosInstance.post('/chats/create', data)
+  return fetch.data
+}
+
+export async function getMobileUserChats() {
+  const fetch = await axiosInstance.get('/chats/mobile/me')
   return fetch.data
 }

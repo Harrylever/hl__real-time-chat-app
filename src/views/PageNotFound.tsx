@@ -1,6 +1,4 @@
-import { PageProps } from '../../typings'
-
-const NotFound: React.FC<{ props?: PageProps }> = () => {
+const NotFound = () => {
   return (
     <div>
       <p>Page Not Found</p>

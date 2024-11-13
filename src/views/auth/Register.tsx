@@ -1,11 +1,9 @@
-import React from 'react'
-import { PageProps } from 'typings'
 import { classNames } from 'src/styles'
 import GoogleAuth from 'src/components/ui/GoogleAuth'
 import DefaultWidth from 'src/components/ui/DefaultWidth'
 import RegisterPageForm from 'src/components/ui/RegisterForm'
 
-const RegisterPage: React.FC<{ props?: PageProps }> = () => {
+const RegisterPage = () => {
   return (
     <DefaultWidth>
       <div className="pt-12 flex min-h-full flex-1 flex-col justify-center px-6 pb-12 lg:px-8">

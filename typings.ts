@@ -1,5 +1,3 @@
-export const BASE_URL = import.meta.env.VITE_BE_URL
-
 export interface IAuthState {
   id: string
   email: string
@@ -57,13 +55,17 @@ export interface IChat {
   members: Array<string>
 }
 
-export interface PageProps {
-  user: IUser
+export interface IMobileChat {
+  id: string
+  me: string
+  recipient: IUser
 }
 
 export interface IMessage {
   _id?: string
   chatId: string
+  aesKey: string
+  iv: string
   senderId: IAccount
   text: string
   createdAt?: string
@@ -81,7 +83,7 @@ export interface INotification {
   isRead: boolean
 }
 
-export type TRoute = 'chats' | 'groups' | 'settings'
+export type TRoute = 'chats' | 'groups' | 'settings' | 'contacts'
 
 export interface InternalRoute {
   active: TRoute

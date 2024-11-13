@@ -38,14 +38,13 @@ export function useCreateAccountMutation() {
 
 export function useLoginStatusQuery() {
   return useQuery<any, AxiosError>({
-    queryKey: ['loginstatus'],
+    queryKey: ['login-status'],
     queryFn: loginStatus,
   })
 }
 
 export function useLogoutUser() {
-  return useQuery<any, AxiosError>({
-    queryKey: ['logout'],
-    queryFn: logoutUser,
+  return useMutation<{ message: string }, AxiosError>({
+    mutationFn: logoutUser,
   })
 }

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useMemo } from 'react'
 import {
   AlertDialog,
   AlertDialogTitle,
@@ -11,8 +11,7 @@ import {
 import LoadingPlayer from '../ui/LoadingPlayer'
 import { useAppDispatch, useAppSelector } from 'src/app'
 import { useGetAllUsersQuery } from 'src/app/api/hooks/useAccounts'
-import { addPotentialChat } from 'src/app/slices/potentialChatsSlice'
-import PotentialChatWrap from '../ui/PotentialChat/PotentialChatWrap'
+import PotentialChatBox from '../ui/PotentialChat/PotentialChatBox'
 import { setPotentialChatsModalIsOpen } from 'src/app/slices/appUIStateSlice'
 
 const PotentialChatsModal = () => {
@@ -62,16 +61,15 @@ const PotentialChatsModal = () => {
 }
 
 const PotentialChatsList = () => {
-  const dispatch = useAppDispatch()
-  const { data, isFetching, isLoading, error, refetch } = useGetAllUsersQuery()
-  const user = useAppSelector((state) => state.userReduce.user)
+  const { user } = useAppSelector((state) => state.userReduce)
+  const { data, isFetching, error, refetch } = useGetAllUsersQuery()
 
-  const loading = isFetching || isLoading
+  const loading = isFetching
 
   if (error) {
     return (
       <div>
-        <p>Failed to get users</p>
+        <p className="italic">Failed to get users</p>
 
         <button
           type="button"
@@ -84,19 +82,23 @@ const PotentialChatsList = () => {
     )
   }
 
-  useEffect(() => {
-    if (data && user) {
-      const filteredChats = data.data.filter(
-        (chat) => chat.email?.trim() !== user.email?.trim(),
-      )
-      dispatch(addPotentialChat({ users: filteredChats }))
-    }
-  }, [data, dispatch, user])
+  const potentialChats = useMemo(
+    () =>
+      data?.data.filter((chat) => chat.email.trim() !== user?.email.trim()) ??
+      [],
+    [data?.data, user?.email],
+  )
+
+  const hasChats = potentialChats.length > 0
 
   return (
     <div className="flex flex-row gap-x-2 pb-5">
       {loading && <LoadingPlayer />}
-      {data && data?.data && <PotentialChatWrap />}
+      {hasChats ? (
+        <PotentialChatBox potentialChats={potentialChats} />
+      ) : (
+        <p className="italic">No chats available</p>
+      )}
     </div>
   )
 }

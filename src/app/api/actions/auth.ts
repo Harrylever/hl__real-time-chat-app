@@ -37,6 +37,6 @@ export async function loginStatus() {
 }
 
 export async function logoutUser() {
-  const fetch = await axiosInstance.get('/auth/logout')
+  const fetch = await axiosInstance.post('/auth/logout', {})
   return fetch.data
 }

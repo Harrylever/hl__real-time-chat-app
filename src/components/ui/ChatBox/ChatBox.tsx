@@ -1,35 +1,84 @@
 import React from 'react'
-import { IUser } from 'typings'
-import { useAppSelector } from 'src/app'
-import ChatViewContainer from './ChatViewContainer'
+import {
+  useGetChatMessagesQuery,
+  useGetRecipientUserQuery,
+} from 'src/app/api/hooks'
+import ChatView from './ChatView'
+import { IChat, IUser } from 'typings'
+import LoadingPlayer from '../LoadingPlayer'
 
 interface ChatBoxProps {
   user: IUser
+  currentChat: IChat
 }
 
-const ChatBox: React.FC<ChatBoxProps> = ({ user }) => {
-  const currentChat = useAppSelector((state) => state.chatReduce.chat)
+const ChatBox: React.FC<ChatBoxProps> = ({ user, currentChat }) => {
+  const {
+    data: messages,
+    isError: isMessagesError,
+    isLoading: isLoadingMessages,
+    refetch: refetchMessages,
+  } = useGetChatMessagesQuery(currentChat.id)
+
+  const {
+    data: recipientUserData,
+    isError: isRecipientUserError,
+    isLoading: isLoadingRecipientUser,
+    refetch: refetchRecipientUser,
+  } = useGetRecipientUserQuery({
+    accountId: user.email,
+    members: currentChat.members,
+  })
+
+  const isLoading = isLoadingMessages || isLoadingRecipientUser
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center">
+        <p>Loading messages...</p>
+        <LoadingPlayer />
+      </div>
+    )
+  }
+
+  if (isMessagesError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <p>Error fetching messages...</p>
+        <button
+          type="button"
+          name="refetch-message"
+          onClick={() => refetchMessages()}
+        >
+          Retry
+        </button>
+      </div>
+    )
+  }
+
+  if (isRecipientUserError || !recipientUserData?.data) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <p>Error fetching user...</p>
+        <button
+          type="button"
+          name="refetch-recipient-user"
+          onClick={() => refetchRecipientUser()}
+        >
+          Retry
+        </button>
+      </div>
+    )
+  }
 
   return (
-    <div className="w-full h-full">
-      {currentChat ? (
-        <ChatViewContainer user={user} currentChat={currentChat} />
-      ) : (
-        <div className="w-full h-full">
-          <div className="relative w-full h-full bg-mx-primary-9 border border-mx-stroke rounded-lg shadow-md">
-            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex flex-col items-center justify-center gap-3">
-              <img
-                src={'/svg/message-text-icon.svg'}
-                alt="Get Chatting"
-                className="relative w-[92.5px] h-auto opacity-90"
-              />
-              <p className="font-bold text-mx-primary-7 text-4xl">
-                Get Chatting
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+    <div className="w-full lg:w-[73%] h-full lg:pr-5">
+      <ChatView
+        user={user}
+        currentChat={currentChat}
+        recipientUser={recipientUserData.data}
+        encryptedMessages={messages?.data ?? []}
+      />
     </div>
   )
 }

@@ -1,20 +1,20 @@
 import clsx from 'clsx'
 import { TRoute } from '../../../typings'
-import { useAppDispatch, useAppSelector } from '../../app'
+import { useAppDispatch } from '../../app'
 import { TInsideView } from '../../app/slices/appUIStateSlice'
 import { setActiveRoute } from '../../app/slices/internalRouteSlice'
-import useLogOutUser from 'src/app/hooks/useLogOutUser'
+import useLogOut from 'src/hooks/useLogOutUser'
 
 interface IChangeViewItem {
-  title: string
+  activeRoute: TRoute
   route?: TRoute
   icon: { active: string; inactive: string }
   val: TInsideView
 }
 
-const views: IChangeViewItem[] = [
+const views = (activeRoute: TRoute): IChangeViewItem[] => [
   {
-    title: 'chats',
+    activeRoute,
     route: 'chats',
     icon: {
       active: '/svg/active/chat-view-icon.svg',
@@ -23,7 +23,7 @@ const views: IChangeViewItem[] = [
     val: 'chats',
   },
   {
-    title: 'groups',
+    activeRoute,
     route: 'groups',
     icon: {
       active: '/svg/active/groups-view-icon.svg',
@@ -32,7 +32,7 @@ const views: IChangeViewItem[] = [
     val: 'groups',
   },
   {
-    title: 'settings',
+    activeRoute,
     route: 'settings',
     icon: {
       active: '/svg/active/settings-view-icon.svg',
@@ -41,7 +41,7 @@ const views: IChangeViewItem[] = [
     val: 'settings',
   },
   {
-    title: 'logout',
+    activeRoute,
     icon: {
       active: '/svg/active/logout-icon.svg',
       inactive: '/svg/inactive/logout-icon.svg',
@@ -50,29 +50,37 @@ const views: IChangeViewItem[] = [
   },
 ]
 
-const ChangeViewComponent = () => {
+interface ChangeViewComponentProps {
+  activeRoute: TRoute
+}
+
+const ChangeViewComponent: React.FC<ChangeViewComponentProps> = ({
+  activeRoute,
+}) => {
   const dispatch = useAppDispatch()
-  const { handleLogOutUser } = useLogOutUser()
+  const { handleLogOut } = useLogOut()
 
   const handleChangeInView = (route: TRoute) => {
     dispatch(setActiveRoute(route))
   }
 
   return (
-    <section className="w-full h-full bg-mx-primary-9 pt-10">
-      <div className="w-full h-full flex flex-col items-center justify-start gap-16 bg-transparent">
-        {views.slice(0, 3).map((view, index) => (
-          <ViewItem
-            key={index}
-            props={view}
-            callback={() => handleChangeInView(view.route as TRoute)}
-          />
-        ))}
+    <aside className="hidden lg:block max-w-[160px] xl:max-w-[190px] w-full h-full bg-mx-primary-9 pt-10">
+      <div className="w-full h-full flex flex-col items-center gap-16 bg-transparent">
+        {views(activeRoute)
+          .slice(0, 3)
+          .map((view, index) => (
+            <ViewItem
+              key={index}
+              props={view}
+              callback={() => handleChangeInView(view.route as TRoute)}
+            />
+          ))}
 
         {/* Log out */}
-        <ViewItem props={views[3]} callback={handleLogOutUser} />
+        <ViewItem props={views(activeRoute)[3]} callback={handleLogOut} />
       </div>
-    </section>
+    </aside>
   )
 }
 
@@ -80,16 +88,12 @@ const ViewItem: React.FC<{ props: IChangeViewItem; callback?: () => void }> = ({
   props,
   callback,
 }) => {
-  const activeInternalRoute = useAppSelector(
-    (state) => state.internalRouteReduce.active,
-  )
-
   return (
     <div
       className={clsx([
-        'w-[170px] h-fit flex items-center justify-center duration-500',
+        'w-[140px] xl:w-[170px] h-fit flex items-center justify-center duration-500',
         {
-          'border-r-4 border-mx-primary-5': activeInternalRoute === props.route,
+          'border-r-4 border-mx-primary-5': props.activeRoute === props.route,
         },
       ])}
     >
@@ -99,14 +103,13 @@ const ViewItem: React.FC<{ props: IChangeViewItem; callback?: () => void }> = ({
         className={clsx([
           'group w-[75px] h-[75px] hover:bg-mx-primary-5 flex items-center justify-center rounded-md duration-500',
           {
-            'bg-mx-primary-5':
-              activeInternalRoute && activeInternalRoute === props.route,
+            'bg-mx-primary-5': props.activeRoute === props.route,
           },
         ])}
       >
         <img
           src={
-            activeInternalRoute && activeInternalRoute === props.route
+            props.activeRoute === props.route
               ? props.icon.active
               : props.icon.inactive
           }
@@ -114,7 +117,7 @@ const ViewItem: React.FC<{ props: IChangeViewItem; callback?: () => void }> = ({
           className={clsx([
             'h-[25px] w-[25px] duration-300',
             {
-              'group-hover:invert': activeInternalRoute !== props.route,
+              'group-hover:invert': props.activeRoute !== props.route,
             },
           ])}
         />

@@ -1,29 +1,29 @@
-import { Fragment } from 'react'
-import NavBar from '../ui/NavBar'
-import { RouteProps } from 'typings'
-import MainContent from './MainContent'
-import { Toaster } from '@/components/ui/toaster'
+import Header from '../ui/Header/index'
+import { useAppSelector } from 'src/app'
+import { Outlet } from 'react-router-dom'
+import LoadingPlayer from '../ui/LoadingPlayer'
 import useUserEffect from 'src/hooks/useUserEffect'
-import SideBarWrapper from '../ui/SideBarChatList/SideBarWrapper'
+import useGetScreenSize from 'src/hooks/useGetScreenOrientation'
 
-interface LayoutProps extends RouteProps {}
+export default function Layout() {
+  const { loading } = useUserEffect()
+  const { screenOrientation } = useGetScreenSize()
+  const { user } = useAppSelector((state) => state.userReduce)
 
-export default function Layout({ user }: LayoutProps) {
-  useUserEffect()
+  const isDesktop = screenOrientation === 'desktop'
 
-  return (
-    <Fragment>
-      <div className="w-full relative">
-        <SideBarWrapper user={user} />
+  // If no user display header
+  // if user and isDesktop display header
 
-        <div className="relative z-[20] w-full bg-mx-white shadow-md">
-          <NavBar />
-        </div>
+  return loading ? (
+    <LoadingPlayer />
+  ) : (
+    <section className="w-full h-screen">
+      {!user || (user && isDesktop) ? <Header /> : null}
 
-        <MainContent user={user} />
+      <div className={isDesktop ? 'relative' : 'h-full relative'}>
+        <Outlet />
       </div>
-
-      <Toaster />
-    </Fragment>
+    </section>
   )
 }
