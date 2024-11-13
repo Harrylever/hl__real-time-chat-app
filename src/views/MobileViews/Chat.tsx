@@ -68,6 +68,7 @@ const ChatView = () => {
     <div className="h-full w-full pt-4 flex flex-col gap-3">
       <MobileChatViewHeader
         user={user}
+        label="Chats"
         userQuery={userQuery}
         updateUserQuery={(e) => setUserQuery(e)}
       />

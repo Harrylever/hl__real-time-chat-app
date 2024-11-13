@@ -3,6 +3,7 @@ import { IUser } from 'typings'
 import { MdClose } from 'react-icons/md'
 
 interface MobileChatViewHeaderProps {
+  label: string
   user: IUser
   userQuery: string
   updateUserQuery: (user: string) => void
@@ -10,6 +11,7 @@ interface MobileChatViewHeaderProps {
 
 const MobileChatViewHeader: React.FC<MobileChatViewHeaderProps> = ({
   user,
+  label,
   userQuery,
   updateUserQuery,
 }) => {
@@ -54,7 +56,7 @@ const MobileChatViewHeader: React.FC<MobileChatViewHeaderProps> = ({
             />
           </button>
 
-          <p className="text-mx-primary text-xl font-medium">Chats</p>
+          <p className="text-mx-primary text-xl font-medium">{label}</p>
 
           <img
             width={0}

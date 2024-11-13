@@ -1,11 +1,9 @@
-import React from 'react'
-import { PageProps } from 'typings'
 import { classNames } from 'src/styles'
 import GoogleAuth from 'src/components/ui/GoogleAuth'
 import LoginPageForm from 'src/components/ui/LoginForm'
 import DefaultWidth from 'src/components/ui/DefaultWidth'
 
-const LoginPage: React.FC<{ props?: PageProps }> = () => {
+const LoginPage = () => {
   return (
     <DefaultWidth>
       <div className="pt-12 flex min-h-full flex-1 flex-col justify-center px-6 pb-12 lg:px-8">

@@ -24,7 +24,7 @@ const ApplicationView = () => {
     chats: <DesktopChatView />,
     groups: <DesktopGroupsView />,
     settings: <DesktopSettingsView />,
-    contacts: null,
+    contacts: <DesktopGroupsView />,
   }
 
   const mobileviews: Record<TRoute, React.ReactNode> = {
