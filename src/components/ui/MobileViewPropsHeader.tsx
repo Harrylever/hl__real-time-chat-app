@@ -2,14 +2,14 @@ import { Fragment, useState } from 'react'
 import { IUser } from 'typings'
 import { MdClose } from 'react-icons/md'
 
-interface MobileChatViewHeaderProps {
+interface MobileViewPropsHeaderProps {
   label: string
   user: IUser
   userQuery: string
   updateUserQuery: (user: string) => void
 }
 
-const MobileChatViewHeader: React.FC<MobileChatViewHeaderProps> = ({
+const MobileViewPropsHeader: React.FC<MobileViewPropsHeaderProps> = ({
   user,
   label,
   userQuery,
@@ -71,4 +71,4 @@ const MobileChatViewHeader: React.FC<MobileChatViewHeaderProps> = ({
   )
 }
 
-export default MobileChatViewHeader
+export default MobileViewPropsHeader

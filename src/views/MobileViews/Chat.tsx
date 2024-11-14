@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { IChat, IMobileChat } from 'typings'
+import { debounce } from 'lodash'
 import { useAppSelector } from 'src/app'
 import { Navigate } from 'react-router-dom'
+import { IChat, IMobileChat } from 'typings'
 import { useGetMobileUserChatsQuery } from 'src/app/api/hooks'
-import MobileChatViewHeader from 'src/components/ui/MobileChatViewComponents/MobileChatViewHeader'
+import MobileViewPropsHeader from 'src/components/ui/MobileViewPropsHeader'
 import MobileChatViewChatsWrap from 'src/components/ui/MobileChatViewComponents/MobileChatViewChatsWrap'
-import { debounce } from 'lodash'
 
 const ChatView = () => {
   const { user } = useAppSelector((state) => state.userReduce)
@@ -66,7 +66,7 @@ const ChatView = () => {
 
   return (
     <div className="h-full w-full pt-4 flex flex-col gap-3">
-      <MobileChatViewHeader
+      <MobileViewPropsHeader
         user={user}
         label="Chats"
         userQuery={userQuery}
