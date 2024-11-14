@@ -1,5 +1,5 @@
 const errorResponse = {
-  401: 'Incorrect Email/Password',
+  401: 'Incorrect Email/Password 😭',
   404: 'User not found. Registration needed',
 }
 
