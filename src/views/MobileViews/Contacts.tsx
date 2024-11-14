@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useAppSelector } from 'src/app'
 import { Navigate } from 'react-router-dom'
 import { useGetAllUsersQuery } from 'src/app/api/hooks'
-import MobileChatViewHeader from 'src/components/ui/MobileChatViewComponents/MobileChatViewHeader'
+import MobileViewPropsHeader from 'src/components/ui/MobileViewPropsHeader'
 import MobileContactViewChatsWrap from 'src/components/ui/MobileContactViewComponent/MobileContactViewChatsWrap'
 
 const Contacts = () => {
@@ -39,11 +39,11 @@ const Contacts = () => {
 
   return (
     <div className="h-full w-full pt-4 flex flex-col gap-3">
-      <MobileChatViewHeader
+      <MobileViewPropsHeader
         label="Contacts"
         user={user}
         userQuery={userQuery}
-        updateUserQuery={(e) => setUserQuery(e)}
+        updateUserQuery={setUserQuery}
       />
 
       <MobileContactViewChatsWrap
