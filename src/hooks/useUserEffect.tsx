@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppDispatch } from 'src/app'
 import { setUser } from 'src/app/slices/userSlice'
 import { useGetActiveUserQuery } from 'src/app/api/hooks'
@@ -10,7 +10,14 @@ export default function useUserEffect() {
   const location = useLocation()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { data, isFetching } = useGetActiveUserQuery()
+  const [isLoading, setIsLoading] = useState(true)
+  const { data, isFetched, error, refetch } = useGetActiveUserQuery()
+
+  useEffect(() => {
+    if (isFetched) {
+      setIsLoading(false)
+    }
+  }, [isFetched])
 
   useEffect(() => {
     if (data && data.message === 'User found') {
@@ -21,5 +28,5 @@ export default function useUserEffect() {
     }
   }, [data, dispatch, location.pathname, navigate])
 
-  return { loading: isFetching }
+  return { loading: isLoading, error, retry: refetch }
 }

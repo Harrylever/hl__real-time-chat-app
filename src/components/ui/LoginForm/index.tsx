@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useLoginUserMutation } from 'src/app/api/hooks'
 import { toast } from '@/components/ui/use-toast'
 import { POST_REQUEST_MESSAGE_RESPONSE } from 'src/app'
+import { mapAuthError } from 'src/util/map-auth-error'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Required' }),
@@ -49,8 +50,7 @@ const LoginPageForm = () => {
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Oh no! Something went wrong',
-        description: error?.response?.data?.message ?? '',
+        title: mapAuthError(error?.response?.status),
       })
     }
   }
