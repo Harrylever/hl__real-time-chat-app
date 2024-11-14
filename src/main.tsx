@@ -4,6 +4,7 @@ import AppRoutes from './AppRoutes'
 import store from './app/store/store'
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom/client'
+import ErrorBoundary from './ErrorBoundary'
 import { Toaster } from '@/components/ui/toaster'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
@@ -15,17 +16,21 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_AUTH_GOOGLE_CLIENT_ID}>
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <Provider store={store}>
-            <Routes>
-              <Route path="/*" element={<AppRoutes />} />
-            </Routes>
-            <Toaster />
-          </Provider>
-        </QueryClientProvider>
-      </BrowserRouter>
-    </GoogleOAuthProvider>
+    <ErrorBoundary>
+      <GoogleOAuthProvider
+        clientId={import.meta.env.VITE_AUTH_GOOGLE_CLIENT_ID}
+      >
+        <BrowserRouter>
+          <QueryClientProvider client={queryClient}>
+            <Provider store={store}>
+              <Routes>
+                <Route path="/*" element={<AppRoutes />} />
+              </Routes>
+              <Toaster />
+            </Provider>
+          </QueryClientProvider>
+        </BrowserRouter>
+      </GoogleOAuthProvider>
+    </ErrorBoundary>
   </React.StrictMode>,
 )
