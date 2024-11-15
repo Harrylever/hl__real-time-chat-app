@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
 import SendButton from './SendButton'
-import EmojiPicker from '../EmojiPicker'
+// import EmojiPicker from '../EmojiPicker'
 import { toast } from '@/components/ui/use-toast'
-import EmojiPickerPopover from 'src/components/popover/EmojiPickerPopover'
+// import EmojiPickerPopover from 'src/components/popover/EmojiPickerPopover'
 import useGetScreenOrientation from 'src/hooks/useGetScreenOrientation'
 import clsx from 'clsx'
 
@@ -55,15 +55,15 @@ const MessageInputForm: React.FC<MessageInputFormProps> = ({
     }
   }
 
-  const addEmoji = (emoji: string) => {
-    const cursorPosition = inputRef.current?.selectionStart ?? 0
-    const updatedMessage =
-      newMessage.slice(0, cursorPosition) +
-      emoji +
-      newMessage.slice(cursorPosition)
-    setNewMessage(updatedMessage)
-    inputRef.current?.focus()
-  }
+  // const addEmoji = (emoji: string) => {
+  //   const cursorPosition = inputRef.current?.selectionStart ?? 0
+  //   const updatedMessage =
+  //     newMessage.slice(0, cursorPosition) +
+  //     emoji +
+  //     newMessage.slice(cursorPosition)
+  //   setNewMessage(updatedMessage)
+  //   inputRef.current?.focus()
+  // }
 
   return (
     <div
