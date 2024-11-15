@@ -12,6 +12,7 @@ import DesktopSettingsView from './DesktopViews/Settings'
 import ChangeViewComponent from 'src/components/ui/ChangeViewComponent'
 import useGetScreenOrientation from 'src/hooks/useGetScreenOrientation'
 import AppMobileNavigation from 'src/components/ui/AppMobileNavigation'
+import MobileCurrentChatViewWrapper from 'src/components/ui/MobileCurrentChatView/MobileCurrentChatViewWrapper'
 
 const ApplicationView = () => {
   const headerHeight = useHeaderHeight()
@@ -19,6 +20,7 @@ const ApplicationView = () => {
     (state) => state.internalRouteReduce.active,
   )
   const { screenOrientation } = useGetScreenOrientation()
+  const currentChat = useAppSelector((state) => state.chatReduce.chat)
 
   const desktopviews: Record<TRoute, React.ReactNode> = {
     chats: <DesktopChatView />,
@@ -52,8 +54,14 @@ const ApplicationView = () => {
         </Fragment>
       ) : (
         <Fragment>
-          <div className="h-full w-full">{mobileviews[activeInView]}</div>
-          <AppMobileNavigation activeRoute={activeInView} />
+          {currentChat ? (
+            <MobileCurrentChatViewWrapper currentChat={currentChat} />
+          ) : (
+            <Fragment>
+              <div className="h-full w-full">{mobileviews[activeInView]}</div>
+              <AppMobileNavigation activeRoute={activeInView} />
+            </Fragment>
+          )}
         </Fragment>
       )}
     </main>
