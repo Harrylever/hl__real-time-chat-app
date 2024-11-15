@@ -14,7 +14,10 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
     //
-    updateCurrentChat: (state: ISliceState, action: PayloadAction<IChat>) => {
+    updateCurrentChat: (
+      state: ISliceState,
+      action: PayloadAction<IChat | undefined>,
+    ) => {
       state.chat = action.payload
     },
   },

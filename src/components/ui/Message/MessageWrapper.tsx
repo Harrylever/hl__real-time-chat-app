@@ -5,6 +5,7 @@ import { IUser } from 'typings'
 import { useAppSelector } from 'src/app'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import useGetScreenOrientation from 'src/hooks/useGetScreenOrientation'
 
 interface MessageWrapperProps {
   user: IUser
@@ -14,6 +15,8 @@ const MessageWrapper: React.FC<MessageWrapperProps> = ({ user }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const { messages } = useAppSelector((state) => state.messageReduce)
+
+  const { screenOrientation } = useGetScreenOrientation()
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -29,7 +32,13 @@ const MessageWrapper: React.FC<MessageWrapperProps> = ({ user }) => {
   return (
     <ScrollArea
       ref={scrollContainerRef}
-      className="relative w-full h-[80%] min-h-[50vh] pt-3 pb-[15px] flex flex-col-reverse items-end"
+      className={clsx(
+        'relative w-full h-[80%] min-h-[50vh] pt-3 pb-[15px] flex flex-col-reverse items-end',
+        {
+          'h-[80%]': screenOrientation === 'desktop',
+          'h-full': screenOrientation !== 'desktop',
+        },
+      )}
     >
       <AnimatePresence>
         <div className="h-fit w-full flex flex-col px-0 sm:px-6 gap-y-2">
