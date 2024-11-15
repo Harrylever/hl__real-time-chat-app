@@ -2,6 +2,7 @@ import React from 'react'
 import clsx from 'clsx'
 import moment from 'moment'
 import { IPlainMessage } from 'src/hooks/decrypt-message/useDecryptMessage'
+import useGetScreenOrientation from 'src/hooks/useGetScreenOrientation'
 
 interface MessageProps<T> {
   prevMessage?: IPlainMessage
@@ -17,6 +18,8 @@ const Message: React.FC<MessageProps<HTMLDivElement>> = ({
   prevMessage,
   isMainUserMessage,
 }) => {
+  const { screenOrientation } = useGetScreenOrientation()
+
   const isNewMessage =
     !prevMessage || prevMessage.senderId.email !== message.senderId.email
 
@@ -25,7 +28,8 @@ const Message: React.FC<MessageProps<HTMLDivElement>> = ({
     'relative w-fit min-w-[90px] max-w-[200px] sm:max-w-[300px] px-3 py-2 rounded-b-lg flex flex-col gap-y-2',
     {
       'bg-mx-primary-4': isMainUserMessage,
-      'bg-white': !isMainUserMessage,
+      'bg-white': !isMainUserMessage && screenOrientation === 'desktop',
+      'bg-mx-primary-7': !isMainUserMessage && screenOrientation !== 'desktop',
       'rounded-tl-lg': isMainUserMessage && isNewMessage,
       'rounded-tr-lg': !isMainUserMessage && isNewMessage,
       'rounded-t-lg': !isNewMessage,
