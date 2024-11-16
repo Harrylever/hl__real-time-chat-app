@@ -19,11 +19,11 @@ const ContactSection = () => {
               {/* Mail */}
               <div>
                 <a
-                  href="mailto:info@mxchat.com"
+                  href="mailto:info@mxchat.app"
                   className="flex flex-row items-center justify-start gap-4"
                 >
                   <img src="/svg/contact-mail-icon.svg" alt="" />
-                  <p>info@mxchat.com</p>
+                  <p>info@mxchat.app</p>
                 </a>
               </div>
 
