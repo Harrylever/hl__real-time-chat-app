@@ -8,7 +8,7 @@ import {
   useGetChatMessagesQuery,
   useGetRecipientUserQuery,
 } from 'src/app/api/hooks'
-import { AnimatePresence, motion, Variants } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 
 interface MobileCurrentChatViewWrapperProps {
   currentChat: IChat
@@ -94,23 +94,21 @@ const MobileCurrentChatViewWrapper: React.FC<
   }
 
   return (
-    <AnimatePresence>
-      <motion.div
-        variants={variants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        transition={{ duration: 0.75 }}
-        className="w-full h-full flex-1"
-      >
-        <MobileCurrentChatView
-          user={user}
-          currentChat={currentChat}
-          messages={messages?.data ?? []}
-          recipientUser={recipientUserData.data}
-        />
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      variants={variants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.75 }}
+      className="w-full h-full flex-1"
+    >
+      <MobileCurrentChatView
+        user={user}
+        currentChat={currentChat}
+        messages={messages?.data ?? []}
+        recipientUser={recipientUserData.data}
+      />
+    </motion.div>
   )
 }
 

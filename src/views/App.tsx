@@ -13,6 +13,7 @@ import ChangeViewComponent from 'src/components/ui/ChangeViewComponent'
 import useGetScreenOrientation from 'src/hooks/useGetScreenOrientation'
 import AppMobileNavigation from 'src/components/ui/AppMobileNavigation'
 import MobileCurrentChatViewWrapper from 'src/components/ui/MobileCurrentChatView/MobileCurrentChatViewWrapper'
+import { AnimatePresence } from 'framer-motion'
 
 const ApplicationView = () => {
   const headerHeight = useHeaderHeight()
@@ -53,7 +54,7 @@ const ApplicationView = () => {
           <div className="h-full w-full pr-3">{desktopviews[activeInView]}</div>
         </Fragment>
       ) : (
-        <Fragment>
+        <AnimatePresence>
           {currentChat ? (
             <MobileCurrentChatViewWrapper currentChat={currentChat} />
           ) : (
@@ -62,7 +63,7 @@ const ApplicationView = () => {
               <AppMobileNavigation activeRoute={activeInView} />
             </Fragment>
           )}
-        </Fragment>
+        </AnimatePresence>
       )}
     </main>
   )
