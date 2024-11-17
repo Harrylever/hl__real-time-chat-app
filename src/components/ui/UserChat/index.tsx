@@ -5,7 +5,7 @@ import { userIsOnline } from 'src/util/utils'
 import UserChatButton from './UserChatButton'
 import useNotifications from 'src/hooks/useNotifications'
 import useRecipientUser from 'src/hooks/useRecipientUser'
-import FetchLatestMessage from 'src/components/tools/useFetchLatestMessage'
+import FetchLatestMessage from 'src/hooks/useFetchLatestMessage'
 
 interface UserChatProps {
   user: IUser

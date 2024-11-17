@@ -1,8 +1,10 @@
 import { toast } from '@/components/ui/use-toast'
 import { useLogoutUser } from 'src/app/api/hooks'
 import { POST_REQUEST_MESSAGE_RESPONSE } from '../app/constants/const'
+import useSocketClient from './useSocketClient'
 
 const useLogOut = () => {
+  const { handleDisconnect } = useSocketClient()
   const { mutateAsync: logout, isPending } = useLogoutUser()
 
   const handleLogOut = async () => {
@@ -10,6 +12,7 @@ const useLogOut = () => {
       const response = await logout()
 
       if (response.message === POST_REQUEST_MESSAGE_RESPONSE.USER_LOGOUT) {
+        handleDisconnect()
         window.localStorage.clear()
         window.location.href = '/auth/login'
       }

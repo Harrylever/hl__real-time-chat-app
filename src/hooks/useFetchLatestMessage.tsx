@@ -1,5 +1,5 @@
-import { useAppSelector } from '../../app'
-import { IMessage } from '../../../typings'
+import { useAppSelector } from '../app'
+import { IMessage } from '../../typings'
 import { useCallback, useEffect, useState } from 'react'
 
 const FetchLatestMessage = (): IMessage => {
