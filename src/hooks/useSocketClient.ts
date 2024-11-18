@@ -2,11 +2,12 @@ import { useCallback, useEffect, useReducer, useState } from 'react'
 import { debounce } from 'lodash'
 import { IMessage } from 'typings'
 import { io } from 'socket.io-client'
+import { BASE_URL } from 'src/config'
 import { useAppDispatch, useAppSelector } from 'src/app'
 import { addMessages } from 'src/app/slices/messagesSlice'
 import useDecryptMessage from './decrypt-message/useDecryptMessage'
 
-const socket = io('http://localhost:4001', {
+const socket = io(BASE_URL, {
   autoConnect: false,
 })
 
