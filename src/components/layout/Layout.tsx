@@ -12,9 +12,6 @@ export default function Layout() {
 
   const isDesktop = screenOrientation === 'desktop'
 
-  // If no user display header
-  // if user and isDesktop display header
-
   return (
     <PageLayout loading={loading} error={error} onRetry={() => retry()}>
       <section className="w-full h-screen">

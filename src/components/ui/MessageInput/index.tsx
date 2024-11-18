@@ -1,6 +1,6 @@
 import React from 'react'
 import debounce from 'lodash/debounce'
-import { IChat, IMessage, IUser } from 'typings'
+import { IChat, IEncryptedMessage, IMessage, IUser } from 'typings'
 import MessageInputForm from './MessageInputForm'
 import { CipherUtil } from 'src/util/cipher.util'
 import { toast } from '@/components/ui/use-toast'
@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from 'src/app'
 import { addMessages } from 'src/app/slices/messagesSlice'
 import { usePostChatMessageMutation } from 'src/app/api/hooks'
 import useDecryptMessage from 'src/hooks/decrypt-message/useDecryptMessage'
+import useSocketClient from 'src/hooks/useSocketClient'
 
 interface MessageInputWrapperProps {
   user: IUser
@@ -21,6 +22,7 @@ const MessageInputWrapper: React.FC<MessageInputWrapperProps> = ({
   const dispatch = useAppDispatch()
   const cipherUtil = new CipherUtil()
   const { decryptMessages } = useDecryptMessage()
+  const { handleSendMessage: sendMessageToSocket } = useSocketClient()
   const { messages: existingMessages } = useAppSelector(
     (state) => state.messageReduce,
   )
@@ -42,7 +44,7 @@ const MessageInputWrapper: React.FC<MessageInputWrapperProps> = ({
       message.trim(),
     )
 
-    const data = {
+    const data: IEncryptedMessage = {
       text: encryptedData.toHex(),
       senderId: user.email,
       chatId: currentChat.id,
@@ -52,6 +54,7 @@ const MessageInputWrapper: React.FC<MessageInputWrapperProps> = ({
 
     try {
       const response = await sendMessage(data)
+      sendMessageToSocket(response.data)
       handleDecryptMessage(response.data)
     } catch (error) {
       toast({
