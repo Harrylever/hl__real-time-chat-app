@@ -104,3 +104,11 @@ export type IUser = Pick<
 export interface RouteProps {
   user?: IUser
 }
+
+export interface IEncryptedMessage {
+  text: string
+  senderId: string
+  chatId: string
+  aesKey: string
+  iv: string
+}
