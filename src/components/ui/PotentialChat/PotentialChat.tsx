@@ -63,7 +63,6 @@ const PotentialChat: React.FC<PotentialChatProps> = ({
         dispatch(setPotentialChatsModalIsOpen(false))
       }
     } catch (error) {
-      console.log(error)
       toast({
         variant: 'destructive',
         title: 'Uh oh! Something happened 😕',

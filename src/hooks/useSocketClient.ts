@@ -105,7 +105,6 @@ const useSocketClient = () => {
 
     const handleOnlineUsers = (users: any[]) => {
       setOnlineUsers(users)
-      console.log('Online users:', users)
     }
 
     const handleIncomingMessage = debounce(async (message: string) => {

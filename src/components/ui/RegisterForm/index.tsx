@@ -61,7 +61,6 @@ const RegisterPageForm = () => {
         return navigate('/auth/login', { replace: true })
       }
     } catch (error: any) {
-      console.log(error)
       toast({
         variant: 'destructive',
         title: 'Oh no! Something went wrong',
