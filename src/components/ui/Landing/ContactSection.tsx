@@ -78,41 +78,31 @@ const ContactSection = () => {
                 <br /> available to connect.
               </p>
 
-              {/*  */}
               <div className="w-full">
                 <input
                   type="text"
+                  name="contact-form-name"
                   className="border border-mx-stroke focus:border-mx-stroke outline-none bg-mx-white rounded-md placeholder:text-xs text-xs w-full py-3 px-3.5"
                   placeholder="Name"
                 />
               </div>
 
-              {/*  */}
               <div className="w-full">
                 <input
                   type="email"
+                  name="contact-form-email"
                   className="border border-mx-stroke focus:border-mx-stroke outline-none bg-mx-white rounded-md placeholder:text-xs text-xs w-full py-3 px-3.5"
                   placeholder="Email address"
                 />
               </div>
 
-              {/*  */}
               <div className="relative w-full h-[100px] rounded-md overflow-hidden">
                 <textarea
-                  name="message"
                   id="message"
                   placeholder="Type message"
+                  name="contact-form-message"
                   className="border border-mx-stroke focus:border-mx-stroke outline-none bg-mx-white rounded-md placeholder:text-xs text-xs w-full h-full py-3 px-3.5"
                 ></textarea>
-
-                {/*  */}
-                {/* <button type="button" className="absolute bottom-0 right-0">
-                    <img
-                      src="/svg/send-message-icon.svg"
-                      alt=""
-                      className="w-[40px]"
-                    />
-                  </button> */}
               </div>
             </form>
           </div>

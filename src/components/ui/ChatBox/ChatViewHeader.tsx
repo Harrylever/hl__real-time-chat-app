@@ -28,7 +28,11 @@ const ChatViewHeader: React.FC<ChatViewHeaderProps> = ({ recipientUser }) => {
         </div>
       </div>
 
-      <button type="button">
+      <button
+        type="button"
+        name="single-chat-info-button"
+        className="focus:outline-none"
+      >
         <IoIosInformationCircleOutline size={21} />
       </button>
     </div>

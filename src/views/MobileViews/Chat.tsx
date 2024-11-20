@@ -58,7 +58,11 @@ const ChatView = () => {
     return (
       <div>
         <p className="italic">Error loading chats</p>
-        <button type="button" onClick={() => refetch()}>
+        <button
+          type="button"
+          onClick={() => refetch()}
+          name="retry-fetch-r-chats-button"
+        >
           Retry
         </button>
       </div>

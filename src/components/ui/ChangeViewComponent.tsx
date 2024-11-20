@@ -98,8 +98,9 @@ const ViewItem: React.FC<{ props: IChangeViewItem; callback?: () => void }> = ({
       ])}
     >
       <button
-        onClick={callback}
         type="button"
+        onClick={callback}
+        name="change-view-button"
         className={clsx([
           'group w-[75px] h-[75px] hover:bg-mx-primary-5 flex items-center justify-center rounded-md duration-500',
           {

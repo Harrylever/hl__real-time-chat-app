@@ -14,6 +14,7 @@ const SendButton: React.FC<SendButtonProps> = ({
   return (
     <button
       type="submit"
+      name="send-message-button"
       disabled={disabled}
       className={clsx([
         'bg-mx-primary h-full w-[52px] rounded-r-lg flex items-center justify-center',

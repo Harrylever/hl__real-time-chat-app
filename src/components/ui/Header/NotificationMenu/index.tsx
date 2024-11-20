@@ -78,6 +78,7 @@ const NotificationMenu = () => {
                 </p>
 
                 <button
+                  name="mark-all-as-read-button"
                   onClick={() => markAllNotificationsAsRead(notifications)}
                   className="bg-transparent text-mx-primary text-base font-normal"
                 >

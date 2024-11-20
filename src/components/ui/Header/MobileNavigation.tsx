@@ -49,17 +49,18 @@ const MobileNavigation = ({
         >
           <button
             type="button"
+            name="mobile-log-in-button"
             onClick={() => handleButtonClick('auth/login')}
             className="group border border-blue-3 hover:bg-indigo-600 duration-500 rounded-sm py-2.5 px-16"
           >
             <p className="text-mx-primary group-hover:text-mx-white font-semibold text-sm tracking-tight">
-              'Log in'
+              Log in
             </p>
           </button>
 
-          {/*  */}
           <button
             type="button"
+            name="mobile-sign-up-button"
             onClick={() => handleButtonClick('auth/register')}
             className="group border border-blue-3 bg-indigo-600 duration-500 rounded-sm py-2.5 px-16"
           >

@@ -89,6 +89,7 @@ const AboutSection = () => {
           <div className="w-full flex items-center justify-center">
             <button
               type="button"
+              name="get-started-button"
               onClick={() => navigate(user ? '/app' : '/auth/register')}
               className="w-full sm:w-fit rounded-lg bg-mx-primary text-mx-white py-3 sm:px-24"
             >

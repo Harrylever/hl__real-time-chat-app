@@ -17,6 +17,7 @@ const TabButton = ({
   return (
     <button
       type="button"
+      name={`${tab}-tab-button`}
       onClick={cb}
       className={clsx([
         'relative hover:bg-mx-primary-8 py-2.5 px-6 rounded-sm text-base text-mx-black font-medium duration-300',

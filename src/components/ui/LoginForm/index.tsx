@@ -99,6 +99,7 @@ const LoginPageForm = () => {
 
       <button
         type="submit"
+        name="login-submit-button"
         className={clsx([
           classNames.authFormBtn,
           'mt-2',
