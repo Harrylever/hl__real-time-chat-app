@@ -19,6 +19,7 @@ const Contacts = () => {
         <button
           type="button"
           onClick={() => refetch()}
+          name="retry-fetch-users-button"
           className="bg-mx-primary-2 py-3 px-5 rounded-lg text-white text-sm"
         >
           Try again

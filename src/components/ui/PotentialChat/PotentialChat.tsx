@@ -73,6 +73,7 @@ const PotentialChat: React.FC<PotentialChatProps> = ({
 
   return (
     <button
+      name="potential-chat-button"
       disabled={chatIsLoading}
       title={chat.username}
       onClick={handleCreateChat}

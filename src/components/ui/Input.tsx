@@ -41,6 +41,7 @@ const Input: React.FC<InputProps> = ({
         {label === 'password' && (
           <button
             type="button"
+            name="toggle-password-visibility-button"
             onClick={() => setCanViewPassword(!canViewPassword)}
             className="absolute top-1/2 -translate-y-1/2 right-5 text-indigo-700"
           >

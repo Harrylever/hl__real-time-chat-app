@@ -33,6 +33,7 @@ const PotentialChatsModal = () => {
       <AlertDialogTrigger asChild>
         <button
           type="button"
+          name="potential-chat-modal-trigger-button"
           className="group hover:bg-mx-primary-8 border-2 border-transparent hover:border-mx-primary-9 p-2.5 duration-300 rounded-md"
         >
           <img
@@ -72,6 +73,7 @@ const PotentialChatsList = () => {
         <p className="italic">Failed to get users</p>
 
         <button
+          name="try-again-button"
           type="button"
           onClick={() => refetch()}
           className="bg-mx-primary-2 py-3 px-5 rounded-lg text-white text-sm"

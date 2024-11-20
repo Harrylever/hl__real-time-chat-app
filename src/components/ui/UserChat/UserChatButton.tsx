@@ -38,6 +38,7 @@ const UserChatButton: React.FC<UserChatButtonProps> = ({
     <button
       type="button"
       onClick={onClick}
+      name={`chat-button-${chat.id}`}
       className={clsx([
         'group/user-button flex flex-row items-center justify-between w-full max-w-full border-b border-[#ffffff2d] py-0.5 sm:py-2 pl-1 pr-3 rounded-lg hover:bg-mx-primary-8 duration-150',
         { 'bg-mx-primary-8/50': currentChat?.id === chat.id },

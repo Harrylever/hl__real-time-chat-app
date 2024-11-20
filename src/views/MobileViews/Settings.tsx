@@ -25,6 +25,8 @@ const SettingsView = () => {
             {settingsActions.map((action, index) => (
               <button
                 key={index}
+                onClick={action.action}
+                name={`settings-action-${action.name}-button`}
                 className={clsx(
                   'w-full h-12 bg-mx-white text-base text-mx-primary-1 font-semibold flex items-center justify-center rounded-lg border border-black/10 duration-200',
                   {
@@ -32,7 +34,6 @@ const SettingsView = () => {
                       action.name.toLowerCase() === 'logout',
                   },
                 )}
-                onClick={action.action}
               >
                 {action.name}
               </button>
