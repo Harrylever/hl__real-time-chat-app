@@ -15,14 +15,18 @@ const Footer = () => {
                 />
               </div>
 
-              {/*  */}
               <div>
+                <label
+                  htmlFor="select-site-language"
+                  className="block text-mx-white text-sm mb-2 text-end"
+                >
+                  Select language
+                </label>
                 <select
                   name="select-site-language"
                   id="select-site-language"
                   className="border border-mx-stroke focus:border-mx-stroke outline-none py-1.5 px-4 rounded-sm text-sm bg-mx-white"
                 >
-                  <option value="--">Select a language</option>
                   <option value="en">
                     English {'('}Default{')'}
                   </option>
@@ -30,7 +34,6 @@ const Footer = () => {
               </div>
             </div>
 
-            {/*  */}
             <div className="w-full flex flex-row items-center justify-between">
               <div>
                 <a href="#">
