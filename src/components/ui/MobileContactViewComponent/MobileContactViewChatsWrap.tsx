@@ -8,13 +8,16 @@ interface MobileContactViewChatsWrapProps {
   isLoading: boolean
   searchValue: string
   potentialChats: IUser[]
+  parentComponentHeight: number
 }
 
 const MobileContactViewChatsWrap: React.FC<MobileContactViewChatsWrapProps> = ({
   isLoading,
   searchValue,
   potentialChats,
+  parentComponentHeight,
 }) => {
+  const [componentHeight, setComponentHeight] = useState<number>(0)
   const [searchedPotentialChats, setSearchedPotentialChats] = useState<IUser[]>(
     [],
   )
@@ -45,8 +48,26 @@ const MobileContactViewChatsWrap: React.FC<MobileContactViewChatsWrapProps> = ({
     }
   }, [handleSearchValueChange, potentialChats, searchValue])
 
+  const handleSetContainerHeight = useCallback(() => {
+    const header = document.getElementById('mobile-view-props-header')
+    if (!header) return
+    const headerHeight = header.clientHeight
+
+    const remainHeight = parentComponentHeight - headerHeight
+    setComponentHeight(remainHeight)
+  }, [parentComponentHeight])
+
+  useEffect(() => {
+    handleSetContainerHeight()
+    window.addEventListener('resize', handleSetContainerHeight)
+    return () => window.removeEventListener('resize', handleSetContainerHeight)
+  }, [handleSetContainerHeight])
+
   return (
-    <div className="h-full w-full flex-1 border border-black/10 px-6 py-6 rounded-t-[2.5rem] shadow-inner bg-mx-white">
+    <div
+      style={{ height: componentHeight }}
+      className="h-full w-full border border-black/10 px-6 py-6 rounded-t-[2.5rem] shadow-inner bg-mx-white overflow-y-hidden"
+    >
       {isLoading ? (
         <LoadingPlayer />
       ) : (

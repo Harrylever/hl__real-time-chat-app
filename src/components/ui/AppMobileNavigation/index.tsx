@@ -42,8 +42,8 @@ const AppMobileNavigation: React.FC<AppMobileNavigationProps> = ({
       activeRoute,
       route: 'contacts',
       icon: {
-        active: '/svg/active/settings-view-icon.svg',
-        inactive: '/svg/inactive/settings-view-icon.svg',
+        active: '/svg/active/contact-view-icon.svg',
+        inactive: '/svg/inactive/contact-view-icon.svg',
       },
       val: 'contacts',
     },

@@ -42,13 +42,9 @@ const ApplicationView = () => {
   return (
     <main
       style={{ height: isDesktop ? `calc(100vh - ${headerHeight}px)` : '100%' }}
-      className={
-        isDesktop
-          ? 'flex flex-row w-full'
-          : 'flex flex-col w-full border border-black'
-      }
+      className={`flex w-full ${isDesktop ? 'flex-row' : 'flex-col'}`}
     >
-      {screenOrientation === 'desktop' ? (
+      {isDesktop ? (
         <Fragment>
           <ChangeViewComponent activeRoute={activeInView} />
           <div className="h-full w-full pr-3">{desktopviews[activeInView]}</div>
@@ -59,7 +55,7 @@ const ApplicationView = () => {
             <MobileCurrentChatViewWrapper currentChat={currentChat} />
           ) : (
             <Fragment>
-              <div className="h-full w-full">{mobileviews[activeInView]}</div>
+              <div className="h-[88vh] w-full">{mobileviews[activeInView]}</div>
               <AppMobileNavigation activeRoute={activeInView} />
             </Fragment>
           )}

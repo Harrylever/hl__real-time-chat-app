@@ -11,6 +11,7 @@ const ChatView = () => {
   const { user } = useAppSelector((state) => state.userReduce)
   const [userQuery, setUserQuery] = useState('')
   const [chats, setChats] = useState<IChat[]>([])
+  const [componentHeight, setComponentHeight] = useState<number>(0)
 
   if (!user) {
     return <Navigate to="/auth/login" />
@@ -64,15 +65,35 @@ const ChatView = () => {
     )
   }
 
+  const getComponentHeight = () => {
+    const bottomNavigation = document.getElementById('app-mobile-navigation')
+    if (!bottomNavigation) return
+    const bottomNavigationHeight = bottomNavigation.clientHeight
+    setComponentHeight(window.innerHeight - bottomNavigationHeight)
+  }
+
+  useEffect(() => {
+    getComponentHeight()
+    window.addEventListener('resize', getComponentHeight)
+    return () => window.removeEventListener('resize', getComponentHeight)
+  }, [])
+
   return (
-    <div className="h-full w-full pt-4 flex flex-col gap-3">
+    <div
+      style={{ height: componentHeight }}
+      className="h-full w-full pt-4 flex flex-col gap-3 overflow-hidden"
+    >
       <MobileViewPropsHeader
         user={user}
         label="Chats"
         userQuery={userQuery}
         updateUserQuery={(e) => setUserQuery(e)}
       />
-      <MobileChatViewChatsWrap isFetching={isFetching} userChats={chats} />
+      <MobileChatViewChatsWrap
+        isFetching={isFetching}
+        userChats={chats}
+        parentComponentHeight={componentHeight}
+      />
     </div>
   )
 }

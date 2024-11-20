@@ -4,10 +4,7 @@ import {
   FallbackProps,
 } from 'react-error-boundary'
 
-const FallbackComponent: React.FC<FallbackProps> = ({
-  error,
-  resetErrorBoundary,
-}) => {
+const FallbackComponent: React.FC<FallbackProps> = ({ resetErrorBoundary }) => {
   return (
     <div className="text-center p-5">
       <h2>Something went wrong</h2>
@@ -15,8 +12,6 @@ const FallbackComponent: React.FC<FallbackProps> = ({
       <button name="error-boundary-reset-button" onClick={resetErrorBoundary}>
         Retry
       </button>
-
-      {error && <details className="whitespace-pre-wrap mt-6">{error}</details>}
     </div>
   )
 }
