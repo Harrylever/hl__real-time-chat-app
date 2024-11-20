@@ -23,7 +23,10 @@ const MobileViewPropsHeader: React.FC<MobileViewPropsHeaderProps> = ({
   }
 
   return (
-    <div className="w-full flex items-center justify-between py-5 px-10">
+    <div
+      id="mobile-view-props-header"
+      className="w-full flex items-center justify-between py-5 px-10"
+    >
       {inputMode ? (
         <div className="relative w-full">
           <input
