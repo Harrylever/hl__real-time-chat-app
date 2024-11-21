@@ -37,8 +37,12 @@ const ChatView = () => {
   const debouncedFilterChats = useCallback(
     debounce((query: string) => {
       if (data?.data) {
-        const filteredChats = data.data.filter((chat) =>
-          chat.recipient.fullname.toLowerCase().includes(query.toLowerCase()),
+        const filteredChats = data.data.filter(
+          (chat) =>
+            chat.recipient.firstname
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
+            chat.recipient.lastname.toLowerCase().includes(query.toLowerCase()),
         )
         setChats(mapToChats(filteredChats))
       }

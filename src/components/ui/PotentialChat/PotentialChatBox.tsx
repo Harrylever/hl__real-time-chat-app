@@ -27,7 +27,8 @@ const PotentialChatBox: React.FC<PotentialChatBoxProps> = ({
     const filteredValues = potentialChats.filter((chat) => {
       return (
         chat.username?.toLowerCase().includes(text.toLowerCase()) ||
-        chat.fullname?.toLowerCase().includes(text.toLowerCase())
+        chat.firstname?.toLowerCase().includes(text.toLowerCase()) ||
+        chat.lastname?.toLowerCase().includes(text.toLowerCase())
       )
     })
     setSearchedPotentialChats(filteredValues)

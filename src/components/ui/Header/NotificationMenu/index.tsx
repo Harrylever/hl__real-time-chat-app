@@ -107,7 +107,7 @@ const NotificationMenu = () => {
               >
                 <p>
                   <span className=" capitalize mr-1 font-medium">
-                    {notification.senderId.fullname}
+                    {`${notification.senderId.firstname} ${notification.senderId.lastname}`}
                   </span>
                   sent you message
                 </p>

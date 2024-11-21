@@ -58,9 +58,7 @@ const UserChatButton: React.FC<UserChatButtonProps> = ({
         <div className="flex flex-col gap-2.5 items-start justify-center mt-1">
           <div>
             <p className="text-mx-black font-medium text-sm/[0.6rem] sm:text-sm/[0.7rem] tracking-wide capitalize">
-              {recipientUser.fullname && recipientUser.fullname.length > 10
-                ? `${recipientUser.fullname.substring(0, 7)}..`
-                : recipientUser.fullname}
+              {`${recipientUser.firstname} ${recipientUser.lastname}`}
             </p>
           </div>
 

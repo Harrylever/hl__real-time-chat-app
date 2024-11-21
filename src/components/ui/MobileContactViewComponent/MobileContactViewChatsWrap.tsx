@@ -32,7 +32,8 @@ const MobileContactViewChatsWrap: React.FC<MobileContactViewChatsWrapProps> = ({
       const filteredValues = potentialChats.filter((chat) => {
         return (
           chat.username?.toLowerCase().includes(query.toLowerCase()) ||
-          chat.fullname?.toLowerCase().includes(query.toLowerCase())
+          chat.firstname?.toLowerCase().includes(query.toLowerCase()) ||
+          chat.lastname?.toLowerCase().includes(query.toLowerCase())
         )
       })
       setSearchedPotentialChats(filteredValues)

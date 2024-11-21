@@ -37,7 +37,7 @@ const MobileCurrentChatView: React.FC<MobileCurrentChatViewProps> = ({
 
           <img
             src={recipientUser.profileImage}
-            alt={`${recipientUser.fullname} image`}
+            alt={`${recipientUser.firstname} ${recipientUser.lastname}'s Image`}
             width={0}
             height={0}
             className="w-[50px] h-[50px] rounded-full"
@@ -45,7 +45,7 @@ const MobileCurrentChatView: React.FC<MobileCurrentChatViewProps> = ({
 
           <div className="flex flex-col items-start justify-center">
             <p className="text-base text-mx-black font-medium capitalize">
-              {recipientUser.fullname}
+              {recipientUser.firstname} {recipientUser.lastname}
             </p>
             <p className="text-xs font-medium text-mx-grey">Active Now</p>
           </div>

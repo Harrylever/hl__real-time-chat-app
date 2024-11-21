@@ -20,7 +20,7 @@ const ChatViewHeader: React.FC<ChatViewHeaderProps> = ({ recipientUser }) => {
 
         <div className="flex flex-col items-start justify-start">
           <p className="text-sm font-normal text-mx-black capitalize">
-            {recipientUser.fullname}
+            {`${recipientUser.firstname} ${recipientUser.lastname}`}
           </p>
 
           {/*  */}

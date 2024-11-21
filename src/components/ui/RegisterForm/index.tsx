@@ -4,16 +4,18 @@ import { classNames } from 'src/styles'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { toast } from '@/components/ui/use-toast'
-import Input, { AcceptTermsInput } from '../Input'
+import { Input, AcceptTermsInput } from '../Input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCreateAccountMutation } from 'src/app/api/hooks'
 import { POST_REQUEST_MESSAGE_RESPONSE } from 'src/app'
+import { useCreateAccountMutation } from 'src/app/api/hooks'
+import { ICreateAccountFormValues } from 'typings'
 
 const formSchema = z.object({
   username: z.string().min(1, {
     message: 'Required',
   }),
-  fullname: z.string().min(1, { message: 'Required' }),
+  firstName: z.string().min(1, { message: 'Required' }),
+  lastName: z.string().min(1, { message: 'Required' }),
   email: z.string().email({ message: 'Required' }),
   password: z.string().regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).+$/, {
     message:
@@ -35,7 +37,8 @@ const RegisterPageForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
-      fullname: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       acceptTerms: undefined,
@@ -44,10 +47,11 @@ const RegisterPageForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const accountData = {
-        email: values.email,
-        username: values.username.toLowerCase(),
-        fullname: values.fullname.toLowerCase(),
+      const accountData: ICreateAccountFormValues = {
+        email: values.email.trim(),
+        username: values.username.trim().toLowerCase(),
+        firstname: values.firstName.trim().toLowerCase(),
+        lastname: values.lastName.trim().toLowerCase(),
         password: values.password,
       }
       const response = await createAccount(accountData)
@@ -58,6 +62,7 @@ const RegisterPageForm = () => {
           title: 'Hooray 🎉',
           description: 'Account created successfully',
         })
+        window.localStorage.setItem('auth-user-email', values.email.trim())
         return navigate('/auth/login', { replace: true })
       }
     } catch (error: any) {
@@ -82,11 +87,20 @@ const RegisterPageForm = () => {
 
       <Input
         required
-        label="fullname"
-        labelText="Full name"
+        label="firstName"
+        labelText="First name"
         register={register}
-        placeholder="John Doe"
-        error={errors.fullname}
+        placeholder="John"
+        error={errors.firstName}
+      />
+
+      <Input
+        required
+        label="lastName"
+        labelText="Last name"
+        register={register}
+        placeholder="Donut"
+        error={errors.lastName}
       />
 
       <Input
@@ -121,12 +135,12 @@ const RegisterPageForm = () => {
           'mt-2',
           {
             'bg-indigo-600 hover:bg-indigo-800': !isPending,
-            'bg-indigo-400': isPending,
+            'bg-indigo-300': isPending,
           },
         ])}
         name="submit-create-account-btn"
       >
-        Sign up
+        {isPending ? 'Loading...' : 'Sign up'}
       </button>
     </form>
   )

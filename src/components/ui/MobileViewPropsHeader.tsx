@@ -65,7 +65,7 @@ const MobileViewPropsHeader: React.FC<MobileViewPropsHeaderProps> = ({
             width={0}
             height={0}
             src={user.profileImage}
-            alt={`${user.fullname} profile image`}
+            alt={`${user.firstname} ${user.lastname} Profile Picture`}
             className="relative w-[42px] h-auto"
           />
         </Fragment>

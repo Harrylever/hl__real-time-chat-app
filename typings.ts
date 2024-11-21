@@ -11,9 +11,12 @@ export interface IAccount extends ICreateAccountFormValues {
   role: ('standard' | 'admin')[]
 }
 
+export type IUser = Omit<IAccount, 'password' | 'role'>
+
 export interface ICreateAccountFormValues {
   username: string
-  fullname: string
+  firstname: string
+  lastname: string
   email: string
   password: string
 }
@@ -25,7 +28,8 @@ export interface ILoginFormValues {
 
 export interface IUseGoogleAuthValues {
   username: string
-  fullname: string
+  firstname: string
+  lastname: string
   email: string
   profileImage: string
 }
@@ -97,11 +101,6 @@ export interface IGetRecipientAccountValues {
   members: string[]
   accountId: string
 }
-
-export type IUser = Pick<
-  IAccount,
-  '_id' | 'email' | 'fullname' | 'profileImage' | 'username'
->
 
 export interface RouteProps {
   user?: IUser

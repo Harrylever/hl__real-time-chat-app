@@ -62,7 +62,8 @@ const GoogleAuth = () => {
         email: userInfo.email,
         username: username.toLowerCase(),
         profileImage: userInfo.picture,
-        fullname: `${userInfo.family_name} ${userInfo.given_name}`,
+        firstname: userInfo.family_name,
+        lastname: userInfo.given_name,
       }
       await authCallback(credentials)
     },
