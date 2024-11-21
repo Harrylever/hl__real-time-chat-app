@@ -64,12 +64,14 @@ export interface IMobileChat {
 export interface IMessage {
   _id?: string
   chatId: string
-  aesKey: string
-  iv: string
   senderId: IAccount
   text: string
   createdAt?: string
+  aesKey: string
+  iv: string
 }
+
+export type IPlainMessage = Omit<IMessage, 'aesKey' | 'iv'>
 
 export interface IOnlineUser {
   email: string

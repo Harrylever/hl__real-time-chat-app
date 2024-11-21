@@ -6,10 +6,10 @@ import {
   getLastChatMessage,
   IMessageFormValues,
 } from '../actions/message'
-import { QueryBaseResponse, IMessage, MutationBaseResponse } from 'typings'
+import { QueryBaseResponse, MutationBaseResponse, IPlainMessage } from 'typings'
 
 export function useGetChatMessagesQuery(chatId: string) {
-  return useQuery<QueryBaseResponse<IMessage[]>, AxiosError>({
+  return useQuery<QueryBaseResponse<IPlainMessage[]>, AxiosError>({
     queryKey: ['chat-messages', chatId],
     queryFn: async () => getChatMessages(chatId),
   })

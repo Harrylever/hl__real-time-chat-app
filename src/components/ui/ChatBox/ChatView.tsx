@@ -2,44 +2,40 @@ import { useCallback, useEffect } from 'react'
 import debounce from 'lodash/debounce'
 import { useAppDispatch } from 'src/app'
 import ChatViewHeader from './ChatViewHeader'
-import { IChat, IMessage, IUser } from 'typings'
 import MessageInputWrapper from '../MessageInput'
+import { IChat, IPlainMessage, IUser } from 'typings'
 import MessageWrapper from '../Message/MessageWrapper'
 import { addMessages } from 'src/app/slices/messagesSlice'
-import useDecryptMessage from 'src/hooks/decrypt-message/useDecryptMessage'
 
 interface ChatViewProps {
   user: IUser
   currentChat: IChat
   recipientUser: IUser
-  encryptedMessages: IMessage[]
+  messages: IPlainMessage[]
 }
 
 const ChatView: React.FC<ChatViewProps> = ({
   user,
   currentChat,
   recipientUser,
-  encryptedMessages,
+  messages,
 }): JSX.Element => {
   const dispatch = useAppDispatch()
-  const { decryptMessages } = useDecryptMessage()
 
-  const fetchDecryptedMessages = useCallback(
-    debounce(async (messages: IMessage[]) => {
-      const decrypted = await decryptMessages(messages)
-      dispatch(addMessages({ messages: decrypted }))
-    }, 1000),
-    [decryptMessages],
+  const debouncedAddMessages = useCallback(
+    debounce((messages: IPlainMessage[]) => {
+      dispatch(addMessages(messages))
+    }, 100),
+    [dispatch],
   )
 
   useEffect(() => {
-    if (!encryptedMessages.length) {
-      dispatch(addMessages({ messages: [] }))
+    if (!messages.length) {
+      dispatch(addMessages([]))
       return
     }
-    dispatch(addMessages({ messages: [] }))
-    fetchDecryptedMessages(encryptedMessages)
-  }, [dispatch, encryptedMessages, fetchDecryptedMessages])
+    debouncedAddMessages(messages)
+  }, [debouncedAddMessages, dispatch, messages])
 
   return (
     <section className="relative w-full h-full bg-mx-primary-9 rounded-t-xl rounded-b-md flex flex-col items-start justify-between overflow-hidden">

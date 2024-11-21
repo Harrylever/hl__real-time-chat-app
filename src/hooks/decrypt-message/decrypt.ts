@@ -1,7 +1,6 @@
-import { IMessage } from 'typings'
+import { IMessage, IPlainMessage } from 'typings'
 import * as Comlink from 'comlink'
 import { CipherUtil } from '../../util/cipher.util'
-import { IPlainMessage } from './useDecryptMessage'
 
 const cipherUtil = new CipherUtil()
 

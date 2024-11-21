@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { debounce } from 'lodash'
-import { IMessage } from 'typings'
+import { IPlainMessage } from 'typings'
 import { io } from 'socket.io-client'
 import { BASE_URL } from 'src/config'
 import { useAppDispatch, useAppSelector } from 'src/app'
 import { addMessages } from 'src/app/slices/messagesSlice'
-import useDecryptMessage from './decrypt-message/useDecryptMessage'
 
 const socket = io(BASE_URL, {
   autoConnect: false,
@@ -35,7 +34,7 @@ const socketReducer = (
 ): SocketContext => {
   switch (action.type) {
     case 'CONNECT':
-      console.warn('Connected')
+      console.info('Connected')
       return {
         ...state,
         isConnected: true,
@@ -52,7 +51,6 @@ const socketReducer = (
 
 const useSocketClient = () => {
   const appDispatch = useAppDispatch()
-  const { decryptMessages } = useDecryptMessage()
   const [state, dispatch] = useReducer(socketReducer, initialState)
   const [myEmail, setMyEmail] = useState<string | null>(null)
   const [onlinueUsers, setOnlineUsers] = useState<any[]>([])
@@ -67,24 +65,14 @@ const useSocketClient = () => {
     [],
   )
 
-  const handleSendMessage = useCallback((message: IMessage) => {
+  const handleSendMessage = useCallback((message: IPlainMessage) => {
     if (!socket.connected) {
       socket.connect()
       handleSendMessage(message)
       return
     }
 
-    const data = {
-      _id: message._id,
-      chatId: message.chatId,
-      aesKey: message.aesKey,
-      iv: message.iv,
-      senderId: message.senderId,
-      text: message.text,
-      createdAt: message.createdAt,
-    }
-
-    socket.emit('send-message-event', JSON.stringify(data))
+    socket.emit('send-message-event', JSON.stringify(message))
   }, [])
 
   useEffect(() => {
@@ -108,10 +96,9 @@ const useSocketClient = () => {
     }
 
     const handleIncomingMessage = debounce(async (message: string) => {
-      const parsedMessage = JSON.parse(message)
-      const decrypted = await decryptMessages([parsedMessage])
-      const combinedMessages = [...existingMessages, ...decrypted]
-      appDispatch(addMessages({ messages: combinedMessages }))
+      const parsedMessage = JSON.parse(message) as IPlainMessage
+      const combinedMessages = [...existingMessages, parsedMessage]
+      appDispatch(addMessages(combinedMessages))
     }, 100)
 
     socket.on('connect', handleConnect)
@@ -125,13 +112,7 @@ const useSocketClient = () => {
       socket.off('online_users', handleOnlineUsers)
       socket.off('incoming_message', handleIncomingMessage)
     }
-  }, [
-    appDispatch,
-    decryptMessages,
-    existingMessages,
-    handleAddUserEvent,
-    myEmail,
-  ])
+  }, [appDispatch, existingMessages, handleAddUserEvent, myEmail])
 
   const handleConnect = useCallback(
     (email: string) => {

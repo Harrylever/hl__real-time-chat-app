@@ -1,14 +1,13 @@
 import React from 'react'
 import debounce from 'lodash/debounce'
-import { IChat, IEncryptedMessage, IMessage, IUser } from 'typings'
 import MessageInputForm from './MessageInputForm'
-import { CipherUtil } from 'src/util/cipher.util'
 import { toast } from '@/components/ui/use-toast'
+import { IChat, IPlainMessage, IUser } from 'typings'
+import useSocketClient from 'src/hooks/useSocketClient'
 import { useAppDispatch, useAppSelector } from 'src/app'
 import { addMessages } from 'src/app/slices/messagesSlice'
 import { usePostChatMessageMutation } from 'src/app/api/hooks'
-import useDecryptMessage from 'src/hooks/decrypt-message/useDecryptMessage'
-import useSocketClient from 'src/hooks/useSocketClient'
+import { IMessageFormValues } from 'src/app/api/actions/message'
 
 interface MessageInputWrapperProps {
   user: IUser
@@ -20,8 +19,6 @@ const MessageInputWrapper: React.FC<MessageInputWrapperProps> = ({
   currentChat,
 }) => {
   const dispatch = useAppDispatch()
-  const cipherUtil = new CipherUtil()
-  const { decryptMessages } = useDecryptMessage()
   const { handleSendMessage: sendMessageToSocket } = useSocketClient()
   const { messages: existingMessages } = useAppSelector(
     (state) => state.messageReduce,
@@ -32,30 +29,22 @@ const MessageInputWrapper: React.FC<MessageInputWrapperProps> = ({
     isSuccess,
   } = usePostChatMessageMutation()
 
-  const handleDecryptMessage = debounce(async (message: IMessage) => {
-    const decrypted = await decryptMessages([message])
-
-    const combinedMessages = [...existingMessages, ...decrypted]
-    dispatch(addMessages({ messages: combinedMessages }))
-  }, 1000)
+  const handleAddMessageToState = debounce(async (message: IPlainMessage) => {
+    const combinedMessages = [...existingMessages, message]
+    dispatch(addMessages(combinedMessages))
+  }, 500)
 
   const handleSendMessage = async (message: string) => {
-    const { encryptedData, secure } = await cipherUtil.encryptData(
-      message.trim(),
-    )
-
-    const data: IEncryptedMessage = {
-      text: encryptedData.toHex(),
+    const data: IMessageFormValues = {
+      text: message,
       senderId: user.email,
       chatId: currentChat.id,
-      aesKey: secure.aesKey,
-      iv: secure.iv,
     }
 
     try {
       const response = await sendMessage(data)
       sendMessageToSocket(response.data)
-      handleDecryptMessage(response.data)
+      handleAddMessageToState(response.data)
     } catch (error) {
       toast({
         variant: 'destructive',

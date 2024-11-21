@@ -1,13 +1,6 @@
 import Layout from './components/layout/Layout'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import {
-  Landing,
-  AppView,
-  LoginView,
-  // NotFoundView,
-  RegisterView,
-  Terms,
-} from './views'
+import { Landing, AppView, LoginView, RegisterView, Terms } from './views'
 
 export default function AppRoutes() {
   return (

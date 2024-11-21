@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { IPlainMessage } from 'src/hooks/decrypt-message/useDecryptMessage'
+import { IPlainMessage } from 'typings'
 
 interface ISliceState {
-  messages: Array<IPlainMessage>
+  messages: IPlainMessage[]
 }
 
 const initialState: ISliceState = {
@@ -14,8 +14,8 @@ const messagesSlice = createSlice({
   initialState,
   reducers: {
     // Update the current array to refetched Items
-    addItem: (state: ISliceState, action: PayloadAction<ISliceState>) => {
-      state.messages = action.payload.messages
+    addItem: (state: ISliceState, action: PayloadAction<IPlainMessage[]>) => {
+      state.messages = action.payload
     },
 
     // Removes Item with the certain id
