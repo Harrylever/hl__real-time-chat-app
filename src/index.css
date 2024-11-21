@@ -104,15 +104,15 @@
 }
 
 .no-scroll {
-  overflow: hidden
+  overflow: hidden;
 }
 
 ::selection {
-  background-color: #F8B547;
+  background-color: #f8b547;
   color: #ffffff;
 }
 
 ::-moz-selection {
-  background-color: #F8B547;
+  background-color: #f8b547;
   color: #ffffff;
 }
