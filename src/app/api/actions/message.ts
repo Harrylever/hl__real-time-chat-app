@@ -14,8 +14,6 @@ export interface IMessageFormValues {
   text: string
   senderId: string
   chatId: string
-  aesKey: string
-  iv: string
 }
 
 /**

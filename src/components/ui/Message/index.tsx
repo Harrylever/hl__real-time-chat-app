@@ -1,7 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import moment from 'moment'
-import { IPlainMessage } from 'src/hooks/decrypt-message/useDecryptMessage'
+import { IPlainMessage } from 'typings'
 import useGetScreenOrientation from 'src/hooks/useGetScreenOrientation'
 
 interface MessageProps<T> {

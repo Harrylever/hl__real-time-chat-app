@@ -1,10 +1,9 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
-import SendButton from './SendButton'
-// import EmojiPicker from '../EmojiPicker'
-import { toast } from '@/components/ui/use-toast'
-// import EmojiPickerPopover from 'src/components/popover/EmojiPickerPopover'
-import useGetScreenOrientation from 'src/hooks/useGetScreenOrientation'
 import clsx from 'clsx'
+import SendButton from './SendButton'
+import EmojiPicker from '../EmojiPicker'
+import { toast } from '@/components/ui/use-toast'
+import useGetScreenOrientation from 'src/hooks/useGetScreenOrientation'
 
 interface MessageInputFormProps {
   onSubmit: (message: string) => void
@@ -32,7 +31,7 @@ const MessageInputForm: React.FC<MessageInputFormProps> = ({
     if (!newMessage.trim()) return
 
     try {
-      onSubmit(JSON.stringify(newMessage.trim()))
+      onSubmit(newMessage.trim())
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -55,15 +54,15 @@ const MessageInputForm: React.FC<MessageInputFormProps> = ({
     }
   }
 
-  // const addEmoji = (emoji: string) => {
-  //   const cursorPosition = inputRef.current?.selectionStart ?? 0
-  //   const updatedMessage =
-  //     newMessage.slice(0, cursorPosition) +
-  //     emoji +
-  //     newMessage.slice(cursorPosition)
-  //   setNewMessage(updatedMessage)
-  //   inputRef.current?.focus()
-  // }
+  const addEmoji = (emoji: string) => {
+    const cursorPosition = inputRef.current?.selectionStart ?? 0
+    const updatedMessage =
+      newMessage.slice(0, cursorPosition) +
+      emoji +
+      newMessage.slice(cursorPosition)
+    setNewMessage(updatedMessage)
+    inputRef.current?.focus()
+  }
 
   return (
     <div
@@ -88,11 +87,9 @@ const MessageInputForm: React.FC<MessageInputFormProps> = ({
               className="w-full h-full outline-none resize-none overflow-hidden rounded-l-lg placeholder:text-sm caret-mx-grey text-mx-black text-sm flex items-center border border-zinc-300 pt-3.5 pl-3.5 pr-16"
             ></textarea>
 
-            {/* <div className="h-full w-[55px] absolute top-1/2 -translate-y-1/2 right-0 py-2.5 flex items-center justify-center border-l border-mx-grey">
-              <EmojiPickerPopover>
-                <EmojiPicker hideButton onChange={addEmoji} />
-              </EmojiPickerPopover>
-            </div> */}
+            <div className="h-full w-[55px] absolute top-1/2 -translate-y-1/2 right-0 py-2.5 flex items-center justify-center border-l border-mx-grey">
+              <EmojiPicker onChange={addEmoji} />
+            </div>
           </div>
 
           <SendButton message={newMessage} messageIsSending={isSending} />

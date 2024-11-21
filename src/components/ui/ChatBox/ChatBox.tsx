@@ -77,7 +77,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ user, currentChat }) => {
         user={user}
         currentChat={currentChat}
         recipientUser={recipientUserData.data}
-        encryptedMessages={messages?.data ?? []}
+        messages={messages?.data ?? []}
       />
     </div>
   )
