@@ -1,43 +1,38 @@
 import { useCallback, useEffect, useState } from 'react'
 import { debounce } from 'lodash'
-import { IMessage } from 'typings'
 import { useAppDispatch } from 'src/app'
-import { addMessages } from 'src/app/slices/messagesSlice'
-import useDecryptMessage from 'src/hooks/decrypt-message/useDecryptMessage'
 import LoadingPlayer from '../LoadingPlayer'
+import { IPlainMessage } from 'typings'
+import { addMessages } from 'src/app/slices/messagesSlice'
 
 interface MessagesProviderProps {
   children: React.ReactNode
-  encryptedMessages: IMessage[]
+  messages: IPlainMessage[]
 }
 
 const MessagesProvider: React.FC<MessagesProviderProps> = ({
   children,
-  encryptedMessages,
+  messages,
 }) => {
   const [loading, setLoading] = useState(true)
 
   const dispatch = useAppDispatch()
-  const { decryptMessages } = useDecryptMessage()
 
-  const fetchDecryptedMessages = useCallback(
-    debounce(async (messages: IMessage[]) => {
-      const decrypted = await decryptMessages(messages)
-      dispatch(addMessages({ messages: decrypted }))
-      setLoading(false)
-    }, 1200),
-    [decryptMessages],
+  const debouncedAddMessages = useCallback(
+    debounce((messages: IPlainMessage[]) => {
+      dispatch(addMessages(messages))
+    }, 100),
+    [dispatch],
   )
 
   useEffect(() => {
-    if (!encryptedMessages.length) {
-      dispatch(addMessages({ messages: [] }))
+    if (!messages.length) {
+      dispatch(addMessages([]))
       setLoading(false)
       return
     }
-    dispatch(addMessages({ messages: [] }))
-    fetchDecryptedMessages(encryptedMessages)
-  }, [dispatch, encryptedMessages, fetchDecryptedMessages])
+    debouncedAddMessages(messages)
+  }, [debouncedAddMessages, dispatch, messages])
 
   return loading ? <LoadingPlayer /> : <>{children}</>
 }

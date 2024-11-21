@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAppDispatch } from 'src/app'
-import { IChat, IMessage, IUser } from 'typings'
+import { IChat, IPlainMessage, IUser } from 'typings'
 import MessagesProvider from './MessagesProvider'
 import { GoKebabHorizontal } from 'react-icons/go'
 import MessageWrapper from '../Message/MessageWrapper'
@@ -10,9 +10,9 @@ import MessageInputWrapper from '../MessageInput'
 
 interface MobileCurrentChatViewProps {
   user: IUser
-  messages: IMessage[]
-  recipientUser: IUser
   currentChat: IChat
+  recipientUser: IUser
+  messages: IPlainMessage[]
 }
 
 const MobileCurrentChatView: React.FC<MobileCurrentChatViewProps> = ({
@@ -60,7 +60,7 @@ const MobileCurrentChatView: React.FC<MobileCurrentChatViewProps> = ({
       </div>
 
       <div className="h-[73vh] w-full border-t border-mx-grey/30 shadow-md">
-        <MessagesProvider encryptedMessages={messages}>
+        <MessagesProvider messages={messages}>
           <MessageWrapper user={user} />
         </MessagesProvider>
       </div>
