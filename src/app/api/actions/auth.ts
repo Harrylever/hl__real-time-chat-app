@@ -20,17 +20,6 @@ export async function useGoogleAuth(credentials: IUseGoogleAuthValues) {
   return fetch.data
 }
 
-// export async function createAdminAccount(
-//   user: Pick<IAccount, 'email' | 'password' | 'username'>,
-// ) {
-//   const data: IAccount = {
-//     role: ['admin'],
-//     ...user,
-//   }
-//   const fetch = await axiosInstance.post('/auth/register', data)
-//   return fetch.data
-// }
-
 export async function loginStatus() {
   const fetch = await axiosInstance.get('/auth/loginstatus')
   return fetch.data

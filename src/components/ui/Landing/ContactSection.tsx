@@ -1,3 +1,4 @@
+import ContactForm from '../ContactForm'
 import DefaultWidth from '../DefaultWidth'
 import { RiTwitterXFill } from 'react-icons/ri'
 
@@ -5,7 +6,7 @@ const ContactSection = () => {
   return (
     <section className=" bg-mx-primary-9 py-10">
       <DefaultWidth>
-        <div className="w-full flex flex-col lg:flex-row items-center justify-center lg:gap-5">
+        <div className="w-full flex flex-col lg:flex-row items-start justify-center lg:gap-5">
           <div className="w-full lg:w-1/2 min-h-[530px] sm:min-h-min bg-mx-white rounded-md py-8 px-8 relative duration-300">
             <img
               src="/png/contact-vector-0.png"
@@ -70,42 +71,7 @@ const ContactSection = () => {
             </div>
           </div>
 
-          {/*  */}
-          <div className="w-full mt-14 lg:mt-0 lg:w-1/2 px-7 sm:px-14">
-            <form className="w-full flex flex-col items-center justify-start gap-10">
-              <p className="text-center text-xs text-mx-grey">
-                Feel free to find us virtually around the globe, we’re always
-                <br /> available to connect.
-              </p>
-
-              <div className="w-full">
-                <input
-                  type="text"
-                  name="contact-form-name"
-                  className="border border-mx-stroke focus:border-mx-stroke outline-none bg-mx-white rounded-md placeholder:text-xs text-xs w-full py-3 px-3.5"
-                  placeholder="Name"
-                />
-              </div>
-
-              <div className="w-full">
-                <input
-                  type="email"
-                  name="contact-form-email"
-                  className="border border-mx-stroke focus:border-mx-stroke outline-none bg-mx-white rounded-md placeholder:text-xs text-xs w-full py-3 px-3.5"
-                  placeholder="Email address"
-                />
-              </div>
-
-              <div className="relative w-full h-[100px] rounded-md overflow-hidden">
-                <textarea
-                  id="message"
-                  placeholder="Type message"
-                  name="contact-form-message"
-                  className="border border-mx-stroke focus:border-mx-stroke outline-none bg-mx-white rounded-md placeholder:text-xs text-xs w-full h-full py-3 px-3.5"
-                ></textarea>
-              </div>
-            </form>
-          </div>
+          <ContactForm />
         </div>
       </DefaultWidth>
     </section>

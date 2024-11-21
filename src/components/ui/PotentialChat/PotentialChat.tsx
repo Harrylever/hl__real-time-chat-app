@@ -42,8 +42,8 @@ const PotentialChat: React.FC<PotentialChatProps> = ({
   )
 
   const formattedUsername =
-    chat.username.length > 9
-      ? `${chat.username.substring(0, 8)}..`
+    chat.username.length > 20
+      ? `${chat.username.substring(0, 20)}..`
       : chat.username
 
   const handleCreateChat = async () => {
@@ -91,7 +91,7 @@ const PotentialChat: React.FC<PotentialChatProps> = ({
             : formattedUsername}
         </p>
 
-        <p className="text-[0.7rem]/[0.5rem] sm:text-xs/[0.7rem] font-normal text-mx-grey-2/50 text-start">{`~${chat.fullname}`}</p>
+        <p className="text-[0.7rem]/[0.5rem] sm:text-xs/[0.7rem] font-normal text-mx-grey-2/50 text-start">{`~${chat.firstname} ${chat.lastname}`}</p>
       </div>
     </button>
   )

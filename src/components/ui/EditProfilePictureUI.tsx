@@ -15,7 +15,7 @@ const EditProfilePictureUI = () => {
         <div>
           <img
             src={user.profileImage}
-            alt={user.fullname + ' Profile Picture'}
+            alt={`${user.firstname} ${user.lastname} Profile Picture`}
             width={0}
             height={0}
             className="w-[30px] h-auto"

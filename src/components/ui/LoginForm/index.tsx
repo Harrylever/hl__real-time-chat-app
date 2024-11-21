@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import * as z from 'zod'
-import Input from '../Input'
+import { Input } from '../Input'
 import { classNames } from 'src/styles'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -22,6 +22,7 @@ const LoginPageForm = () => {
   const {
     register,
     formState: { errors },
+    setValue,
     handleSubmit,
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,6 +55,13 @@ const LoginPageForm = () => {
       })
     }
   }
+
+  useEffect(() => {
+    const authUserEmail = window.localStorage.getItem('auth-user-email')
+    if (authUserEmail) {
+      setValue('email', authUserEmail)
+    }
+  }, [setValue])
 
   return (
     <form className="space-y-6 w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -92,9 +100,12 @@ const LoginPageForm = () => {
           </div>
         </div>
 
-        <p className="block text-sm font-medium leading-6 text-mx-primary">
-          <Link to={'#'}>Forgot password?</Link>
-        </p>
+        <Link
+          to="#"
+          className="block text-sm font-medium leading-6 text-mx-primary"
+        >
+          Forgot password?
+        </Link>
       </div>
 
       <button
@@ -105,11 +116,11 @@ const LoginPageForm = () => {
           'mt-2',
           {
             'bg-indigo-600 hover:bg-indigo-800': !isPending,
-            'bg-indigo-400': isPending,
+            'bg-indigo-300': isPending,
           },
         ])}
       >
-        Sign in
+        {isPending ? 'Loading...' : 'Sign in'}
       </button>
     </form>
   )

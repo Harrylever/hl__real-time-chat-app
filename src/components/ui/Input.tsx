@@ -13,7 +13,7 @@ interface InputProps {
   error?: any
 }
 
-const Input: React.FC<InputProps> = ({
+export const Input: React.FC<InputProps> = ({
   id,
   type = 'text',
   label,
@@ -58,6 +58,34 @@ const Input: React.FC<InputProps> = ({
   )
 }
 
+export const TextArea: React.FC<InputProps> = ({
+  required,
+  register,
+  labelText,
+  placeholder,
+  error,
+}: InputProps) => {
+  return (
+    <div>
+      <label htmlFor="message" className={classNames.labelText}>
+        {labelText}
+      </label>
+      <textarea
+        id="message"
+        placeholder={placeholder}
+        {...register('message', { required })}
+        // className="border border-mx-stroke focus:border-mx-stroke outline-none bg-mx-white rounded-md placeholder:text-xs text-xs w-full h-full py-3 px-3.5"
+        className="block w-full rounded-md border border-[#0708083f] focus:border-[#0708083f] focus:outline-none py-3.5 sm:py-2 px-3.5 text-gray-900 text-sm shadow-sm focus:shadow-md placeholder:text-gray-400 placeholder:text-sm ring-0 focus:ring-0 sm:text-sm sm:leading-6 duration-300"
+      ></textarea>
+      {error && (
+        <p className="mt-1 ml-2 text-red-600 text-xs font-normal">
+          {error.message}
+        </p>
+      )}
+    </div>
+  )
+}
+
 interface AcceptTermsInputProps {
   register: any
   label: string
@@ -80,7 +108,7 @@ export const AcceptTermsInput: React.FC<AcceptTermsInputProps> = ({
             I agree to the
             <a
               href="/terms"
-              className="text-mx-primary underline opacity-80 hover:opacity-100 duration-200"
+              className="ml-1 text-mx-primary underline opacity-80 hover:opacity-100 duration-200"
             >
               Terms and Condition
             </a>
@@ -101,5 +129,3 @@ export const AcceptTermsInput: React.FC<AcceptTermsInputProps> = ({
     </div>
   )
 }
-
-export default Input

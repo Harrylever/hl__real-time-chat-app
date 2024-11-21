@@ -14,7 +14,7 @@ const UserProfileIcon: React.FC<UserProfileIconProps> = ({ user }) => {
         <img
           className="h-12 w-12 rounded-full"
           src={user.profileImage}
-          alt={user.fullname + ' Profile Image'}
+          alt={`${user.firstname} ${user.lastname} Profile Picture`}
         />
       </div>
     </div>
