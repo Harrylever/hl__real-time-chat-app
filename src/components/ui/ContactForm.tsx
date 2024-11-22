@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { Input, TextArea } from './Input'
-import { useContactForm } from 'src/app/api/hooks/useContactForm'
+import { usePostContactForm } from 'src/app/api/hooks/useContactForm'
 import clsx from 'clsx'
 
 const formSchema = z.object({
@@ -17,12 +17,13 @@ const formSchema = z.object({
 })
 
 const ContactForm = () => {
-  const { mutateAsync: sendForm, isPending } = useContactForm()
+  const { mutateAsync: sendForm, isPending } = usePostContactForm()
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,19 +36,17 @@ const ContactForm = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const data = {
-        name: values.name.trim(),
-        email: values.email.trim(),
-        message: values.message.trim(),
+        sender_name: values.name.trim(),
+        sender_email: values.email.trim(),
+        sender_message: values.message.trim(),
       }
-
-      const response = await sendForm(data)
-      if (response.data.success) {
-        toast({
-          variant: 'success',
-          title: 'Message sent successfully',
-          description: 'We will get back to you shortly',
-        })
-      }
+      await sendForm(data)
+      toast({
+        variant: 'success',
+        title: 'Message sent successfully',
+        description: 'We will get back to you shortly',
+      })
+      reset()
     } catch (error) {
       toast({
         variant: 'destructive',

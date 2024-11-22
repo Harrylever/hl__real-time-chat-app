@@ -1,24 +1,16 @@
+import { AxiosError, AxiosResponse } from 'axios'
 import { useMutation } from '@tanstack/react-query'
-import axios, { AxiosError, AxiosResponse } from 'axios'
+import axiosInstance from 'src/app/constants/axiosInstance'
 
-export const useContactForm = () => {
-  return useMutation<
-    AxiosResponse<any>,
-    AxiosError,
-    { name: string; email: string; message: string }
-  >({
-    mutationFn: async (data) => {
-      const formBody = `email=${encodeURIComponent(data.email)}&message=${encodeURIComponent(data.message)}`
+interface IContactFormValues {
+  sender_name: string
+  sender_email: string
+  sender_message: string
+}
 
-      return axios.post(
-        'https://app.loops.so/api/newsletter-form/cm0g6ixcw00b69o7bdahqkjup',
-        formBody,
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
-      )
-    },
+export const usePostContactForm = () => {
+  return useMutation<AxiosResponse<any>, AxiosError, IContactFormValues>({
+    mutationFn: async (data) =>
+      axiosInstance.post('/mail/send-contact-us-message', data),
   })
 }
