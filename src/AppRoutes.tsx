@@ -1,6 +1,7 @@
 import Layout from './components/layout/Layout'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Landing, AppView, LoginView, RegisterView, Terms } from './views'
+import NotFound from './views/PageNotFound'
 
 export default function AppRoutes() {
   return (
@@ -13,7 +14,7 @@ export default function AppRoutes() {
         <Route path="auth/login" element={<LoginView />} />
         <Route path="terms" element={<Terms />} />
       </Route>
-      <Route path="*" element={<Navigate to="/app" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

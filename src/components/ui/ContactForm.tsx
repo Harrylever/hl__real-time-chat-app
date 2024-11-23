@@ -1,10 +1,10 @@
+import clsx from 'clsx'
+import * as z from 'zod'
+import { useForm } from 'react-hook-form'
+import { Input, TextArea } from './Input'
 import { toast } from '@/components/ui/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
-import { Input, TextArea } from './Input'
 import { usePostContactForm } from 'src/app/api/hooks/useContactForm'
-import clsx from 'clsx'
 
 const formSchema = z.object({
   name: z.string().min(1, {

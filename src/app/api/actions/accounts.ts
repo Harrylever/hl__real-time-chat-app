@@ -19,3 +19,8 @@ export async function getAccounts() {
   const fetch = await axiosInstance.get('/accounts')
   return fetch.data
 }
+
+export async function getUserLastActive(email: string) {
+  const fetch = await axiosInstance.get(`/accounts/${email}/last-active`)
+  return fetch.data
+}

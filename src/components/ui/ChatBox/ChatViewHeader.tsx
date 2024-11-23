@@ -1,6 +1,7 @@
 import React from 'react'
 import { IUser } from 'typings'
 import { IoIosInformationCircleOutline } from 'react-icons/io'
+import ActiveNowText from '../ActiveNowText'
 
 interface ChatViewHeaderProps {
   recipientUser: IUser
@@ -23,8 +24,7 @@ const ChatViewHeader: React.FC<ChatViewHeaderProps> = ({ recipientUser }) => {
             {`${recipientUser.firstname} ${recipientUser.lastname}`}
           </p>
 
-          {/*  */}
-          <p className="text-mx-primary-4 font-normal text-xs">Active now</p>
+          <ActiveNowText email={recipientUser.email} />
         </div>
       </div>
 

@@ -79,7 +79,7 @@ export type IPlainMessage = Omit<IMessage, 'aesKey' | 'iv'>
 
 export interface IOnlineUser {
   email: string
-  socketId: string
+  id: string
 }
 
 export interface INotification {

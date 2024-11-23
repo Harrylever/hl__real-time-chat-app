@@ -5,6 +5,7 @@ import { io } from 'socket.io-client'
 import { BASE_URL } from 'src/config'
 import { useAppDispatch, useAppSelector } from 'src/app'
 import { addMessages } from 'src/app/slices/messagesSlice'
+import { updateOnlineUsers } from 'src/app/slices/socketSlice'
 
 const socket = io(BASE_URL, {
   autoConnect: false,
@@ -53,7 +54,6 @@ const useSocketClient = () => {
   const appDispatch = useAppDispatch()
   const [state, dispatch] = useReducer(socketReducer, initialState)
   const [myEmail, setMyEmail] = useState<string | null>(null)
-  const [onlinueUsers, setOnlineUsers] = useState<any[]>([])
   const { messages: existingMessages } = useAppSelector(
     (state) => state.messageReduce,
   )
@@ -92,7 +92,11 @@ const useSocketClient = () => {
     }
 
     const handleOnlineUsers = (users: any[]) => {
-      setOnlineUsers(users)
+      appDispatch(
+        updateOnlineUsers({
+          onlineUsers: users,
+        }),
+      )
     }
 
     const handleIncomingMessage = debounce(async (message: string) => {
@@ -136,7 +140,6 @@ const useSocketClient = () => {
     isConnected: state.isConnected,
     messages: state.messages,
     socketId: state.socketId,
-    onlinueUsers,
   }
 }
 
