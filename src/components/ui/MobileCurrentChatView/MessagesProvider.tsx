@@ -21,6 +21,7 @@ const MessagesProvider: React.FC<MessagesProviderProps> = ({
   const debouncedAddMessages = useCallback(
     debounce((messages: IPlainMessage[]) => {
       dispatch(addMessages(messages))
+      setLoading(false)
     }, 100),
     [dispatch],
   )

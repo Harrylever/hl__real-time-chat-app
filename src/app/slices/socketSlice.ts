@@ -21,14 +21,8 @@ const socketSlice = createSlice({
     ) => {
       state.onlineUsers = action.payload.onlineUsers
     },
-    updateNewMessage: (
-      state: ISocketState,
-      action: PayloadAction<ISocketState>,
-    ) => {
-      state.newMessage = action.payload.newMessage
-    },
   },
 })
 
-export const { updateOnlineUsers, updateNewMessage } = socketSlice.actions
+export const { updateOnlineUsers } = socketSlice.actions
 export default socketSlice.reducer

@@ -7,6 +7,7 @@ import MessageWrapper from '../Message/MessageWrapper'
 import { MdOutlineArrowBackIos } from 'react-icons/md'
 import { updateCurrentChat } from 'src/app/slices/chatSlice'
 import MessageInputWrapper from '../MessageInput'
+import ActiveNowText from '../ActiveNowText'
 
 interface MobileCurrentChatViewProps {
   user: IUser
@@ -47,7 +48,7 @@ const MobileCurrentChatView: React.FC<MobileCurrentChatViewProps> = ({
             <p className="text-base text-mx-black font-medium capitalize">
               {recipientUser.firstname} {recipientUser.lastname}
             </p>
-            <p className="text-xs font-medium text-mx-grey">Active Now</p>
+            <ActiveNowText email={recipientUser.email} />
           </div>
         </div>
 

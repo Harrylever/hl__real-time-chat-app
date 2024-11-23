@@ -3,6 +3,7 @@ import {
   getAccounts,
   getActiveAccount,
   getRecipientAccount,
+  getUserLastActive,
 } from '../actions/accounts'
 import { AxiosError } from 'axios'
 import { IUser, IGetRecipientAccountValues, QueryBaseResponse } from 'typings'
@@ -26,5 +27,15 @@ export function useGetAllUsersQuery() {
   return useQuery<QueryBaseResponse<IUser[]>, AxiosError>({
     queryKey: ['all-user-accounts'],
     queryFn: getAccounts,
+  })
+}
+
+export function useGetUserLastActive(email: string) {
+  return useQuery<QueryBaseResponse<any>, AxiosError>({
+    queryKey: ['user-last-active', email],
+    queryFn: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      return getUserLastActive(email)
+    },
   })
 }
